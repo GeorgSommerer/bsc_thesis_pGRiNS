@@ -1,0 +1,3 @@
+[submodule "GRiNS"]
+	path = GRiNS
+	url = https://github.com/MoltenEcdysone09/GRiNS
