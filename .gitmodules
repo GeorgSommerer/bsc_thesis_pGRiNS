@@ -1,0 +1,3 @@
+[submodule "pGRiNS"]
+	path = pGRiNS
+	url = https://github.com/GeorgSommerer/pGRiNS
