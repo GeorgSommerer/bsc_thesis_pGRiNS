@@ -44,3 +44,27 @@ print(kegg_pw  %>% group_by(effect) %>% summarise(no_rows = length(effect)), n=1
 
 # Idea: Represent the following effects as activating (1): activation, binding/association, compound, expression
   # Represent the following effects as inhibiting (2): dissociation, inhibition, repression
+effecttotype <- function(x){
+  if (x %in% c("activation", "binding/association", "compound", "expression")){1}
+  else{
+    if (x %in% c("dissociation","inhibition","repression")){2}
+    else{NA}
+  }
+} 
+
+kegg_filtered <- kegg_pw %>% 
+  mutate(Type = mapply(effecttotype,effect)) %>% 
+  drop_na(Type) %>% 
+  rename(Source=genesymbol_source,Target=genesymbol_target) %>% 
+  select(c(Source,Target,Type)) %>% 
+  unique()
+
+write_delim(kegg_filtered,"../Data/KEGG/kegg.topo",delim=" ")
+
+
+
+# WikiPathways:
+library(rWikiPathways)
+hs.pathways <- listPathways("Homo sapiens")
+wp.hs.gmt <- rWikiPathways::downloadPathwayArchive(format = "gmt")
+wp2gene <- readPathwayGMT("../Data/wikipathways-20260410-gmt-Homo_sapiens.gmt")
