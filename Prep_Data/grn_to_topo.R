@@ -13,7 +13,7 @@ library(decoupleR)
 library(tidyverse)
 library(OmnipathR)
 library(magrittr)
-load("../Data/Dorothea/dorothea_hs.rda") # Taken from https://github.com/saezlab/dorothea/blob/master/data/dorothea_hs.rda
+load("../Data/dorothea_hs.rda") # Taken from https://github.com/saezlab/dorothea/blob/master/data/dorothea_hs.rda
 dorothea_filtered <- dorothea_hs %>%
   mutate(mor = as.factor(mor)) %>% 
   rename(Source=tf,Target=target,Type=mor)
@@ -63,8 +63,8 @@ write_delim(kegg_filtered,"../Data/KEGG/kegg.topo",delim=" ")
 
 
 
-# WikiPathways:
-library(rWikiPathways)
-hs.pathways <- listPathways("Homo sapiens")
-wp.hs.gmt <- rWikiPathways::downloadPathwayArchive(format = "gmt")
-wp2gene <- readPathwayGMT("../Data/wikipathways-20260410-gmt-Homo_sapiens.gmt")
+# # WikiPathways:
+# library(rWikiPathways)
+# hs.pathways <- listPathways("Homo sapiens")
+# wp.hs.gmt <- rWikiPathways::downloadPathwayArchive(format = "gmt")
+# wp2gene <- readPathwayGMT("../Data/wikipathways-20260410-gmt-Homo_sapiens.gmt")
