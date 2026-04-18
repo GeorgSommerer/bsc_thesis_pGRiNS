@@ -446,7 +446,7 @@ def data_normalization(qc_data: ad.AnnData, n_top_genes : int = 5000, verbose : 
         print("Median counts:", median_counts)
         
     norm_data = qc_data.copy()
-    sc.pp.normalize_total(norm_data, target_sum=None) # sc.pp.normalize_total sums to the median by standard
+    sc.pp.normalize_total(norm_data, target_sum=1e6) # sc.pp.normalize_total sums to the median by standard
 
     # Log1p transformation: 
     norm_data.layers["normalized"] = norm_data.X.copy()
@@ -456,18 +456,21 @@ def data_normalization(qc_data: ad.AnnData, n_top_genes : int = 5000, verbose : 
         print("Finding highly variable genes...")
         sc.pp.highly_variable_genes(norm_data,n_top_genes=n_top_genes, subset=True,layer="log1p")
     print("Generating p values for DEGs, might take a long time...")
+        # Remove perts with too few cells
+    frequent_perts = [pert for pert in norm_data.obs["perturbation"].unique() if norm_data.obs["perturbation"].value_counts()[pert]>10]
+    norm_data = norm_data[norm_data.obs["perturbation"].isin(frequent_perts)]
     sc.tl.rank_genes_groups(norm_data, groupby="perturbation", layer="log1p",copy=False)
 
     print("Done!")
     return norm_data
 
-def normalize_adata_main(filename : str):
+def normalize_adata_main(pseq_file : str):
     """
-    Normalizes a perturb seq dataset in the same way as done in the normalization pipeline in the software project, with the exception of not calling the HVGs (done at a later time).
+    Normalizes a perturb seq dataset in mostly the same way as done in the normalization pipeline in the software project, with the exception of not calling the HVGs (done at a later time) and normalizing to 1e6 instead of the median.
 
     Parameters:
     -----------
-    filename: str:
+    pseq_file: str:
         The name of the file to normalize.
 
     Returns:
@@ -475,21 +478,21 @@ def normalize_adata_main(filename : str):
     norm_data : anndata.AnnData:
         The normalized adata object.
     """
-    out_path = f"Data/{filename}/perturb_norm.h5ad"
+    out_path = f"Data/Experimental/{pseq_file}/perturb_norm.h5ad"
 
     if not os.path.isfile(out_path):
-        print("Normalizing file: ", filename)
+        print("Normalizing file: ", pseq_file)
         # Read raw data:
-        raw_data = sc.read_h5ad(f"Data/{filename}/perturb.h5ad")
+        raw_data = sc.read_h5ad(f"Data/Experimental/{pseq_file}/perturb.h5ad")
         
-        if "AdamsonWeissman2016" in filename:
+        if "AdamsonWeissman2016" in pseq_file:
             data_filtered = filter_Adamson_data(raw_data, verbose = True)
-        elif "NormanWeissman2019" in filename:
+        elif "NormanWeissman2019" in pseq_file:
             data_filtered = filter_Norman_data(raw_data, verbose = True)
-        elif "ReplogleWeissman2022" in filename:
+        elif "ReplogleWeissman2022" in pseq_file:
             data_filtered = filter_Replogle_data(raw_data,verbose=True)
         else:
-            raise ValueError(f"No matching dataset found for filename: {filename}")
+            raise ValueError(f"No matching dataset found for filename: {pseq_file}")
 
         qc_data = data_qc(data_filtered, top_genes = 20, outlier_mad_threshold = 5,  mt_mad_threshold = 3, mt_cutoff_percent= 8, verbose=True)
         norm_data = data_normalization(qc_data, n_top_genes = 0, verbose = True)

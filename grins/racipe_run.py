@@ -696,8 +696,6 @@ def run_all_replicates(
         else:
             pass
         icprm_df = pd.DataFrame(icprm_comb,columns=["ic_index","param_index"])
-        display(icprm_comb)
-        display(sol_df)
         sol_df = pd.concat([sol_df,icprm_df],axis=1)
         # Check if the time seires is given or not to name the solution file
         if tsteps is None:
