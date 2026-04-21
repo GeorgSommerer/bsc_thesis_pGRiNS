@@ -67,7 +67,7 @@ def parse_topo_to_matrix(topofile_path):
     # Replace the NaN values with 0s
     topo_df.fillna(0, inplace=True)
     # Convert the dataframe to a numpy adjacency matrix
-    topo_adj = topo_df.to_numpy()
+    topo_adj = topo_df.to_numpy(dtype=np.int16)
     # Convert the adjacency matrix to a jax array
     topo_adj = jnp.array(topo_adj, dtype=jnp.int16)
     return topo_adj, node_names
@@ -580,7 +580,7 @@ def run_ising(
     elif mode == "async":
         # Generate random update indices for asynchronous updates
         update_indices_matrix = np.random.randint(
-            0, len(node_names), (max_steps, num_initial_conditions)
+            0, len(node_names), (max_steps, num_initial_conditions), dtype=np.int16
         )
         update_indices_matrix = jnp.array(update_indices_matrix, dtype=jnp.int16)
         # Run asynchronous simulations in batches
@@ -623,6 +623,7 @@ def run_all_replicates_ising(
     replacement_values=jnp.array([-1, 1]),
     mode="sync",
     packbits=False,
+    fragment=0
 ):
     """
     Run multiple replicate of ising model simulations for a given topology and save results.
@@ -648,6 +649,8 @@ def run_all_replicates_ising(
         The simulation mode, either "sync" or "async". The default is "sync".
     packbits : bool, optional
         Whether to pack the 0/1 states into bits to reduce memory usage. The default is False.
+    fragment : int, optional
+        Which fragment is currently worked on.
 
     Returns
     -------
@@ -702,7 +705,7 @@ def run_all_replicates_ising(
         )
         # Saving the results to a parquet file
         result_df.to_parquet(
-            os.path.join(replicate_dir, f"{topo_name}_{mode}_ising_results.parquet"),
+            os.path.join(replicate_dir, f"{topo_name}_{mode}_ising_results_{fragment}.parquet"),
             index=False,
         )
     return None

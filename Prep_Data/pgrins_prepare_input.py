@@ -9,6 +9,7 @@ import hdf5plugin
 
 import os
 from glob import glob
+import argparse
 
 import normalize
 
@@ -85,12 +86,35 @@ def prepare_datasets(grn_file, topo_files : list[str], adata_dict : dict = None,
         return grn_df, adata_dict
 
 
-def extract_pert_info(pert_file):
+def extract_pert_info(grn_file : str) -> list:
     """
-    Takes a perturbation list file and turns it into a list of perturbations, including their types
-    Removes perts not in GRN
+    Taking an input file called Data/pert_list.pert as the input, the perturbations in the file are turned into a list of perturbation set, where
+    each set is represented as a dict with the gene as the key and the perturbation type as the value.
+    Perturbation sets where the perturbed genes are not in the GRN are removed.
+
+    Parameters:
+    -----------
+    grn_file : str
+        The name of the project.
+    
+    Returns:
+    --------
+    pert_list : list
+        A list of dicts where each dict contains the genes and perturbation types of a perturbation set.
     """
-    pass
+
+    perts_df = pd.read_csv("Data/pert_list.pert",sep=" ")
+    pert_list = [{} for i in range(1+max(perts_df["Index"]))]
+
+    grn = pd.read_csv(f"Data/{grn_file}/{grn_file}.topo",sep=" ")
+    grn_genes = sorted(list(set(grn["Source"])|set(grn["Target"])))
+    
+    for index, row in perts_df.iterrows():
+        if row["Gene"] not in grn_genes:
+            raise Exception(f"Gene {row["Gene"]} at index {row["Index"]} not in GRN.")
+        pert_list[row["Index"]][row["Gene"]]=row["Type"]
+    
+    return pert_list
 
 
 def perts_from_adata():
@@ -99,11 +123,7 @@ def perts_from_adata():
     """
     pass
 
-
-
-
-def main(experimental, project_name):
-
+def main(project_name, experimental):
     if experimental:
         pseqs = sorted([pseq_path.split("/")[-1] for pseq_path in glob(f"Data/Experimental/*")])
         print(pseqs)
@@ -122,6 +142,12 @@ def main(experimental, project_name):
     grn_df, norm_data_dict = prepare_datasets(project_name, topo_files, norm_data_dict)
 
 if __name__ == "__main__":
-    experimental = True
-    project_name = "Keggoro_abcd"
-    main(experimental,project_name)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("grn", help="Name of the GRN used in the project")
+    parser.add_argument("-e","--experimental", help="Whether or not perturb-seq control data is supplied",action="store_true")
+    args = parser.parse_args()
+
+    project_name = args.grn
+    experimental = args.experimental
+    print(extract_pert_info(project_name))
+    #main(project_name, experimental)

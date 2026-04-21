@@ -32,8 +32,8 @@ The subdirectory `Topos` must contain at least one `.topo` file which lists the 
 - The second column must have the name `Target` and contain the gene symbol of the incoming node (B or C).
 - The third column must have the name `Type` and be 1 for an activating edge, and 2 for an inhibiting edge.
 
-The file `pert_list.pert` must contain a list of perturbed genes with 3 columns:
-- The first column must have the name `Index` and indicate which perturbation set the perturbed gene belongs to. For example, if two rows have the same index, they will be treated as a double perturbation.
+The file `pert_list.pert` must contain a list of perturbed genes with 3 columns delimited with a single space:
+- The first column must have the name `Index` and indicate which perturbation set the perturbed gene belongs to. For example, if this column is [0,1,2,2], then the perturbation of the two last genes will be treated as a double perturbation. 
 - The second column must have the name `Gene` and contain the gene symbol of the perturbed gene. This gene must be present in at least one of the files in `Topos`.
 - The third column must have the name `Type` and be 1 for overexpression (CRISPRa), 2 for knockdown (CRISPRi), and 3 for knockout (CRISPR KO).
 

@@ -1,0 +1,633 @@
+2026-04-18 20:27:55.963445: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-18 20:27:55.964445: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-18 20:39:34.607132: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-18 20:39:34.607956: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-18 20:41:58.044093: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-18 20:41:58.045255: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-18 20:58:47.632845: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-18 20:58:47.641466: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-18 21:34:02.426615: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 2.27GiB (2436529356 bytes) by rematerialization; only reduced to 2.89GiB (3108044800 bytes), down from 2.89GiB (3108044800 bytes) originally
+2026-04-18 21:34:04.281096: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 7.39GiB (7930966660 bytes) by rematerialization; only reduced to 1.68TiB (1842546096180 bytes), down from 1.68TiB (1842546096180 bytes) originally
+2026-04-18 21:34:14.674184: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 1.67TiB (rounded to 1842487810560)requested by op 
+2026-04-18 21:34:14.674443: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_************__________________________________*************************************_______________
+E0418 21:34:14.675291  681732 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 1842487810352 bytes. [tf-allocator-allocation-error='']
+Running control run forBoolean Ising:
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 61, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 52, in main
+    ising_control(grn_file, mode)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 34, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 591, in run_ising
+    batch_states = vmap(
+    ...<7 lines>...
+        in_axes=(0, 1, 0),
+    )(batch_initial_conditions, batch_update_indices, batch_ic_indices)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 592, in <lambda>
+    lambda x, y, z: simulate_async_trajectory(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        x,
+        ^^
+    ...<3 lines>...
+        y,
+        ^^
+    ),
+    ^
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 1842487810352 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+2026-04-18 21:38:27.107186: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 2.27GiB (2436529356 bytes) by rematerialization; only reduced to 2.89GiB (3108044800 bytes), down from 2.89GiB (3108044800 bytes) originally
+2026-04-18 21:38:29.139924: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 7.55GiB (8110902071 bytes) by rematerialization; only reduced to 429.00GiB (460636524084 bytes), down from 429.00GiB (460636524084 bytes) originally
+2026-04-18 21:38:39.407533: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 428.99GiB (rounded to 460621953024)requested by op 
+2026-04-18 21:38:39.407721: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*****__*****__________________________________*************************************_______________
+E0418 21:38:39.407766  682586 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 460621952816 bytes. [tf-allocator-allocation-error='']
+Running control run for Boolean Ising:
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 61, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 52, in main
+    ising_control(grn_file, mode)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 34, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 591, in run_ising
+    batch_states = vmap(
+    ...<7 lines>...
+        in_axes=(0, 1, 0),
+    )(batch_initial_conditions, batch_update_indices, batch_ic_indices)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 592, in <lambda>
+    lambda x, y, z: simulate_async_trajectory(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        x,
+        ^^
+    ...<3 lines>...
+        y,
+        ^^
+    ),
+    ^
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 460621952816 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+2026-04-18 21:40:00.392642: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 2.27GiB (2436529356 bytes) by rematerialization; only reduced to 2.89GiB (3108044800 bytes), down from 2.89GiB (3108044800 bytes) originally
+2026-04-18 21:40:02.414056: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 7.60GiB (8163383232 bytes) by rematerialization; only reduced to 53.62GiB (57579565556 bytes), down from 53.62GiB (57579565556 bytes) originally
+2026-04-18 21:40:12.688751: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 53.62GiB (rounded to 57577744640)requested by op 
+2026-04-18 21:40:12.688942: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*****__*****__________________________________*************************************_______________
+E0418 21:40:12.689608  682924 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 57577744432 bytes. [tf-allocator-allocation-error='']
+Running control run for Boolean Ising:
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 61, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 52, in main
+    ising_control(grn_file, mode)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 34, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 591, in run_ising
+    batch_states = vmap(
+    ...<7 lines>...
+        in_axes=(0, 1, 0),
+    )(batch_initial_conditions, batch_update_indices, batch_ic_indices)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 592, in <lambda>
+    lambda x, y, z: simulate_async_trajectory(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        x,
+        ^^
+    ...<3 lines>...
+        y,
+        ^^
+    ),
+    ^
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 57577744432 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+2026-04-18 21:41:36.005155: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 2.27GiB (2436529356 bytes) by rematerialization; only reduced to 2.89GiB (3108044800 bytes), down from 2.89GiB (3108044800 bytes) originally
+2026-04-18 21:41:48.262357: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 3.35GiB (rounded to 3598609664)requested by op 
+2026-04-18 21:41:48.262538: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*****__*****__________________________________*************************************_______________
+E0418 21:41:48.262582  683220 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3598609584 bytes. [tf-allocator-allocation-error='']
+Running control run for Boolean Ising:
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 61, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 52, in main
+    ising_control(grn_file, mode)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 34, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 591, in run_ising
+    batch_states = vmap(
+    ...<7 lines>...
+        in_axes=(0, 1, 0),
+    )(batch_initial_conditions, batch_update_indices, batch_ic_indices)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 592, in <lambda>
+    lambda x, y, z: simulate_async_trajectory(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        x,
+        ^^
+    ...<3 lines>...
+        y,
+        ^^
+    ),
+    ^
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3598609584 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+2026-04-18 21:50:57.170818: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 2.27GiB (2436529356 bytes) by rematerialization; only reduced to 2.89GiB (3108044800 bytes), down from 2.89GiB (3108044800 bytes) originally
+2026-04-18 21:51:07.178770: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 2.89GiB (rounded to 3108044800)requested by op 
+2026-04-18 21:51:07.178900: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *______***************____________*************_____________________________________________________
+Running control run for Boolean Ising:
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 61, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 52, in main
+    ising_control(grn_file, mode)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 34, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 585, in run_ising
+    update_indices_matrix = jnp.array(update_indices_matrix, dtype=jnp.int16)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3108044800 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Running control run for Boolean Ising:
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Simulation time for async mode: 1400.24 seconds
+2026-04-19 14:48:12.182350: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-19 14:48:12.183446: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-19 14:48:30.301958: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 4.35GiB (rounded to 4672640000)requested by op 
+2026-04-19 14:48:30.302170: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] ******************************************************______________________________________________
+E0419 14:48:30.302208  691582 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4672640000 bytes. [tf-allocator-allocation-error='']
+Running control run for RACIPE:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro_abcd
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 61, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 49, in main
+    racipe_control(grn_file)
+    ~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 19, in racipe_control
+    racipe.run_all_replicates(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<2 lines>...
+        batch_size=batch_size,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 661, in run_all_replicates
+    sol_df, icprm_comb = topo_simulate(
+                         ~~~~~~~~~~~~~^
+        topo_file=topo_file,
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+        batch_size=batch_size,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 448, in topo_simulate
+    parameters = jnp.array(parameters.to_numpy())
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4672640000 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+2026-04-19 14:52:41.673104: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-19 14:52:41.674177: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-19 14:56:48.491945: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-19 14:56:48.493014: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+2026-04-19 14:57:10.526085: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 4.35GiB (rounded to 4672640000)requested by op 
+2026-04-19 14:57:10.533418: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] ******************************************************______________________________________________
+E0419 14:57:10.534670  691833 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4672640000 bytes. [tf-allocator-allocation-error='']
+Running control run for RACIPE:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro_abcd
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 62, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 50, in main
+    racipe_control(grn_file)
+    ~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 19, in racipe_control
+    racipe.run_all_replicates(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<2 lines>...
+        batch_size=batch_size,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 661, in run_all_replicates
+    sol_df, icprm_comb = topo_simulate(
+                         ~~~~~~~~~~~~~^
+        topo_file=topo_file,
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+        batch_size=batch_size,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 448, in topo_simulate
+    parameters = jnp.array(parameters.to_numpy())
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4672640000 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Running control run for RACIPE:
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 62, in <module>
+    main(grn_file,is_control,is_racipe,mode)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 49, in main
+    XLA_PYTHON_CLIENT_ALLOCATOR=platform
+                                ^^^^^^^^
+NameError: name 'platform' is not defined. Did you forget to import 'platform'?
+2026-04-19 15:01:44.946397: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-19 15:01:44.946723: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 56, in <module>
+    jax.print_environment_info()
+    ^^^
+NameError: name 'jax' is not defined. Did you mean: 'max'?
+jax:    0.5.3
+jaxlib: 0.5.3
+numpy:  2.2.4
+python: 3.13.5 (main, Jun 25 2025, 18:55:22) [GCC 14.2.0]
+device info: NVIDIA GeForce GTX 1080 Ti-4, 4 local devices"
+process_count: 1
+platform: uname_result(system='Linux', node='cuda02', release='6.12.74+deb13+1-amd64', version='#1 SMP PREEMPT_DYNAMIC Debian 6.12.74-2 (2026-03-08)', machine='x86_64')
+
+
+$ nvidia-smi
+Sun Apr 19 15:07:29 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 575.57.08              Driver Version: 575.57.08      CUDA Version: 12.9     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:02:00.0 Off |                  N/A |
+| 27%   29C    P2             55W /  250W |    8525MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:03:00.0 Off |                  N/A |
+| 25%   27C    P2             54W /  250W |     143MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:83:00.0 Off |                  N/A |
+| 27%   26C    P2             55W /  250W |     143MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:84:00.0 Off |                  N/A |
+| 20%   22C    P2             55W /  250W |     143MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A          692509      C   python3                                8520MiB |
+|    1   N/A  N/A          692509      C   python3                                 138MiB |
+|    2   N/A  N/A          692509      C   python3                                 138MiB |
+|    3   N/A  N/A          692509      C   python3                                 138MiB |
++-----------------------------------------------------------------------------------------+
+
+Test
+Test
+jax:    0.5.3
+jaxlib: 0.5.3
+numpy:  2.2.4
+python: 3.13.5 (main, Jun 25 2025, 18:55:22) [GCC 14.2.0]
+device info: NVIDIA GeForce GTX 1080 Ti-4, 4 local devices"
+process_count: 1
+platform: uname_result(system='Linux', node='cuda02', release='6.12.74+deb13+1-amd64', version='#1 SMP PREEMPT_DYNAMIC Debian 6.12.74-2 (2026-03-08)', machine='x86_64')
+
+
+$ nvidia-smi
+Sun Apr 19 15:08:29 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 575.57.08              Driver Version: 575.57.08      CUDA Version: 12.9     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:02:00.0 Off |                  N/A |
+| 27%   34C    P2             55W /  250W |    8525MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:03:00.0 Off |                  N/A |
+| 25%   27C    P2             53W /  250W |     143MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:83:00.0 Off |                  N/A |
+| 27%   26C    P2             55W /  250W |     143MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA GeForce GTX 1080 Ti     On  |   00000000:84:00.0 Off |                  N/A |
+| 20%   23C    P2             55W /  250W |     143MiB /  11264MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A          692630      C   python3                                8520MiB |
+|    1   N/A  N/A          692630      C   python3                                 138MiB |
+|    2   N/A  N/A          692630      C   python3                                 138MiB |
+|    3   N/A  N/A          692630      C   python3                                 138MiB |
++-----------------------------------------------------------------------------------------+
+
+2026-04-19 15:11:32.283144: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9345280000) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-19 15:11:32.283489: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.35GiB (4672640000 bytes), down from 4.35GiB (4672640000 bytes) originally
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 98
+    path_to_data = f"Data/SimulResults_Racipe/{grn_file}/00{replicate}/{grn_file}
+                   ^
+SyntaxError: unterminated f-string literal (detected at line 98)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 127
+    p = mp.process(target=racipe.run_all_replicates,args=(grn_path,save_dir,**kwargs))
+                                                                            ^^
+SyntaxError: invalid syntax
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 3, in <module>
+    import grins.racipe_run as racipe
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/__init__.py", line 1, in <module>
+    from . import gen_diffrax_ode
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_diffrax_ode.py", line 1, in <module>
+    from grins.gen_params import gen_param_names  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 4, in <module>
+    from scipy.stats import qmc, truncnorm, loguniform, lognorm
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/scipy/stats/__init__.py", line 624, in <module>
+    from ._stats_py import *
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/scipy/stats/_stats_py.py", line 41, in <module>
+    from scipy.optimize import milp, LinearConstraint
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/scipy/optimize/__init__.py", line 424, in <module>
+    from ._root import *
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/scipy/optimize/_root.py", line 15, in <module>
+    from ._minpack_py import _root_hybr, leastsq
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/scipy/optimize/_minpack_py.py", line 13, in <module>
+    from ._lsq import least_squares
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/scipy/optimize/_lsq/__init__.py", line 2, in <module>
+    from .least_squares import least_squares
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1118, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1218, in get_data
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 263, in <module>
+    main(grn_file,is_control,is_racipe,kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: main() takes 3 positional arguments but 4 were given
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 263, in <module>
+    main(grn_file,is_control,is_racipe,kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: main() takes 3 positional arguments but 4 were given
+2026-04-21 10:40:21.679069: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9945743360) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-21 10:40:21.686013: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.63GiB (4972871680 bytes), down from 4.63GiB (4972871680 bytes) originally
+2026-04-21 10:40:33.343681: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 4.63GiB (rounded to 4972871680)requested by op 
+2026-04-21 10:40:33.343964: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*************************************************************_____________________________________
+E0421 10:40:33.344082  793146 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4972871680 bytes. [tf-allocator-allocation-error='']
+Running control run for Boolean Ising:
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 263, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 213, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 168, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 515, in run_ising
+    initial_conditions = generate_intial_conditions(
+        len(node_names), num_initial_conditions
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 178, in generate_intial_conditions
+    scaled_samples = jnp.array(scaled_samples, dtype=jnp.int16)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4972871680 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.

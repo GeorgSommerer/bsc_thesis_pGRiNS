@@ -19,9 +19,9 @@ dorothea_filtered <- dorothea_hs %>%
   rename(Source=tf,Target=target,Type=mor)
 levels(dorothea_filtered$Type) <- c("2","1")
 
-write_delim(dorothea_filtered %>% filter(confidence %in% c("A","B","C")) %>% select(!confidence),"../Data/Dorothea/dorothea_abc.topo",delim=" ")
-write_delim(dorothea_filtered %>% filter(confidence %in% c("A","B","C","D")) %>% select(!confidence),"../Data/Dorothea/dorothea_abcd.topo",delim=" ")
-write_delim(dorothea_filtered %>% select(!confidence),"../Data/Dorothea/dorothea_abcde.topo",delim=" ")
+write_delim(dorothea_filtered %>% filter(confidence %in% c("A","B","C")) %>% select(!confidence),"../Data/Topos/dorothea_abc.topo",delim=" ")
+write_delim(dorothea_filtered %>% filter(confidence %in% c("A","B","C","D")) %>% select(!confidence),"../Data/Topos/dorothea_abcd.topo",delim=" ")
+write_delim(dorothea_filtered %>% select(!confidence),"../Data/Topos/dorothea_abcde.topo",delim=" ")
 
 
 # KEGG:
@@ -59,7 +59,7 @@ kegg_filtered <- kegg_pw %>%
   select(c(Source,Target,Type)) %>% 
   unique()
 
-write_delim(kegg_filtered,"../Data/KEGG/kegg.topo",delim=" ")
+write_delim(kegg_filtered,"../Data/Topos/kegg.topo",delim=" ")
 
 
 

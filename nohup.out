@@ -1,0 +1,354 @@
+Running control run for Boolean Ising:
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 263, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 213, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 168, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 582, in run_ising
+    update_indices_matrix = np.random.randint(
+        0, len(node_names), (max_steps, num_initial_conditions)
+    )
+  File "numpy/random/mtrand.pyx", line 796, in numpy.random.mtrand.RandomState.randint
+  File "numpy/random/_bounded_integers.pyx", line 1343, in numpy.random._bounded_integers._rand_int64
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 92.6 GiB for an array with shape (94850, 131072) and data type int64
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 3, in <module>
+    import grins.racipe_run as racipe
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/__init__.py", line 3, in <module>
+    from . import ising_bool
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 584
+    )
+    ^
+SyntaxError: unmatched ')'
+Running control run for Boolean Ising:
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 263, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 213, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 168, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 515, in run_ising
+    initial_conditions = generate_intial_conditions(
+        len(node_names), num_initial_conditions
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 174, in generate_intial_conditions
+    scaled_samples = _scale_distribution(
+        unscaled_samples, np.array(minmax_vals), round_int=True, dtype=np.int16
+    )
+TypeError: generate_intial_conditions.<locals>._scale_distribution() got an unexpected keyword argument 'dtype'
+2026-04-21 10:59:34.880231: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (49728716800) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-21 10:59:34.880575: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 23.16GiB (24864358400 bytes), down from 23.16GiB (24864358400 bytes) originally
+2026-04-21 10:59:44.883797: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 23.16GiB (rounded to 24864358400)requested by op 
+2026-04-21 10:59:44.883932: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*****___________________________*****************************_____________________________________
+Running control run for Boolean Ising:
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 263, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 213, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 168, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 585, in run_ising
+    update_indices_matrix = jnp.array(update_indices_matrix, dtype=jnp.int16)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 24864358400 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Running control run for Boolean Ising:
+262144 2
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+2026-04-21 12:08:33.268563: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (9945743360) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-21 12:08:33.269088: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 4.63GiB (4972871680 bytes), down from 4.63GiB (4972871680 bytes) originally
+2026-04-21 12:08:44.989036: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 4.63GiB (rounded to 4972871680)requested by op 
+2026-04-21 12:08:44.989662: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*************************************************************_____________________________________
+E0421 12:08:44.989765  794917 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4972871680 bytes. [tf-allocator-allocation-error='']
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 264, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 214, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 169, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 515, in run_ising
+    initial_conditions = generate_intial_conditions(
+        len(node_names), num_initial_conditions
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 178, in generate_intial_conditions
+    scaled_samples = jnp.array(scaled_samples, dtype=jnp.int16)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 4972871680 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Running control run for Boolean Ising:
+65536 2
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+2026-04-21 12:11:49.468079: E external/xla/xla/service/gpu/gpu_hlo_schedule.cc:654] The byte size of input/output arguments (24864358400) exceeds the base limit (8780857344). This indicates an error in the calculation!
+2026-04-21 12:11:49.468422: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 0B (0 bytes) by rematerialization; only reduced to 11.58GiB (12432179200 bytes), down from 11.58GiB (12432179200 bytes) originally
+2026-04-21 12:11:59.471682: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 11.58GiB (rounded to 12432179200)requested by op 
+2026-04-21 12:11:59.471790: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*****_____________***************_________________________________________________________________
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 264, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 214, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 169, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 585, in run_ising
+    update_indices_matrix = jnp.array(update_indices_matrix, dtype=jnp.int16)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/numpy/lax_numpy.py", line 5555, in array
+    out_array: Array = lax_internal._convert_element_type(
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out, dtype, weak_type=weak_type, sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 1614, in _convert_element_type
+    return convert_element_type_p.bind(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operand, new_dtype=new_dtype, weak_type=bool(weak_type),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sharding=sharding)
+        ^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 502, in bind
+    return self._true_bind(*args, **params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 520, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/lax/lax.py", line 4701, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 525, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/core.py", line 1029, in process_primitive
+    return primitive.impl(*args, **params)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc/lib/python3.13/site-packages/jax/_src/dispatch.py", line 88, in apply_primitive
+    outs = fun(*args)
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 12432179200 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Running control run for Boolean Ising:
+16384 2
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+2026-04-21 12:13:05.805063: W external/xla/xla/hlo/transforms/simplifiers/hlo_rematerialization.cc:3021] Can't reduce memory use below 2.27GiB (2436529356 bytes) by rematerialization; only reduced to 2.89GiB (3108044800 bytes), down from 2.89GiB (3108044800 bytes) originally
+2026-04-21 12:13:17.621327: W external/xla/xla/tsl/framework/bfc_allocator.cc:501] Allocator (GPU_0_bfc) ran out of memory trying to allocate 3.35GiB (rounded to 3598609664)requested by op 
+2026-04-21 12:13:17.621515: W external/xla/xla/tsl/framework/bfc_allocator.cc:512] *_*****__*****__________________________________*************************************_______________
+E0421 12:13:17.621561  795160 pjrt_stream_executor_client.cc:3077] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3598609584 bytes. [tf-allocator-allocation-error='']
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 264, in <module>
+    main(grn_file,is_control,is_racipe,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 214, in main
+    ising_control(grn_file, **kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 169, in ising_control
+    ising_bool.run_all_replicates_ising(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        grn_path,
+        ^^^^^^^^^
+    ...<5 lines>...
+        num_replicates=num_replicates
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 693, in run_all_replicates_ising
+    result_df = run_ising(
+        topo_file=topo_file,
+    ...<6 lines>...
+        packbits=packbits,
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 591, in run_ising
+    batch_states = vmap(
+    ...<7 lines>...
+        in_axes=(0, 1, 0),
+    )(batch_initial_conditions, batch_update_indices, batch_ic_indices)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/ising_bool.py", line 592, in <lambda>
+    lambda x, y, z: simulate_async_trajectory(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        x,
+        ^^
+    ...<3 lines>...
+        y,
+        ^^
+    ),
+    ^
+jaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3598609584 bytes.
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Running control run for Boolean Ising:
+4096 2
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running control run for Boolean Ising:
+8192 2
+Running Ising...
+Topology: Data/Keggoro_abcd/Keggoro_abcd.topo
+Running async simulations for the network: Data/Keggoro_abcd/Keggoro_abcd.topo
+Simulation time for async mode: 2772.81 seconds
+Read Data/SimulResults_Ising/Keggoro_abcd/1/Keggoro_abcd_async_ising_results.parquet...
+/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py:188: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  count_df["State"] = count_df[count_df.columns[2:]].astype(str).agg("".join, axis=1) # These bit representations are then combined
+/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py:190: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  steady_df.loc[:,"Replicate"] = replicate
+/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py:191: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  steady_df["Mode"] = mode.capitalize()
