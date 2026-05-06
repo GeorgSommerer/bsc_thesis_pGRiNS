@@ -79,7 +79,7 @@ def grins_racipe_to_adata(path_to_data : str, pert_list : list = None, max_missi
     grins_data.obs_names = [f"{int(info_df.loc[:,"PertNum"][i])}_{int(info_df.loc[:,"InitCondNum"][i])}_{int(info_df.loc[:,"ParamNum"][i])}" for i in range(info_df.shape[0])]
     grins_data.var_names = list(sol_df.columns)
 
-    grins_data = grins_data[grins_data.obs["ParamNum"]<=100]
+    #grins_data = grins_data[grins_data.obs["ParamNum"]<=100]
     return grins_data
 
 
@@ -100,12 +100,9 @@ def normalize_grins_adata(grins_data : ad.AnnData) -> ad.AnnData:
     # Log-normalize the layers:
     print("Normalize Data...")
     grins_data.layers["log1p"] = grins_data.X.copy().tocsc()
+    sc.pp.normalize_total(grins_data, target_sum=None,layer="log1p")
 
     sc.pp.log1p(grins_data, layer="log1p")
-    
-    # Calculate QC metrics:
-    print("Calculate QC metrics...")
-    sc.pp.calculate_qc_metrics(grins_data,percent_top=[20],inplace=True,log1p=True,layer="log1p")
 
     return grins_data
 
@@ -356,10 +353,9 @@ if __name__ == "__main__":
     parser.add_argument("method", help="Racipe or Ising")
     parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
     parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
-    parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
-    parser.add_argument("--max_missingness", type=float,help="The maximal percentage of missing data (Default: 90%).")
+    parser.add_argument("--max_missingness", type=float,help="The maximal percentage of missing data (Default: 90 percent).")
     parser.add_argument("--expon_scale",type=float,help="Given an experimental dataset, this is the mean of pct_dropout_by_counts from adata.var among the genes with pct_dropout_by_counts<max_missingness (Default: 36.36 for Replogle22)")
-    parser.add_argument("--full_dropouts",type=float,help="How many genes should have 100% of their entries missing (Default: 0%)")
+    parser.add_argument("--full_dropouts",type=float,help="How many genes should have 100 percent of their entries missing (Default: 0 percent)")
     parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
     parser.add_argument("-m","--mode", help="If Ising, sync or async (Default: async)")
     
