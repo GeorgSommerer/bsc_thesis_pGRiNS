@@ -8,7 +8,7 @@ import anndata as ad
 import os
 
 from Prep_Data import pgrins_prepare_input, pgrins_prepare_output
-import pgrins_run_grins
+import pgrins_run_grins, pgrins_narrow_params
 
 ########################################################
 
@@ -63,9 +63,28 @@ pgrins_prepare_data.main(experimental,project_name)
 
 ########################################################
 
-is_control = True
-pgrins_run_grins.main(project_name,is_control,is_racipe,kwargs_ctrl_grins)
+pgrins_run_grins.main(project_name,is_racipe,kwargs_ctrl_grins)
 
 ########################################################
 
 pgrins_prepare_output.main(project_name, is_racipe, kwargs_output)
+
+########################################################
+
+pginrs_narrow_params.main(adata)
+
+########################################################
+
+pgrins_run_grins.main(project_name,is_racipe,perts,kwargs_ctrl_grins)
+
+########################################################
+
+pgrins_prepare_output.main(project_name, is_racipe, perts, kwargs_output)
+
+########################################################
+for pert in perts:
+    pginrs_narrow_params.main(pert)
+
+########################################################
+
+pgrins_prepare_output.get_full_grins()

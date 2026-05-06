@@ -104,7 +104,11 @@ def gen_param_names(topo_df: pd.DataFrame) -> Tuple[List[str], List[str], List[s
         A tuple containing the parameter names, unique target node names, and unique source node names.
     """
     target_nodes = list(topo_df["Target"].unique())
+    if "dummy" in target_nodes:
+        target_nodes.remove("dummy")
     source_nodes = list(topo_df["Source"].unique())
+    if "dummy" in source_nodes:
+        source_nodes.remove("dummy")
     unique_nodes = sorted(set(source_nodes + target_nodes)) # All nodes across Target and Source columns
     param_names = [f"Prod_{n}" for n in unique_nodes] + [
         f"Deg_{n}" for n in unique_nodes
@@ -399,6 +403,7 @@ def sample_param_df(
     prange_df: pd.DataFrame,
     num_params: int = 2**10,
     rng: int | np.random.Generator | None = None,
+    pert_dict : dict = None
 ) -> pd.DataFrame:
     """
     Samples parameter values based on the provided parameter range DataFrame.
@@ -495,6 +500,17 @@ def sample_param_df(
     # Scale the sampled values for each parameter
     for col in sampled_df.columns:
         sampled_df[col] = scale_col(sampled_df[col], col)
+
+    # Scale sampled values for perturbed genes depending on the type
+    if pert_dict is not None:
+        for pert in pert_dict.keys():
+            if pert_dict[pert] == 1: # CRISPRa
+                sampled_df[f"Prod_{pert}"]*=100
+            elif pert_dict[pert] == 2: # CRISPRi
+                sampled_df[f"Prod_{pert}"]/=100
+            elif pert_dict[pert] == 3: # CRISPR KO
+                sampled_df[f"Prod_{pert}"]=0.0
+
     # Return the sampled DataFrame with the original parameter order
     return sampled_df[original_order]
 
@@ -699,6 +715,7 @@ def gen_param_range_df(
     sampling_method: Union[str, dict] = "Sobol",
     thr_rows: bool = True,
     rng: int | np.random.Generator | None = None,
+    pert_dict : dict = None
 ) -> pd.DataFrame:
     """
     Generate a parameter range DataFrame from the topology DataFrame.
@@ -758,6 +775,7 @@ def gen_param_range_df(
     # Fill the threshold rows of the parameter range DataFrame
     if thr_rows:
         prange_df = add_thr_rows(prange_df, topo_df, num_params, rng=rng)
+            
     return prange_df
 
 
@@ -768,6 +786,7 @@ def gen_param_df(
     sampling_method: Union[str, dict] = "Sobol",
     thr_rows: bool = True,
     rng: int | np.random.Generator | None = None,
+    pert_dict : dict = None
 ) -> pd.DataFrame:
     """
     Generate the final parameter DataFrame by sampling parameters.
@@ -807,7 +826,7 @@ def gen_param_df(
             rng=rng,
         )
     # Use the sample_param_df function to sample the parameters
-    param_df = sample_param_df(prange_df, num_params, rng=rng)
+    param_df = sample_param_df(prange_df, num_params, rng=rng,pert_dict=pert_dict)
     # Add the ParamNum column to the DataFrame
     param_df = param_df.assign(ParamNum=param_df.index + 1)
     return param_df
@@ -817,6 +836,7 @@ def gen_init_cond(
     topo_df: pd.DataFrame,
     num_init_conds: int = 2**10,
     rng: int | np.random.Generator | None = None,
+    irange_df : pd.DataFrame = None
 ) -> pd.DataFrame:
     """
     Generate initial conditions for each node based on the topology.
@@ -829,6 +849,8 @@ def gen_init_cond(
         Number of initial conditions to generate. Default is 2**10.
     rng: int, Generator, optional
         Seed or RNG for reproducibility. Default is None.
+    irange_df : pd.DataFrame, optional
+        Necessary if the min/max range for each IC is different.
 
     Returns
     -------
@@ -838,9 +860,19 @@ def gen_init_cond(
     _, target_nodes, source_nodes = gen_param_names(topo_df)
     unique_nodes = sorted(set(source_nodes + target_nodes))
     init_conds = _gen_sobol_seq(len(unique_nodes), num_init_conds, rng=rng)
-    # Scale initial conditions between 1 and 100
-    init_conds = 1 + init_conds * (100 - 1)
     initcond_df = pd.DataFrame(init_conds, columns=unique_nodes)
+
+    if pert_list is None:
+        # Scale initial conditions between 1 and 100
+        for col in initcond_df.columns:
+            initcond_df[col] = 1 + initcond_df[col]*(100-1)
+    else:
+        # Scale each IC individually
+
+        for col in initcond_df.columns:
+            row = irange_df[irange_df["InitCond"] == col].iloc[0]
+            initcond_df[col] = row["Minimum"] + initcond_df[col]*(row["Maximum"]-row["Minimum"])
+
     # A new columns for the intial condition numbers
     # initcond_df["InitCondNum"] = initcond_df.index + 1
     initcond_df = initcond_df.assign(InitCondNum=initcond_df.index + 1)

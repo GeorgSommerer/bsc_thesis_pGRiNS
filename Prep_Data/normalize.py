@@ -6,6 +6,7 @@ import random
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import median_abs_deviation
+from scipy import sparse
 import os
 import hdf5plugin
 
@@ -182,7 +183,7 @@ def filter_Norman_data(rawData, verbose = False):
     """
     
     data_filtered = filter_base(rawData, verbose=verbose)
-    
+    """
     # Find double perturbations "gen_gen" : 
     mask_double_pert = data_filtered.obs["perturbation"].str.contains("_", na=False)
 
@@ -205,7 +206,7 @@ def filter_Norman_data(rawData, verbose = False):
         print(f"{n_double} total double perturbations found.")
         print(f"{genesUnique_single} unique single genes.")
         
-    
+    """
     # Data preparation for GEARS:
     process_GEARS(data_filtered)
     
@@ -413,12 +414,13 @@ def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: i
         print(f"Total number of cells: {qc_data.n_obs}")
         print(qc_data.obs["outlier"].value_counts())
         print(qc_data.obs["mt_outlier"].value_counts())
+        print(f"Number of dropout genes: {sum(qc_data.var["pct_dropout_by_counts"]<90)}")
 
     # filter cells
     qc_data = qc_data[(~qc_data.obs["outlier"]) & (~qc_data.obs["mt_outlier"])].copy()
 
     print(f"Total number of cells after filtering of low quality cells: {qc_data.n_obs}")
-
+    
     return qc_data
 
 def data_normalization(qc_data: ad.AnnData, n_top_genes : int = 5000, verbose : bool = False) -> ad.AnnData:
@@ -446,20 +448,20 @@ def data_normalization(qc_data: ad.AnnData, n_top_genes : int = 5000, verbose : 
         print("Median counts:", median_counts)
         
     norm_data = qc_data.copy()
-    sc.pp.normalize_total(norm_data, target_sum=1e6) # sc.pp.normalize_total sums to the median by standard
+    sc.pp.normalize_total(norm_data, target_sum=None) # sc.pp.normalize_total sums to the median by standard
 
     # Log1p transformation: 
     norm_data.layers["normalized"] = norm_data.X.copy()
-    norm_data.layers["log1p"] = norm_data.layers["normalized"].copy()
+    norm_data.layers["log1p"] = sparse.csc_matrix(norm_data.layers["normalized"].copy())
     sc.pp.log1p(norm_data, layer="log1p")
-    if n_top_genes > 0:
-        print("Finding highly variable genes...")
-        sc.pp.highly_variable_genes(norm_data,n_top_genes=n_top_genes, subset=True,layer="log1p")
-    print("Generating p values for DEGs, might take a long time...")
+    #if n_top_genes > 0:
+    #    print("Finding highly variable genes...")
+    #    sc.pp.highly_variable_genes(norm_data,n_top_genes=n_top_genes, subset=True,layer="log1p")
+    #print("Generating p values for DEGs, might take a long time...")
         # Remove perts with too few cells
     frequent_perts = [pert for pert in norm_data.obs["perturbation"].unique() if norm_data.obs["perturbation"].value_counts()[pert]>10]
     norm_data = norm_data[norm_data.obs["perturbation"].isin(frequent_perts)]
-    sc.tl.rank_genes_groups(norm_data, groupby="perturbation", layer="log1p",copy=False)
+    #sc.tl.rank_genes_groups(norm_data, groupby="perturbation",method='t-test_overestim_var',layer="log1p",copy=False)
 
     print("Done!")
     return norm_data
@@ -485,11 +487,11 @@ def normalize_adata_main(pseq_file : str):
         # Read raw data:
         raw_data = sc.read_h5ad(f"Data/Experimental/{pseq_file}/perturb.h5ad")
         
-        if "AdamsonWeissman2016" in pseq_file:
+        if "Adamson" in pseq_file:
             data_filtered = filter_Adamson_data(raw_data, verbose = True)
-        elif "NormanWeissman2019" in pseq_file:
+        elif "Norman" in pseq_file:
             data_filtered = filter_Norman_data(raw_data, verbose = True)
-        elif "ReplogleWeissman2022" in pseq_file:
+        elif "Replogle" in pseq_file:
             data_filtered = filter_Replogle_data(raw_data,verbose=True)
         else:
             raise ValueError(f"No matching dataset found for filename: {pseq_file}")

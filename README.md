@@ -1,7 +1,9 @@
 # bsc_thesis_pGRiNS
 My bachelor's thesis at the DILiS group (FU Berlin): https://www.mi.fu-berlin.de/w/DILIS
 
-
+# Installation:
+- Set up a new venv with `pip install -r requirements.txt`
+- However, these only work out of the box for Cuda 12.9 GPUs. Make sure to have the correct version of jax installed for your GPUs (e.g. `pip install --upgrade "jax[cuda13]"`) and fix other dependency issues accordingly.
 # Usage:
 - `exp_data`: whether or not experimental control data should be used to improve the parameter reduction.
 - `project_name`: name of the project. Will be used for the name of the output folder.
@@ -18,7 +20,9 @@ Requires the following `Data` structure:
 │   ├── Topos
 │   │   ├── example_network_1.topo
 │   │   └── example_network_2.topo
-│   └── pert_list.pert
+│   └── Perts
+│       ├── example_pert_list_1.pert
+│       └── example_pert_list_2.pert
 ├── grins
 │   └── ...
 ├── ...
@@ -32,7 +36,7 @@ The subdirectory `Topos` must contain at least one `.topo` file which lists the 
 - The second column must have the name `Target` and contain the gene symbol of the incoming node (B or C).
 - The third column must have the name `Type` and be 1 for an activating edge, and 2 for an inhibiting edge.
 
-The file `pert_list.pert` must contain a list of perturbed genes with 3 columns delimited with a single space:
+The subdirectory `Perts` contains `.pert` files, which have a list of perturbed genes with 3 columns delimited with a single space:
 - The first column must have the name `Index` and indicate which perturbation set the perturbed gene belongs to. For example, if this column is [0,1,2,2], then the perturbation of the two last genes will be treated as a double perturbation. 
 - The second column must have the name `Gene` and contain the gene symbol of the perturbed gene. This gene must be present in at least one of the files in `Topos`.
 - The third column must have the name `Type` and be 1 for overexpression (CRISPRa), 2 for knockdown (CRISPRi), and 3 for knockout (CRISPR KO).
@@ -40,6 +44,10 @@ The file `pert_list.pert` must contain a list of perturbed genes with 3 columns 
 ## Output:
 .
 ├── Data
+│   ├── Projects
+│   │   └── project_name
+│   │       ├── project_name.topo
+│   │       └── project_name_sinks.topo
 │   ├── project_name
 │   │   ├── project_name.topo
 │   ├── SimulResults_Racipe

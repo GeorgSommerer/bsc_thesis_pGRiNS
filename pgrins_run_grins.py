@@ -1,204 +1,325 @@
 import jax
 import jax.numpy as jnp
+from jax import config
+
 import grins.racipe_run as racipe
-from grins import ising_bool
+from grins import ising_bool, gen_params, reg_funcs
+from Prep_Data import pgrins_prepare_input
+    
+
 import pandas as pd
 import numpy as np
-import os
-import multiprocessing as mp
-from itertools import product
-import argparse
 
-def racipe_cleanup(grn_file : str,num_replicates : int,frag : list):
-    # !!! Untested !!!
+import sys
+import os
+import argparse
+from tqdm import tqdm
+import gc
+
+from itertools import product, groupby
+from operator import itemgetter
+
+
+def racipe_simulate_sinks(grn_file,replicate,num_init_conds,suffix):
     """
-    If the params and IC parquet files were fragmented, the fragmented result parquet and csv files are joined and the fragments removed.
+    After the steady states of the non-sink nodes of the GRN have been simulated, all that is left is to determine the steady state concentrations of the sink nodes.
+    This can be done algebraically: dC/dt=0=G*Prod(H)-kC <-> C=G*Prod(H)/k
+    Most of the code in this function deals with efficiently retrieving the columns used in each equation by grouping them by the sink gene C, and then for each term in H by the upstream gene.
+    The resulting DataFrames are then added at the correct places to sol_df and saved.
 
     Parameters:
     -----------
     grn_file : str
         The project name.
-    num_replicates : int
-        The number of replicates.
-    frag : list
-        A list of all param and IC fragment combinations.
+    replicate : int
+        The current replicate.
+    num_init_conds : int
+        The number of initial condition files to generate. Necessary to know how many times each parameter must be repeated.
+    suffix : str
+        ctrl or pert.
+
+    Returns:
+    --------
+    None
     """
-    # Untested!!!
-    for replicate in range(1,num_replicates+1):
-        # Remove the fragmented init condition and parameter parquet files:
-        for which in ["init_conds","params"]:
-            path_to_data = f"Data/SimulResults_Racipe/{grn_file}/00{replicate}/{grn_file}_{which}_00{replicate}"
-            for i in range(fragment):
-                os.remove(f"{path_to_data}_{i}.parquet")
-
-    for replicate in range(1,num_replicates+1):
-        # Concatenate steadystate solution parquet files:
-        path_to_data = f"Data/SimulResults_Racipe/{grn_file}/00{replicate}/{grn_file}_steadystate_state_solutions_00{replicate}"
-        concat_df = pd.read_parquet(f"{path_to_data}_{frag[0][0]}_{frag[0][1]}.parquet")
-        for ij in range(1,len(frag)):
-            concat_df = pd.concat([concat_df,pd.read_parquet(f"{path_to_data}_{frag[ij][0]}_{frag[ij][1]}.parquet")])
-        concat_df.to_parquet(f"{path_to_data}.parquet")
-        # Remove fragmented files:
-        if os.path.exists(f"{path_to_data}.parquet"):
-            for ij in range(1,len(frag)):
-                os.remove(f"{path_to_data}_{frag[ij][0]}_{frag[ij][1]}.parquet")
     
-    for replicate in range(1,num_replicates+1):
-        # Concatenate steady state count csv files:
-        path_to_data = f"Data/SimulResults_Racipe/{grn_file}/00{replicate}/{grn_file}_steadystate_state_solutions_00{replicate}"
-        concat_df = pd.read_csv(f"{path_to_data}_{frag[0][0]}_{frag[0][1]}.csv")
-        for ij in range(1,len(frag)):
-            concat_df = pd.concat([concat_df,pd.read_csv(f"{path_to_data}_{frag[ij][0]}_{frag[ij][1]}.csv")])
-        concat_df.to_csv(f"{path_to_data}.csv",index=False,sep="\t")
-        # Remove fragmented files:
-        if os.path.exists(f"{path_to_data}.csv"):
-            for ij in range(1,len(frag)):
-                os.remove(f"{path_to_data}_{frag[ij][0]}_{frag[ij][1]}.csv")
+    path_to_data = f"Data/SimulResults_Racipe/{grn_file}/{replicate:03}/{grn_file}"
+    sol_df = pd.read_parquet(f"{path_to_data}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
+    sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
 
-def racipe_control(grn_file, num_replicates = 1, num_params = 100, num_init_conds = 10,sampling_method = "Uniform",max_steps = 2048, batch_size = 10, fragment : int = 10):
+    sink_params = pd.read_parquet(f"{path_to_data}_params_{replicate:03}_sinks_{suffix}.parquet").iloc[:,:-1] # Remove ParamNum column
+    sink_genes = [col.split("_")[1] for col in list(sink_params.columns) if "Prod_" in col]
+
+    sink_dict = {}
+    #sink_gk_dict = {}
+    
+    split_cols = [col.split("_") for col in list(sink_params.columns)]
+    # Sort the parameter columns by the gene whose equation they belong to (last part of the colname) and group the colnames by them:
+    split_cols.sort(key=itemgetter(-1)) 
+    node_groups = groupby(split_cols,itemgetter(-1))
+    with tqdm(total=len(sink_genes)) as progress_bar:
+        print("Getting node_groups...")
+        for sink_gene, node_colnames in tqdm(node_groups):
+            # Get the G and k parameters, whose colnames have the shape varname_downstream_gene
+            # Since all parameters are tried for each initial condition (the resulting steady state df is sorted first by the InitCondNum, then by ParamNum), they need to be tiled
+            node_colnames = list(node_colnames)
+            G = np.tile(sink_params.loc[:,f"Prod_{sink_gene}"].to_numpy(),num_init_conds)
+            node_colnames.remove(["Prod",sink_gene])
+            k = np.tile(sink_params.loc[:,f"Deg_{sink_gene}"].to_numpy(),num_init_conds)
+            node_colnames.remove(["Deg",sink_gene])
+
+            # All remaining colnames relate to the shifted Hill terms and have 3 parts: varname_upstream_gene_downstream_gene
+            # Now, sort and group by the upstream_gene to get all 3 columns relating to the same Hill term
+            node_colnames.sort(key=itemgetter(1))
+            edge_groups = groupby(node_colnames,itemgetter(1))
+            H = 1
+
+            for upstream_gene, edge_colnames in edge_groups:
+                edge_colnames = list(edge_colnames)
+                Node = sol_df.loc[:,upstream_gene].to_numpy()
+                """
+                try:
+                    
+                except KeyError as e:
+                    # Nodes that are sources with edges only going into sinks will not appear in the non-sink df, but appear as upstream nodes in the sink df despite not having been simulated
+                    # However, since they are sources, their equation looks like dC/dt=G-kC, meaning that it decays exponentially and is 0 when the steady state is reached
+                    
+                    Node = np.repeat(0.0,sol_df.shape[0])
+                """
+                # Get the Hill and half-max threshold parameters:
+                Hill = np.tile(sink_params.loc[:,f"Hill_{upstream_gene}_{sink_gene}"].to_numpy(),num_init_conds)
+                edge_colnames.remove(["Hill",upstream_gene,sink_gene])
+                Thr = np.tile(sink_params.loc[:,f"Thr_{upstream_gene}_{sink_gene}"].to_numpy(),num_init_conds)
+                edge_colnames.remove(["Thr",upstream_gene,sink_gene])
+
+                # The remaining column has the fold change, which also indicates whether the term is activating or inhibiting
+                if edge_colnames[0][0] == "ActFld":
+                    Fold = np.tile(sink_params.loc[:,f"ActFld_{upstream_gene}_{sink_gene}"].to_numpy(),num_init_conds)
+
+                    thisH = []
+                    for i in range(len(Node)):
+                        thisH.append(reg_funcs.psH(Node[i],Fold[i],Hill[i],Thr[i]))
+
+                elif edge_colnames[0][0] == "InhFld":
+                    Fold = np.tile(sink_params.loc[:,f"InhFld_{upstream_gene}_{sink_gene}"].to_numpy(),num_init_conds)
+
+                    thisH = []
+                    for i in range(len(Node)):
+                        thisH.append(reg_funcs.nsH(Node[i],Fold[i],Hill[i],Thr[i]))
+
+                H*=np.array(thisH)
+            # Calculate algebraic solution to dC/dt=0=GH-kC
+            sink_dict[sink_gene] = G*H/k
+            #sink_gk_dict[f"gk_{sink_gene}"] = H # gk normalized means diving C=GH/k by G/k, so only H remains
+            progress_bar.update(1)
+    print("Done!")
+
+    sink_df = pd.DataFrame(sink_dict,dtype=np.float32)
+    #sink_gk_df = pd.DataFrame(sink_gk_dict,dtype=np.float32)
+
+    # Save data: 
+    #nonsink_df = sol_df.loc[:,list([col.replace("gk_", "") for col in sol_df.columns if "gk_" in col])] # Contains expression values
+    info_df = sol_df.loc[:,["PertNum","InitCondNum","ParamNum"]] # Contains combination of ICs and params and perts
+    nonsink_df = sol_df.drop(["PertNum","InitCondNum","ParamNum"],axis=1) # Contains combination of ICs and params and perts
+    info_df.to_parquet(f"{path_to_data}_steadystate_solutions_{replicate:03}_info_{suffix}.parquet",index=False)
+    del sol_df,info_df
+
+    expr_df = pd.concat([nonsink_df,sink_df],axis=1)
+    del nonsink_df, sink_df
+    expr_df.reindex(sorted(expr_df.columns),axis=1).to_parquet(f"{path_to_data}_steadystate_solutions_{replicate:03}_expr_{suffix}.parquet",index=False)
+    # sol_df is now unnecessary
+
+
+def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 100, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, param_ratio : float = 0.1):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
+    Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
+    batch_size should be adjusted depending on the available memory.
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     grn_file : str
         The project name.
+    split_sinks : bool, optional
+        Whether or not sinks were removed during pgrins_prepare_input; if that is the case, it is necessary to generate parameters for them here.
     max_steps : int, optional
         Maximum number of steps for the simulation. Defaults to 2048.
     batch_size : int, optional
-        Batch size for the simulation. Defaults to 1000.
-    fragment : list(int,int), optional
-        The fragment from the params and init conds parquet file analyzed in this run.
+        Batch size for the simulation. Defaults to 4000.
     num_replicates : int, optional
         The number of replicates to run the simulation for. Defaults to 1.
     num_params : int, optional
-        The number of parameter files to generate. Defaults to 2**10.
+        The number of parameter files to generate. Defaults to 1000.
     num_init_conds : int, optional
-        The number of initial condition files to generate. Defaults to 2**7.
+        The number of initial condition files to generate. Defaults to 100.
     sampling_method : Union[str, dict], optional
-        The method to use for sampling the parameter space. Defaults to 'Sobol'. For a finer control over the parameter generation look at the documentation of the gen_param_range_df function and gen_param_df function.
+        The method to use for sampling the parameter space. Defaults to 'Uniform'. For a finer control over the parameter generation look at the documentation of the gen_param_range_df function and gen_param_df function.
+    param_ratio : float, optional
+        How many parameters each initial condition should get compared to the control run. Defaults to 10%.
+
+    Returns:
+    --------
+    None
+    Results are saved in save_dir/grn_file/replicate.
     """
-    grn_path = f"Data/{grn_file}/{grn_file}.topo"
+
+    grn_path = f"Data/Projects/{grn_file}/{grn_file}"
     save_dir = f"Data/SimulResults_Racipe"
 
-    # Generate parameters and initial conditions:
-    if not os.path.exists(f"Data/SimulResults_Racipe/{grn_file}/00{num_replicates}/{grn_file}_params_00{num_replicates}.parquet"):
-        print("Generating param files...")
+    if pert_list is None:
+        suffix = "ctrl"
+    else:
+        suffix = "pert"
+        num_params = int(num_params*len(pert_list)*param_ratio)
+        num_init_conds = int(num_init_conds*len(pert_list)*param_ratio)
+
+    print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps.")
+
+    # Generate parameters and initial conditions for the GRN:
+    if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_{suffix}.parquet"):
+        print("Generating parameters...")
         racipe.gen_topo_param_files(
-            grn_path,
+            f"{grn_path}.topo",
             save_dir,
             num_replicates,
             num_params,
             num_init_conds,
             sampling_method=sampling_method,
+            pert_list = pert_list
         )
+    
+    # If sink nodes were removed, it is necessary to generate parameters for them here (analogous to code from gen_topo_param_files):
+    if split_sinks and not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_sinks_{suffix}.parquet"):
+        print("Generating parameters for sinks...")
+        sink_df = pd.read_csv(f"{grn_path}_sinks.topo",sep=" ")
+        main_rng = gen_params._get_rng(None)
+        for replicate in range(1, num_replicates + 1):
+            rep_seed = main_rng.integers(0, 2**32)
+            rep_rng = np.random.default_rng(rep_seed)
 
-    # If the whole parquet files of ICs and params don't fit into memory, split them into fragment many blocks, leading to fragment**2 many runs
-    for replicate in range(num_replicates):
-        path_to_data = f"Data/SimulResults_Racipe/{grn_file}/00{replicate}/{grn_file}"
-        if fragment > 1 and not os.path.exists(f"{path_to_data}_init_conds_00{replicate}_{fragment-1}.parquet"):
-            params = pd.read_parquet(f"{path_to_data}_params_00{replicate}.parquet")
-            inits = pd.read_parquet(f"{path_to_data}__init_conds_00{replicate}.parquet")
+            if pert_list is None:
+                sink_param_range_df = gen_params.gen_param_range_df(
+                    sink_df, num_params, sampling_method=sampling_method, rng=rep_rng
+                )
+                # Remove all rows corresponding to parameters from upstream nodes that don't have to be simulated twice:
+                sink_pr_genes = sink_param_range_df["Parameter"].apply(lambda x: x.split("_")[-1])
+                sink_param_range_df = sink_param_range_df[~sink_pr_genes.isin(list(sink_df["Source"]))]
+                
+                sink_param_range_df.to_csv(
+                    f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks_{suffix}.csv",
+                    index=False,
+                    sep="\t",
+                )
+            else: # param_range.csv is generated during parameter narrowing in the perturbed run
+                sink_param_range_df = pd.read_csv(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks_{suffix}.csv",sep="\t")
 
-            # Determine where to make the cut:
-            params_bounds = np.linspace(0,len(params),fragment+1,dtype=int)
-            inits_bounds = np.linspace(0,len(inits),fragment+1,dtype=int)
-            print(f"Splitting params at positions {params_bounds}")
-            for i in range(fragment):
-                params.iloc[params_bounds[i]:params_bounds[i+1]].to_parquet(f"{path_to_data}__params_00{replicate}_{i}.parquet")
-            print(f"Splitting params at positions {inits_bounds}")
-            for j in range(fragment):
-                inits.iloc[inits_bounds[j]:inits_bounds[j+1]].to_parquet(f"{path_to_data}__init_conds_00{replicate}_{j}.parquet")
-            del params
-            del inits
+            sink_param_df = gen_params.gen_param_df(sink_param_range_df, num_params, rng=rep_rng)
+            sink_param_df.to_parquet(
+                f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_params_{replicate:03}_sinks_{suffix}.parquet", index=False
+            )
 
-    # Speed computation up via multiprocessing of fragments:
-    available_devices = jax.devices()
-    frag = list(product(fragment,fragment)) # Iterate through all combinations of IC and param fragments
-    for ij in range(0,len(frag),len(available_devices)):
-        for d in range(min(len(frag)-ij,len(available_devices))): # d indicates the device num; us as many devices as are available and still necessary
-            print(f"Running Racipe for params {frag[ij][0]} and init_conds {frag[ij][1]}:")
-            kwargs = {
-                "max_steps":max_steps,
-                "batch_size":batch_size,
-                "fragment":frag[ij],
-                "device":available_devices[d]
-            }
-            p = mp.process(target=racipe.run_all_replicates,args=(grn_path,save_dir),kwargs=kwargs)
-            p.start()
-            processes.append(p)
-        for p in processes:
-            p.join()               
-        """
+    # Run Racipe for all replicates:
+    if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_{suffix}.parquet"):
         racipe.run_all_replicates(
-            grn_path,
+            f"{grn_path}.topo",
             save_dir,
             max_steps=max_steps,
             batch_size=batch_size,
-            fragment = frag[ij],
-            #device = available_devices[d]
-        )    
-        """ 
+            pert_list = pert_list,
+            discretize=False
+        )
 
-    if fragment > 1:
-        racipe_cleanup(grn_file,num_replicates,frag)
+    # If split_sinks is true, calculate non-sinks steady states; in any case, save as filename_expr.parquet for consistency
+    if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_expr_{suffix}.parquet"):
+        for replicate in range(1,num_replicates+1):
+            if split_sinks:
+                print(f"Simulating sinks for replicate {replicate}...")
+                racipe_simulate_sinks(grn_file, replicate, num_init_conds,suffix)
+            else:
+                sol_df = pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
+                sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
+                
+                expr_df = sol_df.loc[:,list([col.replace("gk_", "") for col in sol_df.columns if "gk_" in col])] # Contains expression values
+                rest_df = sol_df.loc[:,["PertNum","InitCondNum","ParamNum"]] # Contains combination of ICs and params
+                rest_df.to_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_info_{suffix}.parquet",index=False)
+                expr_df.to_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_expr_{suffix}.parquet",index=False)
 
-def ising_cleanup(grn_file : str,num_replicates : int,mode : str,no_fragments : int):
-    # !!! Untested !!!
+
+
+def ising_cleanup(grn_file : str,replicate : int,mode : str,no_fragments : int, fragment_size : int):
     """
-    If the number of initial conditions was too high to be processed in one go, the resulting parquet files are concatenated and deleted.
-    Also, the resulting concatenated parquet file is then turned into three .csv files, which contain the discrete Steady States, the discrete Initial Conditions, and the State Counts.
-
+    If the number of initial conditions was too high to be processed in one go, the resulting parquet files need to be concatenated.
+    The resulting concatenated dataframe is then turned into three .csv files, which contain the binary steady states, the binary initial conditions, and the state counts.
+    
     Parameters:
     -----------
     grn_file : str
         The project name.
-    num_replicates : int
+    replicate : int
         The number of replicates.
     mode : str
         Sync or async.
     no_fragments : int
-        The number of fragments the no. of initial conditions was split into
+        The number of fragments the initial conditions were split into.
+    fragment_size : int
+        The number of initial conditions input into each fragmented run.
+
+    Returns:
+    --------
+    None
+    The results are three .csv files stored in the same folder as the .parquet files.
+    After the .csv files have been created, it is save to delete the .parquet files.
     """
-        # 8 genes are combined in each column, meaning that in order to get the full state count string, these need to be joined.
-    # Also, the result as is written mixes initial conditions and steady states
-    for replicate in range(1,num_replicates+1):
-        path_to_data = f"Data/SimulResults_Ising/{grn_file}/{replicate}/{grn_file}_{mode}"
-        print(f"{path_to_data}_ising_results.parquet")        
-        count_df = pd.read_parquet(f"{path_to_data}_ising_results_0.parquet")
-        for f in range(1,no_fragments):
-            new_df = pd.read_parquet(f"Read {path_to_data}_ising_results_{f}.parquet...")
-            new_df["Initnum"] = new_df["Initnum"]+f*2**fragment_size # Since the Initnum column will be the same for every parquet file, make them different
-            count_df = pd.concat([count_df,new_df])
-        # Since 8 genes are combined in each column, their numeric representation (0~256) is first turned into 8-length bools.
-        print("Creating .csv files...")
-        for eight_genes in count_df.columns[2:]:
-            count_df[eight_genes] = [format(int(ic),"08b")[:eight_genes.count("|")+1] for ic in list(count_df[eight_genes])] # The genes in the column are separated with a "|", so "[:eight_genes.count("|")+1]" returns as many bits as there are genes
-        count_df["State"] = count_df[count_df.columns[2:]].astype(str).agg("".join, axis=1) # These bit representations are then combined
-        steady_df = count_df[["Initnum","Step","State"]]
-        steady_df.loc[:,"Replicate"] = replicate
-        steady_df["Mode"] = mode.capitalize()
-        ic_df = steady_df[steady_df["Step"]==0] # The rows with Step==0 are the initial conditions
-        steady_df = steady_df[steady_df["Step"]!=0] # The remaining rows are the final states
+    
+    path_to_data = f"Data/SimulResults_Ising/{grn_file}/{replicate}/{grn_file}_{mode}"
+
+    count_df = pd.read_parquet(f"{path_to_data}_ising_results_0.parquet")
+    for f in range(1,no_fragments):
+        new_df = pd.read_parquet(f"{path_to_data}_ising_results_{f}.parquet")
+
+        # Since the Initnum column will be the same for every parquet file, it is necessary to make them different
+        new_df = new_df.astype({"Initnum":"int32"})
+        new_df["Initnum"] = new_df["Initnum"]+f*2**fragment_size 
+        count_df = pd.concat([count_df,new_df])
+
+    # Since packbits causes 8 genes to be combined in each column, their numeric representation (0~256) is first turned into 8-length bools.
+    print("Creating .csv files...")
+    for eight_genes in count_df.columns[2:]:
+        count_df[eight_genes] = [format(int(ic),"08b")[:eight_genes.count("|")+1] for ic in list(count_df[eight_genes])] # The genes in the column are separated with a "|", so "[:eight_genes.count("|")+1]" returns as many bits as there are genes
+    
+    # These bit representations are then combined into one state string
+    count_df["State"] = count_df[count_df.columns[2:]].astype(str).agg("".join, axis=1) 
+    steady_df = count_df[["Initnum","Step","State"]]
+    steady_df.loc[:,"Replicate"] = replicate
+    steady_df["Mode"] = mode.capitalize()
+
+    ic_df = steady_df[steady_df["Step"]==0] # The rows with Step==0 are the initial conditions
+    steady_df = steady_df[steady_df["Step"]!=0] # The remaining rows are the final states
+
+    state_counts = steady_df["State"].value_counts(normalize=True).reset_index()
+    state_counts.columns = ["State", "Fraction"]
+    state_counts.loc[:,"Replicate"] = replicate
+    state_counts["Mode"] = mode.capitalize()
+    print("Saving .csv files...")
+
+    ic_df.drop("Step",axis=1).to_csv(f"{path_to_data}_SteadyStates_ICs.csv", index=False) # A df of the initial conditions
+    steady_df.drop("Step",axis=1).to_csv(f"{path_to_data}_SteadyStates.csv", index=False) # A df of the steady states
+    state_counts.to_csv(f"{path_to_data}_StateCounts_Main.csv", index=False) # How often each steady state appears
+
+    #for f in range(no_fragments):
+    #    os.remove(f"{path_to_data}_ising_results_{f}.parquet")
 
 
-        state_counts = count_df["State"].value_counts(normalize=True).reset_index()
-        state_counts.columns = ["State", "Fraction"]
-        state_counts.loc[:,"Replicate"] = replicate
-        state_counts["Mode"] = mode.capitalize()
-        print("Saving .csv files...")
 
-        ic_df.drop("Step",axis=1).to_csv(f"{path_to_data}_SteadyStates_ICs.csv", index=False) # A df of the initial conditions
-        steady_df.drop("Step",axis=1).to_csv(f"{path_to_data}_SteadyStates.csv", index=False) # A df of the steady states
-        state_counts.to_csv(f"{path_to_data}_StateCounts_Main.csv", index=False) # How often each steady state appears
-
-        #for f in range(no_fragments):
-        #    os.remove(f"{path_to_data}_ising_results_{f}.parquet")
-
-def ising_control(grn_file, mode : str = "async", num_replicates = 1, num_init_conds = 13, batch_size = 1):
+def run_ising(grn_file : str, mode : str = "async", num_replicates : int = 1, num_init_conds : int = 13, batch_size : int = 1, fragment_size : int = 13):
     """
-    Run multiple replicate of ising model simulations for a given topology and save results.
+    Runs the Boolean Ising model for the given grn_file.
+    If the number of initial conditions is too large for the memory to handle, it is run in multiple fragments/iterations, each of which fits into memory.
 
+    This approach was abandoned during the creation of pGRiNS, and cannot be used anymore for the generation of perturbed data.
+
+    Parameters:
+    -----------
     grn_file : str
         The project name.
     num_init_conds : int, optional
@@ -209,19 +330,27 @@ def ising_control(grn_file, mode : str = "async", num_replicates = 1, num_init_c
         Number of samples per batch. Defaults to 2**10.
     mode : str, optional
         The simulation mode, either "sync" or "async". The default is "sync".
+    fragment_size : int, optional
+        2**fragment_size is the maximal number of fragments the memory can handle. The FU cluster can handle at most 2**13=8192.
+    
+    Returns:
+    --------
+    None
+    The resulting parquet files are saved in save_dir/grn_file/replicate/grn_file_mode_ising_results_fragment.parquet
+    They are then combined in ising_cleanup into .csv files.
     """
-    fragment_size = 13 # 2**fragment_size is the maximum number of initial conditions the cluster can handle, change if used on better hardware
-    no_fragments = max(1,2**(num_init_conds-fragment_size))
+
+    no_fragments = max(1,2**(num_init_conds-fragment_size)) # Gives the number of fragments to split into in order to achieve desired number of initial conditions
 
     num_init_conds = 2**num_init_conds
     batch_size = 2**batch_size
-    grn_path = f"Data/{grn_file}/{grn_file}.topo"
+    grn_path = f"Data/Projects/{grn_file}/{grn_file}.topo"
     save_dir = "Data/SimulResults_Ising"
 
     if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates}/{grn_file}_{mode}_ising_results_{no_fragments-1}.parquet"):
         print(f"Running Ising in {no_fragments} iterations...")
-        # Has been modified so that only initial conditions and final states are written.
         for f in range(no_fragments):
+            # Has been modified so that only initial conditions and final states are stored in the .parquet file.
             ising_bool.run_all_replicates_ising( 
                 grn_path,
                 num_initial_conditions=2**fragment_size,
@@ -232,37 +361,51 @@ def ising_control(grn_file, mode : str = "async", num_replicates = 1, num_init_c
                 num_replicates=num_replicates,
                 fragment = f
             )
-            
-    ising_cleanup(grn_file, num_replicates, mode, no_fragments)
 
-def main(grn_file : str, is_control : bool, is_racipe : bool,**kwargs):
-    if is_control:
-        print("Running control run for ", end="")
-        if is_racipe:
-            print("RACIPE:") 
-            racipe_control(grn_file, **kwargs)
-        else:
-            print("Boolean Ising:")
-            ising_control(grn_file, **kwargs)
+    # Concatenate .parquet files and create output .csv files:
+    for replicate in range(1,num_replicates+1):
+        ising_cleanup(grn_file, replicate, mode, no_fragments,fragment_size)
+
+
+
+def main(grn_file : str, is_racipe : bool,pert_file : str, **kwargs):
+    """
+    The main file. Assures that computations are performed on the GPU and whether Racipe or Ising is used.
+    """
+    if pert_file is not None:
+        pert_list = pgrins_prepare_input.extract_pert_info(grn_file,pert_file)
+    else:
+        pert_list = None
+
+    if is_racipe:
+        print("RACIPE:") 
+        run_racipe(grn_file, pert_list, **kwargs)
+    else:
+        print("Boolean Ising:")
+        run_ising(grn_file,**kwargs)
+
 
 
 if __name__ == "__main__":
     """
     Example:
-        python3 pgrins_run_grins.py project Racipe -f 10 --max_steps 1024
+        python3 pgrins_run_grins.py project Racipe -s -p example_pertfile
         python3 pgrins_run_grins.py project Ising -m sync --batch_size 16
     """
     #os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
-    #os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "0.90"
+    os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "0.95"
+    os.environ["XLA_FLAGS"] = "--xla_dump_to=./racipe_xla_dump.log"
     kwargs = {}
     parser = argparse.ArgumentParser()
     parser.add_argument("grn", help="Name of the GRN used in the project")
     parser.add_argument("method", help="Racipe or Ising")
+    parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
+    parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
+    parser.add_argument("-s","--split_sinks", help="Whether or not sinks were removed from the GRN",action="store_true")
     parser.add_argument("-m","--mode", help="If Ising, sync or async (Default: async)")
-    parser.add_argument("-f","--fragment", type=int,help="If the GRN is too large, the param and init_cond parquet files of Racipe might not fit into memory. If fragment > 1, the parquet files will be split into this many files that are treated separately (for a total of fragment**2 runs)")
-    parser.add_argument("-r","--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
-    parser.add_argument("-i","--num_init_conds",type=int,help="Number of initial conditions (Default: 100 for Racipe, 2**14 for Ising)")
-    parser.add_argument("-p","--num_params",type=int,help="Number of params (Default: 10000 for Racipe)")
+    parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
+    parser.add_argument("--num_init_conds",type=int,help="Number of initial conditions (Default: 100 for Racipe, 2**14 for Ising)")
+    parser.add_argument("--num_params",type=int,help="Number of params (Default: 10000 for Racipe)")
     parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
     parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
     parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
@@ -275,10 +418,19 @@ if __name__ == "__main__":
         is_racipe = False
     else:
         raise Exception("method is wrong")
+
+    if args.use_perts:
+        if args.pert_file:
+            pert_file = args.pert_file
+        else:
+            pert_file = f"{grn_file}_perts"
+    else:
+        pert_file = None
+
+    if args.split_sinks:
+        kwargs["split_sinks"]=args.split_sinks
     if args.mode:
         kwargs["mode"]=args.mode
-    if args.fragment:
-        kwargs["fragment"]=args.fragment
     if args.num_replicates:
         kwargs["num_replicates"]=args.num_replicates
     if args.num_init_conds:
@@ -292,5 +444,4 @@ if __name__ == "__main__":
     if args.max_steps:
         kwargs["max_steps"]=args.max_steps
 
-    is_control = True
-    main(grn_file,is_control,is_racipe,**kwargs)
+    main(grn_file,is_racipe,pert_file,**kwargs)
