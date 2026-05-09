@@ -828,7 +828,6 @@ def gen_param_df(
     # Use the sample_param_df function to sample the parameters
     param_df = sample_param_df(prange_df, num_params, rng=rng,pert_dict=pert_dict)
     # Add the ParamNum column to the DataFrame
-    param_df = param_df.assign(ParamNum=param_df.index + 1)
     return param_df
 
 
@@ -862,7 +861,7 @@ def gen_init_cond(
     init_conds = _gen_sobol_seq(len(unique_nodes), num_init_conds, rng=rng)
     initcond_df = pd.DataFrame(init_conds, columns=unique_nodes)
 
-    if pert_list is None:
+    if True:#pert_list is None:
         # Scale initial conditions between 1 and 100
         for col in initcond_df.columns:
             initcond_df[col] = 1 + initcond_df[col]*(100-1)
@@ -875,5 +874,4 @@ def gen_init_cond(
 
     # A new columns for the intial condition numbers
     # initcond_df["InitCondNum"] = initcond_df.index + 1
-    initcond_df = initcond_df.assign(InitCondNum=initcond_df.index + 1)
     return initcond_df

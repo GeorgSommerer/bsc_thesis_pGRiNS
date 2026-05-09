@@ -20,7 +20,7 @@ from itertools import product, groupby
 from operator import itemgetter
 
 
-def racipe_simulate_sinks(grn_file,replicate,num_init_conds,suffix):
+def racipe_simulate_sinks(grn_file,sol_df,replicate,num_init_conds,suffix):
     """
     After the steady states of the non-sink nodes of the GRN have been simulated, all that is left is to determine the steady state concentrations of the sink nodes.
     This can be done algebraically: dC/dt=0=G*Prod(H)-kC <-> C=G*Prod(H)/k
@@ -31,6 +31,8 @@ def racipe_simulate_sinks(grn_file,replicate,num_init_conds,suffix):
     -----------
     grn_file : str
         The project name.
+    sol_df : pd.DataFrame
+        The dataframe containing the nonsink solutions.
     replicate : int
         The current replicate.
     num_init_conds : int
@@ -44,9 +46,7 @@ def racipe_simulate_sinks(grn_file,replicate,num_init_conds,suffix):
     """
     
     path_to_data = f"Data/SimulResults_Racipe/{grn_file}/{replicate:03}/{grn_file}"
-    sol_df = pd.read_parquet(f"{path_to_data}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
-    sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
-
+    
     sink_params = pd.read_parquet(f"{path_to_data}_params_{replicate:03}_sinks_{suffix}.parquet").iloc[:,:-1] # Remove ParamNum column
     sink_genes = [col.split("_")[1] for col in list(sink_params.columns) if "Prod_" in col]
 
@@ -130,7 +130,7 @@ def racipe_simulate_sinks(grn_file,replicate,num_init_conds,suffix):
     # sol_df is now unnecessary
 
 
-def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 100, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, param_ratio : float = 0.1):
+def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 100, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, pert_ratio : float = 0.1,pert_batch_size : int = None):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
     Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
@@ -154,8 +154,10 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
         The number of initial condition files to generate. Defaults to 100.
     sampling_method : Union[str, dict], optional
         The method to use for sampling the parameter space. Defaults to 'Uniform'. For a finer control over the parameter generation look at the documentation of the gen_param_range_df function and gen_param_df function.
-    param_ratio : float, optional
-        How many parameters each initial condition should get compared to the control run. Defaults to 10%.
+    pert_ratio : float, optional
+        How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.
+    pert_batch_size : bool, optional
+        If turned on, instead of looking at all param/IC combinations, 1 set of parameters and ICs is generated for each cell. This takes longer to generate (and might not fit into memory!), but increases variability.
 
     Returns:
     --------
@@ -170,8 +172,13 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
         suffix = "ctrl"
     else:
         suffix = "pert"
-        num_params = int(num_params*len(pert_list)*param_ratio)
-        num_init_conds = int(num_init_conds*len(pert_list)*param_ratio)
+        if pert_batch_size is None:
+            pert_batch_size = int(1/pert_ratio)
+        elif pert_batch_size == 0:
+            pert_batch_size = len(pert_list)
+        
+        num_params = int(num_params*len(pert_list)*pert_ratio)
+        num_init_conds = int(num_init_conds*len(pert_list)*pert_ratio)
 
     print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps.")
 
@@ -185,7 +192,8 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             num_params,
             num_init_conds,
             sampling_method=sampling_method,
-            pert_list = pert_list
+            pert_list = pert_list,
+            pert_batch_size=pert_batch_size
         )
     
     # If sink nodes were removed, it is necessary to generate parameters for them here (analogous to code from gen_topo_param_files):
@@ -197,22 +205,18 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             rep_seed = main_rng.integers(0, 2**32)
             rep_rng = np.random.default_rng(rep_seed)
 
-            if pert_list is None:
-                sink_param_range_df = gen_params.gen_param_range_df(
-                    sink_df, num_params, sampling_method=sampling_method, rng=rep_rng
-                )
-                # Remove all rows corresponding to parameters from upstream nodes that don't have to be simulated twice:
-                sink_pr_genes = sink_param_range_df["Parameter"].apply(lambda x: x.split("_")[-1])
-                sink_param_range_df = sink_param_range_df[~sink_pr_genes.isin(list(sink_df["Source"]))]
-                
-                sink_param_range_df.to_csv(
-                    f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks_{suffix}.csv",
-                    index=False,
-                    sep="\t",
-                )
-            else: # param_range.csv is generated during parameter narrowing in the perturbed run
-                sink_param_range_df = pd.read_csv(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks_{suffix}.csv",sep="\t")
-
+            sink_param_range_df = gen_params.gen_param_range_df(
+                sink_df, num_params, sampling_method=sampling_method, rng=rep_rng
+            )
+            # Remove all rows corresponding to parameters from upstream nodes that don't have to be simulated twice:
+            sink_pr_genes = sink_param_range_df["Parameter"].apply(lambda x: x.split("_")[-1])
+            sink_param_range_df = sink_param_range_df[~sink_pr_genes.isin(list(sink_df["Source"]))]
+            
+            sink_param_range_df.to_csv(
+                f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks_{suffix}.csv",
+                index=False,
+                sep="\t",
+            )
             sink_param_df = gen_params.gen_param_df(sink_param_range_df, num_params, rng=rep_rng)
             sink_param_df.to_parquet(
                 f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_params_{replicate:03}_sinks_{suffix}.parquet", index=False
@@ -220,25 +224,40 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
 
     # Run Racipe for all replicates:
     if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_{suffix}.parquet"):
-        racipe.run_all_replicates(
-            f"{grn_path}.topo",
-            save_dir,
-            max_steps=max_steps,
-            batch_size=batch_size,
-            pert_list = pert_list,
-            discretize=False
-        )
+        if pert_list is None:
+            racipe.run_all_replicates(
+                    f"{grn_path}.topo",
+                    save_dir,
+                    max_steps=max_steps,
+                    batch_size=batch_size,
+                    discretize=False
+                )
+        else:
+            for i in range(0,len(pert_list),pert_batch_size):
+                print(f"Simulating pert sets {i} to {min(len(pert_list),i+pert_batch_size-1)}:")
+                racipe.run_all_replicates(
+                    f"{grn_path}.topo",
+                    save_dir,
+                    max_steps=max_steps,
+                    batch_size=batch_size,
+                    pert_list = pert_list[i:i+pert_batch_size],
+                    pert_fragment = i,
+                    discretize=False
+                )
 
     # If split_sinks is true, calculate non-sinks steady states; in any case, save as filename_expr.parquet for consistency
     if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_expr_{suffix}.parquet"):
         for replicate in range(1,num_replicates+1):
+            if pert_list is None:
+                sol_df = pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
+            else:
+                sol_df = pd.concat([pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}_{i}.parquet") for i in range(0,len(pert_list),pert_batch_size)])
+            sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
+
             if split_sinks:
                 print(f"Simulating sinks for replicate {replicate}...")
-                racipe_simulate_sinks(grn_file, replicate, num_init_conds,suffix)
+                racipe_simulate_sinks(grn_file, sol_df, replicate, num_init_conds,suffix)
             else:
-                sol_df = pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
-                sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
-                
                 expr_df = sol_df.loc[:,list([col.replace("gk_", "") for col in sol_df.columns if "gk_" in col])] # Contains expression values
                 rest_df = sol_df.loc[:,["PertNum","InitCondNum","ParamNum"]] # Contains combination of ICs and params
                 rest_df.to_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_info_{suffix}.parquet",index=False)
@@ -376,7 +395,7 @@ def main(grn_file : str, is_racipe : bool,pert_file : str, **kwargs):
         pert_list = pgrins_prepare_input.extract_pert_info(grn_file,pert_file)
     else:
         pert_list = None
-
+        
     if is_racipe:
         print("RACIPE:") 
         run_racipe(grn_file, pert_list, **kwargs)
@@ -409,6 +428,9 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
     parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
     parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
+    parser.add_argument("--pert_ratio",type=float,help="How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.")
+    parser.add_argument("--pert_batch_size",type=int,help="The number of perturbations for which cells are simulated in one run, as too many at once might not fit into memory parameter/IC wise. Defaults to 1/pert_ratio (10) since this results in the same number of params/ICs as for the unperturbed run. Set to 0 if all perts should be simulated at once.")
+    
     args = parser.parse_args()
 
     grn_file = args.grn
@@ -443,5 +465,9 @@ if __name__ == "__main__":
         kwargs["sampling_method"]=args.sampling_method
     if args.max_steps:
         kwargs["max_steps"]=args.max_steps
+    if args.pert_ratio:
+        kwargs["pert_ratio"]=args.pert_ratio
+    if args.pert_batch_size:
+        kwargs["pert_ratio"]=args.pert_batch_size
 
     main(grn_file,is_racipe,pert_file,**kwargs)

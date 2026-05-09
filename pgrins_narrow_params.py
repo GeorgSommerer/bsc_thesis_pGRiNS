@@ -42,7 +42,7 @@ def calc_silhouette_samples(clustering):
     return silhouette_samples(g_dist_matrix,np.asarray(clustering).squeeze())
 
 
-def get_candidate_cells(grins_matrix : sparse.csc_matrix, adata_matrix : sparse.csc_matrix, metric : str = "MSE", use_mad : bool = False, times_dev : float = 10, num_processes : int = 10):
+def get_candidate_cells(grins_matrix : sparse.csc_matrix, adata_matrix : sparse.csc_matrix, metric : str = "MSE", use_mad : bool = False, times_dev : float = 10, candidate_limit : float = 0.1, num_processes : int = 10):
     """
     If experimental control data is available for the unperturbed run, makes a first selection to remove all cells that are too different from the control data mean.
     This is done by removing all GRiNS cells whose score (cosine similarity or MSE) is not within times_dev many MAD (or SD) of the mean of means of each gene in the control dataset.
@@ -59,6 +59,8 @@ def get_candidate_cells(grins_matrix : sparse.csc_matrix, adata_matrix : sparse.
         If true, MAD is used as a deviation measure. If False (default), SD is used.
     times_dev : float, optional
         How many deviations the GRiNS scores can be away from the adata mean of means in order for the cell to be included in candidate_matrix.
+    candidate_limit : float, optional
+        What percentage of cells should be kept at most. Combinable with times_dev.
     num_processes : int, optional
         The number of processes for the multiprocessing of the calculations.
 
@@ -101,12 +103,16 @@ def get_candidate_cells(grins_matrix : sparse.csc_matrix, adata_matrix : sparse.
     grins_scores = calc_metric_for_cells(grins_matrix)
 
     print("Getting candidate cells...")
-    candidate_cell_mask = (grins_scores>=adata_score_mean-times_dev*adata_score_dev) & (grins_scores<=adata_score_mean+times_dev*adata_score_dev) # Get all grins cells with values within the range of [mean-x*sd, mean+x*sd]
+    candidate_cell_mask = np.asarray((grins_scores>=adata_score_mean-times_dev*adata_score_dev) & (grins_scores<=adata_score_mean+times_dev*adata_score_dev)) # Get all grins cells with values within the range of [mean-x*sd, mean+x*sd]
 
-    print(f"{100*sum(candidate_cell_mask)/grins_matrix.shape[0]}% ({sum(candidate_cell_mask)}) of cells were kept.")
     if sum(candidate_cell_mask)<10:
         print("Warning: <10 of cells were kept. Try using a higher times_dev or turning use_mad off.")
-    
+    if candidate_limit is not None and sum(candidate_cell_mask)>candidate_limit*grins_matrix.shape[0]:
+        idx = np.random.choice(np.where(candidate_cell_mask == True)[0],size=int(sum(candidate_cell_mask)-candidate_limit*grins_matrix.shape[0]),replace=False) # Set enough cells to False so that only 10% remain True
+        candidate_cell_mask[idx] = False 
+
+    print(f"{100*sum(candidate_cell_mask)/grins_matrix.shape[0]}% ({sum(candidate_cell_mask)}) of cells were kept.")
+            
     return candidate_cell_mask
 
 
@@ -227,7 +233,7 @@ def set_param_ranges(grins_data,clusters_and_metrics,best_cluster_results):
 
 
 
-def main(grn_file,grins_data = None, adata_file = None,pert_file = None, clustering_method = "average",sample_clusterings : bool = False, metric : str = "MSE", use_mad : bool = False, time_dev : float = 10, cluster_size : int = 5, num_processes : int = 10):
+def main(grn_file,grins_data = None, adata_file = None,pert_file = None, clustering_method = "average",sample_clusterings : bool = False, metric : str = "MSE", use_mad : bool = False, time_dev : float = 10, candidate_limit : float = 0.1, cluster_size : int = 5, num_processes : int = 10):
     assert metric in ["MSE","cosine"]
     assert clustering_method in ["single","complete","average","ward"]
 
@@ -259,9 +265,10 @@ def main(grn_file,grins_data = None, adata_file = None,pert_file = None, cluster
                 adata_matrix = None
 
             if adata_matrix is None:
-                candidate_matrix_idx = list(range(grins_matrix.shape[0])) # All indices
+                idx = np.random.choice(list(range(grins_matrix.shape[0])),size=int(candidate_limit*grins_matrix.shape[0]),replace=False) # Get candidate_limit % of cells
+                candidate_cell_mask = np.asarray(pd.Series(np.arange(grins_matrix.shape[0])).isin(idx)) 
             else:
-                candidate_matrix_idx = get_candidate_cells(grins_matrix,adata_matrix,metric=metric,use_mad=use_mad,times_dev=times_dev,num_processes=num_processes)
+                candidate_cell_mask = get_candidate_cells(grins_matrix,adata_matrix,metric=metric,use_mad=use_mad,times_dev=times_dev,candidate_limit=candidate_limit,num_processes=num_processes)
 
 
             clusterings, best_cluster_total = calc_clusters(grins_matrix,num_processes=num_processes,clustering_method=clustering_method,sample_clusterings=sample_clusterings, cluster_size=cluster_size)
@@ -284,6 +291,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_processes", type=int,help="The number of processes used for silhouette score computation; defaults to 10.")
     parser.add_argument("--use_mad",action="store_true",help="Turn this option on if the MAD should be used as a deviation measure instead of SD for get_candidate_cells.")
     parser.add_argument("--times_dev",type=float,help="How many deviations away the score of the GRiNS data of a cell can be from the mean of means of control data in order to not be discarded. Defaults to 10.")
+    parser.add_argument("--candidate_limit",type=float,help="What percentage of candidate cells should be kept at most. Defaults to 10%. Combinable with times_dev.")
 
     args = parser.parse_args()
 
@@ -316,5 +324,7 @@ if __name__ == "__main__":
         kwargs["use_mad"] = args.use_mad
     if args.times_dev:
         kwargs["times_dev"] = args.times_dev
+    if args.candidate_limit:
+        kwargs["candidate_limit"] = args.candidate_limit
 
     main(grn_file, adata_file=adata_file, pert_file=pert_file, **kwargs)
