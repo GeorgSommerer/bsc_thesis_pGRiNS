@@ -83,6 +83,7 @@ def gen_topo_param_files(
     sampling_method: str | dict = "Sobol",
     rng: int | np.random.Generator | None = None,
     pert_list : list = None,
+    pert_factor : int = 6,
     pert_batch_size : int = 0
 ):
     """
@@ -166,7 +167,7 @@ def gen_topo_param_files(
             for pert_fragment in tqdm(range(0,len(pert_list),pert_batch_size)):
                 this_pert_list = pert_list[pert_fragment:pert_fragment+pert_batch_size]
                 param_df = pd.concat(
-                    [gen_param_df(param_range_df,int(num_params/len(pert_list)),pert_dict=pert_dict) for pert_dict in this_pert_list],ignore_index=True
+                    [gen_param_df(param_range_df,int(num_params/len(pert_list)),pert_dict=pert_dict,pert_factor=pert_factor) for pert_dict in this_pert_list],ignore_index=True
                 )
                 # print(param_df)
                 param_df = param_df.assign(ParamNum=param_df.index + 1+int(pert_fragment*num_params/len(pert_list))) # Indices of perts of current fragment

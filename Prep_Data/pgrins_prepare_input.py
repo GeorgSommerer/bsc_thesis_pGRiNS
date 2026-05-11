@@ -17,6 +17,8 @@ try:
 except:
     from Prep_Data import normalize
 
+
+
 def extract_pert_info(project_name : str, pert_file : str) -> list:
     """
     Taking a .pert file as the input, the perturbations in the file are turned into a list of perturbation sets, where
@@ -46,9 +48,10 @@ def extract_pert_info(project_name : str, pert_file : str) -> list:
     for index, row in perts_df.iterrows():
         if row["Gene"] not in grn_genes:
             raise Exception(f"Gene {row["Gene"]} at index {row["Index"]} not in GRN.")
-        pert_list[row["Index"]][row["Gene"]]=row["Type"]
+        pert_list[row["Index"]][row["Gene"]]=(row["Type"])
     
     return pert_list
+
 
 
 def get_perts(grn_df : pd.DataFrame, project_name : str, pert_file : str, adata_dict : dict[str,ad.AnnData]) -> tuple[dict[str,ad.AnnData], list[str]]:
@@ -108,37 +111,6 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, pert_file : str, adata_
         print("Reading .pert file...")
         all_perts = list(set(list(pd.read_csv(f"Data/Perts/{pert_file}.pert,",sep=" ")["Gene"])))
     return adata_dict, all_perts
-
-
-
-def downstream_filtering(grn_df : pd.DataFrame, upstream_genes : list[str], downstream_depth : int) -> pd.DataFrame:
-    """
-    Given a list of perturbed genes, this function returns all the edges along paths from these perturbed genes to (other) genes with a length of <= downstream_depth edges.
-    In other words, only edges closely downstream from the perturbed genes of interest are kept in order to keep the ODE small.
-
-    Parameters:
-    -----------
-    grn_df : pd.DataFrame
-        The GRN.
-    upstream_genes : list[str]
-        A list of genes whose adjacent nodes downstream should be found. Starts with the pGOIs.
-    downstream_depth : int, optional
-        How long the paths from pGOIs that are kept are. If None, all are kept.
-
-    Returns:
-    --------
-    grn_df : pd.DataFrame
-        A subset of the edges (rows) from the input dataframe.
-    """
-
-    print(f"Performing downstream filtering at depth {downstream_depth}...")
-    edges_kept = []
-    for i in range(downstream_depth):
-        new_edges = grn_df[grn_df["Source"].isin(upstream_genes)]
-        edges_kept.append(new_edges)
-        upstream_genes = list(set(list(new_edges["Target"])))
-    grn_df = pd.concat(edges_kept).drop_duplicates().sort_values(by=["Source","Target"])
-    return grn_df
 
 
 
@@ -224,7 +196,8 @@ def split_sinks_from_grn(grn_df : pd.DataFrame, project_name : str) -> pd.DataFr
     return grn_df
 
 
-def main(project_name : str, experimental : bool, pert_file : str = None, downstream_depth : int = None, subset_method : str = "Union", split_sinks : bool = False):
+
+def main(project_name : str, experimental : bool, pert_file : str, downstream_depth : int = None, subset_method : str = "Union", split_sinks : bool = False):
     """
     Creates a new project folder in Data/project_name, in which the input topos from Data/Topos are concatenated.
     If experimental data is provided in Data/Experimental, it is normalized and used for various subsetting procedures designed to remove unnecessary edges and nodes from the GRN.
@@ -239,7 +212,7 @@ def main(project_name : str, experimental : bool, pert_file : str = None, downst
         The name of the project. From now on equivalent to grn_file, which refers to the storage location of grn_df.
     experimental : bool
         Whether or not experimental data is provided.
-    pert_file : str, optional
+    pert_file : str
         If None and experimental is True, a new .pert file is created from the perturbed genes of interestin the experimental datasets.
         Otherwise, Data/Perts/pert_file.pert is loaded and potentially used for downstream sampling.
     downstream_depth : int, optional
@@ -275,13 +248,8 @@ def main(project_name : str, experimental : bool, pert_file : str = None, downst
     # -p: Get a list of perturbations of genes of interest that are in the GRN
     if adata_dict is not None or pert_file is not None:
         adata_dict, all_perts = get_perts(grn_df, project_name, pert_file, adata_dict)
-
-        # -d: Remove nodes from the GRN not closely downstream of those GOIs
-        if downstream_depth is not None:
-            grn_df = downstream_filtering(grn_df, all_perts, downstream_depth)
-
     else:
-        print("Neither a .pert file, nor experimental data to draw perturbations from are specified. Downstream depth sampling is not skipped.")
+        print("Neither a .pert file, nor experimental data to draw perturbations from are specified.")
 
     # -e: Remove genes from GRN not in datasets, and genes from datasets not in GRN
     if adata_dict is not None:
@@ -305,13 +273,14 @@ def main(project_name : str, experimental : bool, pert_file : str = None, downst
 if __name__ == "__main__":
     """
     Example:
-    python3 Prep_Data/pgrins_prepare_input.py project_name -es -d 2
+    python3 Prep_Data/pgrins_prepare_input.py project_name -es
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("grn", help="Name of the GRN used in the project")
     parser.add_argument("-e","--experimental", help="Whether or not perturb-seq control data is supplied",action="store_true")
-    parser.add_argument("-p","--pert_file",help="The name of the .pert file in Data/Perts to use for genes of interest.")
-    parser.add_argument("-d","--downstream_depth",type=int,help="Given a list of perturbed genes, keep only the genes with a minimal distance of d (and the edges along these paths)")
+    parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
+    parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
+    parser.add_argument("--downstream_depth",type=int,help="Given a list of perturbed genes, keep only the genes with a minimal distance of d (and the edges along these paths)")
     parser.add_argument("--subset_method", help="Whether or not the GRN should only contains genes in all experimental datasets, or any of them (default: Union)")
     parser.add_argument("-s","--split_sinks", help="Whether or not sinks should be removed from the GRN",action="store_true")
     args = parser.parse_args()
@@ -328,6 +297,11 @@ if __name__ == "__main__":
         kwargs["subset_method"] = args.subset_method
     if args.downstream_depth:
         kwargs["downstream_depth"] = args.downstream_depth
-    if args.pert_file:
-        kwargs["pert_file"] = args.pert_file
-    main(project_name, experimental, **kwargs)
+    if args.use_perts:
+        if args.pert_file:
+            pert_file = args.pert_file
+        else:
+            pert_file = f"{grn_file}_perts"
+    else:
+        pert_file = None
+    main(project_name, experimental, pert_file, **kwargs)

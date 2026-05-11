@@ -130,7 +130,7 @@ def racipe_simulate_sinks(grn_file,sol_df,replicate,num_init_conds,suffix):
     # sol_df is now unnecessary
 
 
-def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 100, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, pert_ratio : float = 0.1,pert_batch_size : int = None):
+def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 1000, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, pert_ratio : float = 0.1,pert_factor : int = 6,pert_batch_size : int = None):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
     Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
@@ -156,8 +156,10 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
         The method to use for sampling the parameter space. Defaults to 'Uniform'. For a finer control over the parameter generation look at the documentation of the gen_param_range_df function and gen_param_df function.
     pert_ratio : float, optional
         How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.
-    pert_batch_size : bool, optional
-        If turned on, instead of looking at all param/IC combinations, 1 set of parameters and ICs is generated for each cell. This takes longer to generate (and might not fit into memory!), but increases variability.
+    pert_factor : int, optional
+        By what order of magnitude the Prod_pert_gene parameters should be scaled. Defaults to 6 (*1 million for CRISPRa, /1 million for CRISPRi).
+    pert_batch_size : int, optional
+        The number of perturbation sets to simulate in one go. Defaults to 1/pert_factor so that the same amount of perturbation samples are loaded into memory.
 
     Returns:
     --------
@@ -183,7 +185,12 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
     print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps.")
 
     # Generate parameters and initial conditions for the GRN:
-    if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_{suffix}.parquet"):
+    if pert_file is None:
+        path = f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_{suffix}.parquet"
+    else:
+        path = f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_{suffix}_{pert_batch_size*(len(pert_list)//pert_batch_size)}.parquet"
+    if not os.path.exists(path):
+        print(path)
         print("Generating parameters...")
         racipe.gen_topo_param_files(
             f"{grn_path}.topo",
@@ -193,6 +200,7 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             num_init_conds,
             sampling_method=sampling_method,
             pert_list = pert_list,
+            pert_factor = pert_factor,
             pert_batch_size=pert_batch_size
         )
     
@@ -221,6 +229,7 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             sink_param_df.to_parquet(
                 f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_params_{replicate:03}_sinks_{suffix}.parquet", index=False
             )
+            del sink_param_range_df, sink_param_df
 
     # Run Racipe for all replicates:
     if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_{suffix}.parquet"):
@@ -235,6 +244,8 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
         else:
             for i in range(0,len(pert_list),pert_batch_size):
                 print(f"Simulating pert sets {i} to {min(len(pert_list),i+pert_batch_size-1)}:")
+                if os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_{suffix}_{i}.parquet"):
+                    continue
                 racipe.run_all_replicates(
                     f"{grn_path}.topo",
                     save_dir,
@@ -387,10 +398,11 @@ def run_ising(grn_file : str, mode : str = "async", num_replicates : int = 1, nu
 
 
 
-def main(grn_file : str, is_racipe : bool,pert_file : str, **kwargs):
+def main(grn_file : str, is_racipe : bool = True,pert_file : str = None, **kwargs):
     """
     The main file. Assures that computations are performed on the GPU and whether Racipe or Ising is used.
     """
+
     if pert_file is not None:
         pert_list = pgrins_prepare_input.extract_pert_info(grn_file,pert_file)
     else:
@@ -408,38 +420,35 @@ def main(grn_file : str, is_racipe : bool,pert_file : str, **kwargs):
 if __name__ == "__main__":
     """
     Example:
-        python3 pgrins_run_grins.py project Racipe -s -p example_pertfile
-        python3 pgrins_run_grins.py project Ising -m sync --batch_size 16
+        python3 pgrins_run_grins.py project Racipe -ps
+        python3 pgrins_run_grins.py project Ising --mode sync --batch_size 16
     """
-    #os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
-    os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "0.95"
-    os.environ["XLA_FLAGS"] = "--xla_dump_to=./racipe_xla_dump.log"
+
     kwargs = {}
     parser = argparse.ArgumentParser()
     parser.add_argument("grn", help="Name of the GRN used in the project")
-    parser.add_argument("method", help="Racipe or Ising")
+    parser.add_argument("-m","--method", help="Racipe or Ising. Defaults to Racipe.")
     parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
     parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
     parser.add_argument("-s","--split_sinks", help="Whether or not sinks were removed from the GRN",action="store_true")
-    parser.add_argument("-m","--mode", help="If Ising, sync or async (Default: async)")
+    parser.add_argument("--mode", help="If Ising, sync or async (Default: async)")
     parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
     parser.add_argument("--num_init_conds",type=int,help="Number of initial conditions (Default: 100 for Racipe, 2**14 for Ising)")
-    parser.add_argument("--num_params",type=int,help="Number of params (Default: 10000 for Racipe)")
+    parser.add_argument("--num_params",type=int,help="Number of params (Default: 1000 for Racipe)")
     parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
     parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
     parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
     parser.add_argument("--pert_ratio",type=float,help="How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.")
+    parser.add_argument("--pert_factor",type=int,help="By what order of magnitude the Prod_pert_gene parameters should be scaled. Defaults to 6 (*1 million for CRISPRa, /1 million for CRISPRi).")
     parser.add_argument("--pert_batch_size",type=int,help="The number of perturbations for which cells are simulated in one run, as too many at once might not fit into memory parameter/IC wise. Defaults to 1/pert_ratio (10) since this results in the same number of params/ICs as for the unperturbed run. Set to 0 if all perts should be simulated at once.")
     
     args = parser.parse_args()
 
     grn_file = args.grn
-    if args.method.lower() == "racipe":
-        is_racipe = True
-    elif args.method.lower() == "ising":
+    if args.method and args.method.lower() == "ising":
         is_racipe = False
     else:
-        raise Exception("method is wrong")
+        is_racipe = True
 
     if args.use_perts:
         if args.pert_file:
@@ -467,7 +476,9 @@ if __name__ == "__main__":
         kwargs["max_steps"]=args.max_steps
     if args.pert_ratio:
         kwargs["pert_ratio"]=args.pert_ratio
+    if args.pert_factor:
+        kwargs["pert_factor"]=args.pert_factor
     if args.pert_batch_size:
-        kwargs["pert_ratio"]=args.pert_batch_size
+        kwargs["pert_batch_size"]=args.pert_batch_size
 
     main(grn_file,is_racipe,pert_file,**kwargs)

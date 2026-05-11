@@ -499,7 +499,7 @@ def normalize_adata_main(pseq_file : str):
         qc_data = data_qc(data_filtered, top_genes = 20, outlier_mad_threshold = 5,  mt_mad_threshold = 3, mt_cutoff_percent= 8, verbose=True)
         norm_data = data_normalization(qc_data, n_top_genes = 0, verbose = True)
         norm_data = norm_data[:,norm_data.var_names.sort_values()]
-        
+        print("Saving file")
         ad.settings.allow_write_nullable_strings = True
 
         norm_data.write_h5ad(

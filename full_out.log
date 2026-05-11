@@ -1,0 +1,26 @@
+nohup: Eingabe wird ignoriert
+.topo files ['dorothea_abcd', 'kegg'] are turned into Keggoro
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Normalizing file:  Norman19
+Total measured cells: 111445
+Total measured genes: 33694
+Percent of control cells: 10.637534209699853 %
+Unique perturbations: 236
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 103
+Hemoglobin genes: 12
+Done calculating qc metrics
+Total number of cells: 111445
+outlier
+False    110762
+True        683
+Name: count, dtype: int64
+mt_outlier
+False    97622
+True     13823
+Name: count, dtype: int64
+Number of dropout genes: 7812
+Total number of cells after filtering of low quality cells: 97120
+Median counts: 14263.0
+Done!

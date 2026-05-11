@@ -403,7 +403,8 @@ def sample_param_df(
     prange_df: pd.DataFrame,
     num_params: int = 2**10,
     rng: int | np.random.Generator | None = None,
-    pert_dict : dict = None
+    pert_dict : dict = None,
+    pert_factor : int = 6
 ) -> pd.DataFrame:
     """
     Samples parameter values based on the provided parameter range DataFrame.
@@ -505,9 +506,9 @@ def sample_param_df(
     if pert_dict is not None:
         for pert in pert_dict.keys():
             if pert_dict[pert] == 1: # CRISPRa
-                sampled_df[f"Prod_{pert}"]*=100
+                sampled_df[f"Prod_{pert}"]*=10**pert_factor
             elif pert_dict[pert] == 2: # CRISPRi
-                sampled_df[f"Prod_{pert}"]/=100
+                sampled_df[f"Prod_{pert}"]/=10**pert_factor
             elif pert_dict[pert] == 3: # CRISPR KO
                 sampled_df[f"Prod_{pert}"]=0.0
 
@@ -635,6 +636,8 @@ def get_thr_ranges(
             # print(f"Processing incoming edge from {in_node} to {source_node}")
             in_gk = isn_gk[f"Prod_{in_node}"] / isn_gk[f"Deg_{in_node}"]
             in_gk_median = np.median(in_gk)
+            if in_gk_median < 0:
+                in_gk_median = np.float64(np.iinfo(np.int64).max) # Reset, if overflow happened
             # print(f"Median g/k value for {in_node}: {in_gk_median}")
             in_edge_params.loc[
                 in_edge_params["Parameter"].str.contains(
@@ -642,8 +645,11 @@ def get_thr_ranges(
                 ),
                 ["Minimum", "Maximum"],
             ] = [0.02 * in_gk_median, 1.98 * in_gk_median]
+            if in_gk_median < 0:
+                print(in_node, in_gk_median, type(in_gk_median),"in_gk_median",flush=True)
         # Update the g/k values for the source node based on the incoming edges and return the median g/k value
         return _get_updated_gkn_hills(
+
             sn_gk_n, in_edge_params, in_edge_topo, num_params, rng=rng
         )
     else:
@@ -696,6 +702,8 @@ def add_thr_rows(
                 exp_val = np.floor(np.log10(np.abs(median_thr_val * 0.02))).astype(int)
                 amplify_val = 10 ** (-exp_val - 2)
             # Update the production and threshold values for the source node
+            if amplify_val < 0:
+                amplify_val = np.float64(np.iinfo(np.int64).max) # Reset, if overflow happened
             prange_df.loc[
                 prange_df["Parameter"].str.contains(f"Thr_{sn}"), "Minimum"
             ] = median_thr_val * 0.02 * amplify_val
@@ -705,6 +713,8 @@ def add_thr_rows(
             prange_df.loc[
                 prange_df["Parameter"] == f"Prod_{sn}", ["Minimum", "Maximum"]
             ] *= amplify_val
+            if amplify_val < 0:
+                print(sn, amplify_val, "amplify_val",flush=True)
     return prange_df
 
 
@@ -786,7 +796,8 @@ def gen_param_df(
     sampling_method: Union[str, dict] = "Sobol",
     thr_rows: bool = True,
     rng: int | np.random.Generator | None = None,
-    pert_dict : dict = None
+    pert_dict : dict = None,
+    pert_factor : int = 6
 ) -> pd.DataFrame:
     """
     Generate the final parameter DataFrame by sampling parameters.
@@ -826,7 +837,7 @@ def gen_param_df(
             rng=rng,
         )
     # Use the sample_param_df function to sample the parameters
-    param_df = sample_param_df(prange_df, num_params, rng=rng,pert_dict=pert_dict)
+    param_df = sample_param_df(prange_df, num_params, rng=rng,pert_dict=pert_dict,pert_factor=pert_factor)
     # Add the ParamNum column to the DataFrame
     return param_df
 

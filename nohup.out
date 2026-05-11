@@ -149,4 +149,413 @@ FileNotFoundError: [Errno 2] No such file or directory: 'Data/SimulResults_Racip
 RACIPE:
 Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
 Generating parameters...
-  0%|          | 0/14 [00:00<?, ?it/s]  7%|▋         | 1/14 [38:30<8:20:39, 2310.74s/it] 14%|█▍        | 2/14 [1:17:06<7:42:42, 2313.55s/it] 21%|██▏       | 3/14 [1:55:47<7:04:47, 2317.02s/it] 29%|██▊       | 4/14 [2:34:26<6:26:17, 2317.74s/it] 36%|███▌      | 5/14 [3:13:04<5:47:42, 2318.05s/it] 43%|████▎     | 6/14 [3:51:44<5:09:08, 2318.58s/it] 50%|█████     | 7/14 [4:30:22<4:30:29, 2318.50s/it] 57%|█████▋    | 8/14 [5:09:01<3:51:51, 2318.53s/it] 64%|██████▍   | 9/14 [5:47:41<3:13:15, 2319.11s/it] 71%|███████▏  | 10/14 [6:26:21<2:34:37, 2319.27s/it] 79%|███████▊  | 11/14 [7:04:59<1:55:56, 2318.90s/it] 86%|████████▌ | 12/14 [7:43:38<1:17:18, 2319.04s/it]
+  0%|          | 0/14 [00:00<?, ?it/s]  7%|▋         | 1/14 [38:30<8:20:39, 2310.74s/it] 14%|█▍        | 2/14 [1:17:06<7:42:42, 2313.55s/it] 21%|██▏       | 3/14 [1:55:47<7:04:47, 2317.02s/it] 29%|██▊       | 4/14 [2:34:26<6:26:17, 2317.74s/it] 36%|███▌      | 5/14 [3:13:04<5:47:42, 2318.05s/it] 43%|████▎     | 6/14 [3:51:44<5:09:08, 2318.58s/it] 50%|█████     | 7/14 [4:30:22<4:30:29, 2318.50s/it] 57%|█████▋    | 8/14 [5:09:01<3:51:51, 2318.53s/it] 64%|██████▍   | 9/14 [5:47:41<3:13:15, 2319.11s/it] 71%|███████▏  | 10/14 [6:26:21<2:34:37, 2319.27s/it] 79%|███████▊  | 11/14 [7:04:59<1:55:56, 2318.90s/it] 86%|████████▌ | 12/14 [7:43:38<1:17:18, 2319.04s/it] 93%|█████████▎| 13/14 [8:22:16<38:38, 2318.67s/it]  100%|██████████| 14/14 [8:37:53<00:00, 1901.15s/it]100%|██████████| 14/14 [8:37:53<00:00, 2219.50s/it]
+  0%|          | 0/14 [00:00<?, ?it/s]  7%|▋         | 1/14 [06:36<1:25:50, 396.16s/it] 14%|█▍        | 2/14 [13:11<1:19:10, 395.89s/it] 21%|██▏       | 3/14 [19:47<1:12:35, 395.96s/it] 29%|██▊       | 4/14 [26:23<1:05:57, 395.73s/it] 36%|███▌      | 5/14 [32:59<59:21, 395.75s/it]   43%|████▎     | 6/14 [39:35<52:47, 395.89s/it] 50%|█████     | 7/14 [46:10<46:10, 395.83s/it] 57%|█████▋    | 8/14 [52:46<39:34, 395.78s/it] 64%|██████▍   | 9/14 [59:22<32:58, 395.79s/it] 71%|███████▏  | 10/14 [1:05:57<26:22, 395.61s/it] 79%|███████▊  | 11/14 [1:12:33<19:47, 395.69s/it] 86%|████████▌ | 12/14 [1:19:09<13:11, 395.68s/it] 93%|█████████▎| 13/14 [1:25:44<06:35, 395.56s/it]100%|██████████| 14/14 [1:28:22<00:00, 323.90s/it]100%|██████████| 14/14 [1:28:22<00:00, 378.77s/it]
+Parameter and Intial Condition files generated for Keggoro
+Simulating pert sets 0 to 10:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0510 01:35:18.337331   39684 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0510 03:04:50.655312   39596 slow_operation_alarm.cc:140] The operation took 1h31m32.317037772s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [6:51:15<61:41:18, 24675.41s/it] 20%|██        | 2/10 [6:55:03<22:52:36, 10294.57s/it] 30%|███       | 3/10 [6:58:51<11:04:45, 5698.00s/it]  40%|████      | 4/10 [7:02:39<5:53:51, 3538.66s/it]  50%|█████     | 5/10 [7:06:28<3:15:24, 2344.95s/it] 60%|██████    | 6/10 [7:10:16<1:48:21, 1625.33s/it] 70%|███████   | 7/10 [7:14:05<58:25, 1168.64s/it]   80%|████████  | 8/10 [7:17:53<28:58, 869.37s/it]  90%|█████████ | 9/10 [7:21:42<11:09, 669.05s/it]100%|██████████| 10/10 [7:25:30<00:00, 532.96s/it]100%|██████████| 10/10 [7:25:30<00:00, 2673.05s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 26761.72790145874
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 10 to 20:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+ACTB -4570789518076018688 amplify_val
+GNB5 -6930898827444486144 amplify_val
+EGFR -8446744073709551616 amplify_val
+EGFR -7.693297452055991e+20 in_gk_median
+ACTB -4.133309558603063e+20 in_gk_median
+EGFR -7.784568445451169e+20 in_gk_median
+EGFR -7.794635706279883e+20 in_gk_median
+GNB5 -6.332749963332511e+20 in_gk_median
+GNB5 -6.313494619329795e+20 in_gk_median
+GNB5 -6.360356330771369e+20 in_gk_median
+EGFR -7.793712848561908e+20 in_gk_median
+GNB5 -6.406720476096154e+20 in_gk_median
+EGFR -7.673000235336508e+20 in_gk_median
+EGFR -7.815038848069563e+20 in_gk_median
+ACTB -4.278503132162019e+20 in_gk_median
+ACTB -4.2032900030039746e+20 in_gk_median
+GNB5 -6.349785090235551e+20 in_gk_median
+EGFR -7.763826603079757e+20 in_gk_median
+GNB5 -6.342947405734174e+20 in_gk_median
+GNB5 -6.322315354472655e+20 in_gk_median
+ACTB -4.192442341284955e+20 in_gk_median
+GNAS -8446744073709551616 amplify_val
+GNAS -7.783336219075827e+20 in_gk_median
+EGFR -7.78278707924554e+20 in_gk_median
+GNB5 -6.401860712760873e+20 in_gk_median
+EGFR -7.8347310264224e+20 in_gk_median
+EGFR -7.742388729843742e+20 in_gk_median
+EGFR -7.769577590447863e+20 in_gk_median
+EGFR -7.721965402136699e+20 in_gk_median
+GNAS -7.810906100324809e+20 in_gk_median
+ACTB -4.2191816484547776e+20 in_gk_median
+VEGFA -8446744073709551616 amplify_val
+ACTB -4.199968704944504e+20 in_gk_median
+EGFR -7.799990883776882e+20 in_gk_median
+  0%|          | 0/14 [00:00<?, ?it/s]RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 473, in <module>
+    main(grn_file,is_racipe,pert_file,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 401, in main
+    run_racipe(grn_file, pert_list, **kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 188, in run_racipe
+    racipe.gen_topo_param_files(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        f"{grn_path}.topo",
+        ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        pert_batch_size=pert_batch_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 146, in gen_topo_param_files
+    param_range_df = gen_param_range_df(
+        topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 783, in gen_param_range_df
+    prange_df = add_thr_rows(prange_df, topo_df, num_params, rng=rng)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 695, in add_thr_rows
+    median_thr_val = get_thr_ranges(sn, topo_df, prange_df, num_params, rng=rng)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 636, in get_thr_ranges
+    if isn_gk[f"Prod_{in_node}"] < 0 or isn_gk[f"Deg_{in_node}"] < 0:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/generic.py", line 1580, in __nonzero__
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 473, in <module>
+    main(grn_file,is_racipe,pert_file,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 401, in main
+    run_racipe(grn_file, pert_list, **kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 188, in run_racipe
+    racipe.gen_topo_param_files(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        f"{grn_path}.topo",
+        ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        pert_batch_size=pert_batch_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 146, in gen_topo_param_files
+    param_range_df = gen_param_range_df(
+        topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 783, in gen_param_range_df
+    prange_df = add_thr_rows(prange_df, topo_df, num_params, rng=rng)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 695, in add_thr_rows
+    median_thr_val = get_thr_ranges(sn, topo_df, prange_df, num_params, rng=rng)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 636, in get_thr_ranges
+    if isn_gk[f"Prod_{in_node}"] < 0 | isn_gk[f"Deg_{in_node}"] < 0:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/generic.py", line 1580, in __nonzero__
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+Traceback (most recent call last):
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/ops/array_ops.py", line 362, in na_logical_op
+    result = op(x, y)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/roperator.py", line 58, in ror_
+    return operator.or_(right, left)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: ufunc 'bitwise_or' not supported for the input types, and the inputs could not be safely coerced to any supported types according to the casting rule ''safe''
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/ops/array_ops.py", line 376, in na_logical_op
+    result = libops.scalar_binop(x, y, op)
+  File "pandas/_libs/ops.pyx", line 180, in pandas._libs.ops.scalar_binop
+ValueError: Buffer dtype mismatch, expected 'Python object' but got 'double'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 473, in <module>
+    main(grn_file,is_racipe,pert_file,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 401, in main
+    run_racipe(grn_file, pert_list, **kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 188, in run_racipe
+    racipe.gen_topo_param_files(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        f"{grn_path}.topo",
+        ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        pert_batch_size=pert_batch_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py", line 146, in gen_topo_param_files
+    param_range_df = gen_param_range_df(
+        topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
+    )
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 783, in gen_param_range_df
+    prange_df = add_thr_rows(prange_df, topo_df, num_params, rng=rng)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 695, in add_thr_rows
+    median_thr_val = get_thr_ranges(sn, topo_df, prange_df, num_params, rng=rng)
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/gen_params.py", line 636, in get_thr_ranges
+    if isn_gk[f"Prod_{in_node}"] < 0 | isn_gk[f"Deg_{in_node}"] < 0:
+                                   ~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/ops/common.py", line 76, in new_method
+    return method(self, other)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/arraylike.py", line 82, in __ror__
+    return self._logical_method(other, roperator.ror_)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/series.py", line 6149, in _logical_method
+    res_values = ops.logical_op(lvalues, rvalues, op)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/ops/array_ops.py", line 454, in logical_op
+    res_values = na_logical_op(lvalues, rvalues, op)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/core/ops/array_ops.py", line 385, in na_logical_op
+    raise TypeError(
+    ...<2 lines>...
+    ) from err
+TypeError: Cannot perform 'ror_' with a dtyped [float64] array and scalar of type [bool]
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+ACTB -4570789518076018688 amplify_val
+GNB5 -6930898827444486144 amplify_val
+ACTB -4.18850750334962e+20 in_gk_median
+GNB5 -6.384195946760071e+20 in_gk_median
+GNB5 -6.364333233081977e+20 in_gk_median
+GNB5 -6.282274880936199e+20 in_gk_median
+GNB5 -6.284311261478464e+20 in_gk_median
+GNB5 -6.303882328898908e+20 in_gk_median
+GNB5 -6.370194423855755e+20 in_gk_median
+ACTB -4.1898206151171585e+20 in_gk_median
+ACTB -4.1864120816696125e+20 in_gk_median
+ACTB -4.145592870812898e+20 in_gk_median
+GNB5 -6.349467884340631e+20 in_gk_median
+EGFR -8446744073709551616 amplify_val
+EGFR -7.680424990472781e+20 in_gk_median
+GNB5 -6.411274479099334e+20 in_gk_median
+GNB5 -6.378714026836967e+20 in_gk_median
+ACTB -4.284346145310634e+20 in_gk_median
+GNB5 -6.404302677274961e+20 in_gk_median
+EGFR -7.754415674656908e+20 in_gk_median
+EGFR -7.729828737662896e+20 in_gk_median
+EGFR -7.647379066348245e+20 in_gk_median
+GNB5 -6.431128515868033e+20 in_gk_median
+ACTB -4.169502203805032e+20 in_gk_median
+EGFR -7.896969891142212e+20 in_gk_median
+EGFR -7.740864620422213e+20 in_gk_median
+ACTB -4.215866832066723e+20 in_gk_median
+GNB5 -6.290123631185122e+20 in_gk_median
+GNAS -8446744073709551616 amplify_val
+EGFR -7.655264839162454e+20 in_gk_median
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+GNB5 -6930898827444486144 amplify_val
+ACTB -4570789518076018688 amplify_val
+ACTB -4.23199346644494e+20 in_gk_median
+GNB5 -6.306563528103711e+20 in_gk_median
+GNB5 -6.389180703365969e+20 in_gk_median
+GNB5 -6.373201627432789e+20 in_gk_median
+ACTB -4.166464798371135e+20 in_gk_median
+GNB5 -6.324490314660313e+20 in_gk_median
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+GNB5 -6930898827444486144 amplify_val
+GNB5 -6.456732334842472e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.431841502144838e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.413175471916893e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.321150348418288e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.3779793219004e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.385219118311321e+20 <class 'numpy.float64'> in_gk_median
+GNAS -8446744073709551616 amplify_val
+GNB5 -6.329341276344329e+20 <class 'numpy.float64'> in_gk_median
+GNAS -7.762794625492277e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.413929075760659e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.423739146647781e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.324818488244309e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.413336573055905e+20 <class 'numpy.float64'> in_gk_median
+ACTB -4570789518076018688 amplify_val
+GNAS -7.758298978780886e+20 <class 'numpy.float64'> in_gk_median
+EGFR -8446744073709551616 amplify_val
+EGFR -7.701703175080119e+20 <class 'numpy.float64'> in_gk_median
+ACTB -4.171386898683325e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.35084081417894e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.676487134953905e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.348905715386913e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.74360185428962e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.773449452172718e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.773848151978635e+20 <class 'numpy.float64'> in_gk_median
+ACTB -4.237913842746492e+20 <class 'numpy.float64'> in_gk_median
+ACTB -4.235112536103775e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.77244054150921e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.710204117147997e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.864719707915058e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.284190218013974e+20 <class 'numpy.float64'> in_gk_median
+ACTB -4.1760099618847e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.694349107841958e+20 <class 'numpy.float64'> in_gk_median
+GNAS -7.778071865008394e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.308875271095722e+20 <class 'numpy.float64'> in_gk_median
+EGFR -7.76865191844955e+20 <class 'numpy.float64'> in_gk_median
+ACTB -4.17057054377564e+20 <class 'numpy.float64'> in_gk_median
+  0%|          | 0/14 [00:00<?, ?it/s]RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+GNB5 -6930898827444486144 amplify_val
+GNB5 -6.391160205685411e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.373861102549357e+20 <class 'numpy.float64'> in_gk_median
+GNB5 -6.39736528562372e+20 <class 'numpy.float64'> in_gk_median
+VEGFA -8446744073709551616 amplify_val
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+  0%|          | 0/14 [00:00<?, ?it/s]  7%|▋         | 1/14 [42:52<9:17:27, 2572.91s/it] 14%|█▍        | 2/14 [1:25:44<8:34:26, 2572.24s/it] 21%|██▏       | 3/14 [2:08:36<7:51:32, 2572.03s/it] 29%|██▊       | 4/14 [2:51:24<7:08:26, 2570.61s/it] 36%|███▌      | 5/14 [3:34:18<6:25:45, 2571.68s/it] 43%|████▎     | 6/14 [4:17:09<5:42:50, 2571.37s/it] 50%|█████     | 7/14 [4:59:56<4:59:51, 2570.16s/it] 57%|█████▋    | 8/14 [5:42:46<4:17:00, 2570.10s/it] 64%|██████▍   | 9/14 [6:25:35<3:34:07, 2569.59s/it] 71%|███████▏  | 10/14 [7:08:24<2:51:18, 2569.55s/it] 79%|███████▊  | 11/14 [7:51:17<2:08:31, 2570.47s/it] 86%|████████▌ | 12/14 [8:34:06<1:25:40, 2570.09s/it] 93%|█████████▎| 13/14 [9:16:58<42:50, 2570.75s/it]  100%|██████████| 14/14 [9:34:17<00:00, 2108.00s/it]100%|██████████| 14/14 [9:34:17<00:00, 2461.26s/it]
+  0%|          | 0/14 [00:00<?, ?it/s]  7%|▋         | 1/14 [07:27<1:36:57, 447.50s/it] 14%|█▍        | 2/14 [14:54<1:29:28, 447.34s/it] 21%|██▏       | 3/14 [22:21<1:21:57, 447.09s/it] 29%|██▊       | 4/14 [29:48<1:14:31, 447.16s/it] 36%|███▌      | 5/14 [37:16<1:07:04, 447.21s/it] 43%|████▎     | 6/14 [44:43<59:37, 447.14s/it]   50%|█████     | 7/14 [52:10<52:10, 447.15s/it] 57%|█████▋    | 8/14 [59:37<44:43, 447.19s/it] 64%|██████▍   | 9/14 [1:07:04<37:15, 447.09s/it] 71%|███████▏  | 10/14 [1:14:31<29:48, 447.17s/it] 79%|███████▊  | 11/14 [1:21:59<22:21, 447.22s/it] 86%|████████▌ | 12/14 [1:29:26<14:54, 447.21s/it] 93%|█████████▎| 13/14 [1:36:52<07:27, 447.04s/it]100%|██████████| 14/14 [1:39:51<00:00, 366.02s/it]100%|██████████| 14/14 [1:39:51<00:00, 427.98s/it]
+Parameter and Intial Condition files generated for Keggoro
+Generating parameters for sinks...
+Simulating pert sets 0 to 9:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0511 04:44:28.839106   50796 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0511 06:10:39.139762   50691 slow_operation_alarm.cc:140] The operation took 1h28m10.300791669s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [6:45:41<60:51:10, 24341.20s/it] 20%|██        | 2/10 [6:47:06<22:23:02, 10072.82s/it] 30%|███       | 3/10 [6:48:20<10:42:30, 5507.21s/it]  40%|████      | 4/10 [6:49:41<5:36:31, 3365.18s/it]  50%|█████     | 5/10 [6:51:11<3:01:59, 2183.87s/it] 60%|██████    | 6/10 [6:52:37<1:38:02, 1470.65s/it] 70%|███████   | 7/10 [6:54:03<50:53, 1017.94s/it]   80%|████████  | 8/10 [6:55:23<23:58, 719.49s/it]  90%|█████████ | 9/10 [6:56:35<08:37, 517.13s/it]100%|██████████| 10/10 [6:57:52<00:00, 381.06s/it]100%|██████████| 10/10 [6:57:52<00:00, 2507.21s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 25098.136750936508
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 10 to 19:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]usage: pgrins_run_grins.py [-h] [-m METHOD] [-p] [--pert_file PERT_FILE] [-s]
+                           [--mode MODE] [--num_replicates NUM_REPLICATES]
+                           [--num_init_conds NUM_INIT_CONDS]
+                           [--num_params NUM_PARAMS] [--batch_size BATCH_SIZE]
+                           [--sampling_method SAMPLING_METHOD]
+                           [--max_steps MAX_STEPS] [--pert_ratio PERT_RATIO]
+                           [--pert_factor PERT_FACTOR]
+                           [--pert_batch_size PERT_BATCH_SIZE]
+                           grn
+pgrins_run_grins.py: error: the following arguments are required: grn
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 443, in <module>
+    if args.method.lower() == "racipe":
+       ^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'lower'
+RACIPE:
+Running pert with 1 replicates, 1340 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+[{'CEBPB': 1, 'CEBPE': 1}, {'MAPK1': 1, 'TGFBR2': 1}, {'TGFBR2': 1}, {'CEBPB': 1, 'JUN': 1}, {'FOXL2': 1, 'MEIS1': 1}, {'CEBPE': 1, 'ETS2': 1}, {'LYL1': 1}, {'MAP2K3': 1}, {'KMT2A': 1}, {'KLF1': 1, 'TGFBR2': 1}, {'COL1A1': 1}, {'DUSP9': 1, 'SNAI1': 1}, {'FOXL2': 1}, {'CKS1B': 1}, {'BAK1': 1, 'KLF1': 1}, {'IRF1': 1}, {'CEBPB': 1}, {'TBX3': 1}, {'CEBPE': 1, 'SPI1': 1}, {'FOXA1': 1}, {'FOXA1': 1, 'KLF1': 1}, {'SPI1': 1}, {'JUN': 1}, {'DUSP9': 1, 'KLF1': 1}, {'POU3F2': 1}, {'CBL': 1, 'TGFBR2': 1}, {'CDKN1A': 1, 'CDKN1B': 1}, {'BCL2L11': 1, 'TGFBR2': 1}, {'CEBPB': 1, 'LYL1': 1}, {'CEBPA': 1, 'JUN': 1}, {'FOXO4': 1}, {'DUSP9': 1, 'MAPK1': 1}, {'SGK1': 1, 'TBX3': 1}, {'PRDM1': 1}, {'MAPK1': 1}, {'CEBPA': 1, 'CEBPE': 1}, {'CEBPA': 1}, {'CEBPB': 1, 'MAPK1': 1}, {'SNAI1': 1}, {'TP73': 1}, {'EGR1': 1}, {'MEIS1': 1}, {'CEBPA': 1, 'CEBPB': 1}, {'MAP2K6': 1, 'SPI1': 1}, {'AHR': 1}, {'BAK1': 1}, {'PTPN1': 1}, {'CBL': 1}, {'DUSP9': 1, 'ETS2': 1}, {'S1PR2': 1, 'SGK1': 1}, {'CDKN1A': 1}, {'KLF1': 1, 'MAP2K6': 1}, {'AHR': 1, 'KLF1': 1}, {'ETS2': 1, 'MAPK1': 1}, {'CEBPE': 1, 'FOSB': 1}, {'SGK1': 1}, {'HNF4A': 1}, {'KLF1': 1}, {'FOXA1': 1, 'FOXL2': 1}, {'CEBPE': 1}, {'ETS2': 1}, {'CEBPE': 1, 'KLF1': 1}, {'S1PR2': 1}, {'FOXL2': 1, 'ZNF318': 1}, {'CEBPA': 1, 'KLF1': 1}, {'ZNF318': 1}, {'BCL2L11': 1}, {'MAP2K3': 1, 'MAP2K6': 1}, {'MAP2K6': 1}, {'ETS2': 1, 'TGFBR2': 1}, {'FOSB': 1}, {'CDKN1B': 1}, {'DUSP9': 1}, {'FOXL2': 1, 'POU3F2': 1}, {'CEBPB': 1, 'FOSB': 1}, {'BAK1': 1, 'BCL2L11': 1}, {'UBL5': 2}, {'HSPA5': 2}, {'SIN3A': 2}, {'CUL1': 2}, {'RPS6': 2}, {'SNAPC4': 2}, {'EGLN2': 2}, {'EIF2S1': 2}, {'SMC2': 2}, {'NCOA4': 2}, {'GAB2': 2}, {'TLN1': 2}, {'VMP1': 2}, {'CHEK1': 2}, {'CEBPZ': 2}, {'RAB4A': 2}, {'MIOS': 2}, {'MFN2': 2}, {'PPARGC1B': 2}, {'HGS': 2}, {'RPS27A': 2}, {'ZBTB17': 2}, {'PTK2': 2}, {'BAP1': 2}, {'IGBP1': 2}, {'ACTB': 2}, {'BUB1': 2}, {'SRF': 2}, {'PHB2': 2}, {'HSD17B10': 2}, {'BCL2L1': 2}, {'SLC7A5': 2}, {'TARDBP': 2}, {'TTK': 2}, {'BCAR1': 2}, {'DHX33': 2}, {'CDIPT': 2}, {'MAX': 2}, {'BRF2': 2}, {'CHMP7': 2}, {'USF2': 2}, {'ZBTB11': 2}, {'DDX41': 2}, {'HMGB1': 2}, {'UBE2L3': 2}, {'YY1': 2}, {'UBA1': 2}, {'PXN': 2}, {'ZNF207': 2}, {'EXOC1': 2}, {'WNK1': 2}, {'PPP2CA': 2}, {'SOD1': 2}, {'RAC1': 2}, {'GABPA': 2}, {'PPP1CA': 2}, {'SAMM50': 2}, {'CDK1': 2}]
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Data/SimulResults_Racipe/Keggoro/001/Keggoro_params_001_pert_13.parquet
+Generating parameters...
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Simulating pert sets 0 to 9:
+Simulating pert sets 10 to 19:
+Simulating pert sets 20 to 29:
+Simulating pert sets 30 to 39:
+Simulating pert sets 40 to 49:
+Simulating pert sets 50 to 59:
+Simulating pert sets 60 to 69:
+Simulating pert sets 70 to 79:
+Simulating pert sets 80 to 89:
+Simulating pert sets 90 to 99:
+Simulating pert sets 100 to 109:
+Simulating pert sets 110 to 119:
+Simulating pert sets 120 to 129:
+Simulating pert sets 130 to 134:
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 484, in <module>
+    main(grn_file,is_racipe,pert_file,**kwargs)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 413, in main
+    run_racipe(grn_file, pert_list, **kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_run_grins.py", line 265, in run_racipe
+    sol_df = pd.concat([pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}_{i}.parquet") for i in range(0,len(pert_list),pert_batch_size)])
+                        ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/io/parquet.py", line 669, in read_parquet
+    return impl.read(
+           ~~~~~~~~~^
+        path,
+        ^^^^^
+    ...<6 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/io/parquet.py", line 258, in read
+    path_or_handle, handles, filesystem = _get_path_or_handle(
+                                          ~~~~~~~~~~~~~~~~~~~^
+        path,
+        ^^^^^
+    ...<2 lines>...
+        mode="rb",
+        ^^^^^^^^^^
+    )
+    ^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/io/parquet.py", line 141, in _get_path_or_handle
+    handles = get_handle(
+        path_or_handle, mode, is_text=False, storage_options=storage_options
+    )
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/pandas/io/common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+FileNotFoundError: [Errno 2] No such file or directory: 'Data/SimulResults_Racipe/Keggoro/001/Keggoro_steadystate_solutions_001_pert_10.parquet'
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Simulating pert sets 0 to 9:
+Simulating pert sets 10 to 19:
+Loading ODE system from: Data/SimulResults_Racipe/Keggoro
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]
