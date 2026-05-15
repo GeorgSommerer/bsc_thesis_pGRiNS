@@ -164,7 +164,7 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, grins_c
     print("Saving file")
     ad.settings.allow_write_nullable_strings = True
     grins_data.write_h5ad(
-        f"Data/Projects/Keggoro/perturb_norm_{grins_data.obs["perturbation"][0]}_clustered.h5ad",
+        f"Data/Projects/KeggoRo/perturb_norm_{grins_data.obs["perturbation"][0]}_clustered.h5ad",
         compression=hdf5plugin.FILTERS["zstd"]
     ) 
     

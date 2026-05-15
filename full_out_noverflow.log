@@ -1,0 +1,27 @@
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+.topo files ['dorothea_abcd', 'kegg'] are turned into KeggoRo_iinfo
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Reading file:  Data/Experimental/Norman19/perturb_norm.h5ad
+Reading file:  Data/Experimental/Replogle22/perturb_norm.h5ad
+Creating new .pert file...
+Created subset adata files...
+Splitting sinks from GRN...
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 1000 and 2048 steps.
+Generating parameters...
+Parameter and Intial Condition files generated for KeggoRo_iinfo
+Generating parameters for sinks...
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo_iinfo
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/100 [00:00<?, ?it/s]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 1000 and 2048 steps.
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo_iinfo
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/100 [00:00<?, ?it/s]

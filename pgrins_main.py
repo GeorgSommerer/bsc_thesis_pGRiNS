@@ -35,7 +35,7 @@ parser.add_argument("--num_replicates", type=int,help="Number of replicates to b
 
 # C:
 parser.add_argument("--max_missingness", type=float,help="The maximal percentage of missing data (Default: 90 percent).")
-parser.add_argument("--expon_scale",type=float,help="Given an experimental dataset, this is the mean of pct_dropout_by_counts from adata.var among the genes with pct_dropout_by_counts<max_missingness (Default: 36.36 for Replogle22)")
+parser.add_argument("--expon_scale",type=float,help="Given an experimental dataset, this is the mean of pct_dropout_by_counts from adata.var among the genes with pct_dropout_by_counts<max_missingness (Default: 42.2 for Replogle22)")
 parser.add_argument("--full_dropouts",type=float,help="How many genes should have 100 percent of their entries missing (Default: 0 percent)")        
 
 # D:
@@ -139,7 +139,7 @@ ugrins_data = pgrins_prepare_output.main(grn_file=project_name, experimental=exp
 print("*"*10,"D1: Get best control cells:","*"*10)
 pgrins_cluster.main(grn_file=project_name, experimental=experimental,grins_data=ugrins_data, pert_file=None, **kwargs_d)
 del ugrins_data
-"""
+
 ########################################################
 if pert_file is not None:
     # B2: Run perturbed GRiNS
@@ -155,4 +155,3 @@ if pert_file is not None:
     # D2: Get best cells for each perturbation and full output
     print("*"*10,"D2: Get best cells for each perturbation and full output:","*"*10)
     pgrins_cluster.main(grn_file=project_name, experimental=experimental,grins_data = pgrins_data, pert_file=pert_file, **kwargs_d)
-"""

@@ -647,7 +647,6 @@ def get_thr_ranges(
             ] = [0.02 * in_gk_median, 1.98 * in_gk_median]
         # Update the g/k values for the source node based on the incoming edges and return the median g/k value
         return _get_updated_gkn_hills(
-
             sn_gk_n, in_edge_params, in_edge_topo, num_params, rng=rng
         )
     else:
