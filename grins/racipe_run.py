@@ -83,7 +83,7 @@ def gen_topo_param_files(
     sampling_method: str | dict = "Sobol",
     rng: int | np.random.Generator | None = None,
     pert_list : list = None,
-    pert_factor : int = 6,
+    pert_factor : int = 50,
     pert_batch_size : int = 0
 ):
     """

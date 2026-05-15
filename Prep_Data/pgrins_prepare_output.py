@@ -13,6 +13,7 @@ import scanpy as sc
 import os
 import argparse
 from tqdm import tqdm
+from glob import glob
 
 try:
     import pgrins_prepare_input
@@ -45,11 +46,18 @@ def grins_racipe_to_adata(path_to_data : str, pert_list : list = None, max_missi
 
     print(f"Read {path_to_data}...")
     if pert_list is None:
-        sol_df = pd.read_parquet(f"{path_to_data}_expr_ctrl.parquet")
-        info_df = pd.read_parquet(f"{path_to_data}_info_ctrl.parquet")
+        nonsink_df = pd.read_parquet(f"{path_to_data}_ctrl.parquet")
+        sink_df = pd.read_parquet(f"{path_to_data}_sinks_ctrl.parquet")
     else:
-        sol_df = pd.read_parquet(f"{path_to_data}_expr_pert.parquet")
-        info_df = pd.read_parquet(f"{path_to_data}_info_pert.parquet")
+        nonsink_df = pd.read_parquet(f"{path_to_data}_pert.parquet")
+        sink_df = pd.read_parquet(f"{path_to_data}_sinks_pert.parquet")
+
+    info_df = nonsink_df.loc[:,["PertNum","InitCondNum","ParamNum"]] # Contains combination of ICs and params and perts
+    nonsink_df = nonsink_df.loc[:,list([col.replace("gk_", "") for col in nonsink_df.columns if "gk_" in col])] # Contains expression values
+    
+    sol_df = pd.concat([nonsink_df,sink_df],axis=1)
+    sol_df = sol_df.reindex(sorted(sol_df.columns),axis=1)
+    
     
     # QC:
     zero_genes = pd.Series([np.sum(sol_df[col]==0) for col in list(sol_df.columns)])
@@ -60,26 +68,27 @@ def grins_racipe_to_adata(path_to_data : str, pert_list : list = None, max_missi
     sol_df = sol_df.fillna(0)
     sol_df[sol_df[:]<0]=0 # There are negative entries for some reason    
     
+    print("Generate missing indices...")
+    if pert_list is None:
+        sol_sparse_missing = missingness_filter(sol_df.values,loc=100-max_missingness,scale=expon_scale,full_dropouts=full_dropouts)
+    else:
+        sol_sparse_missing = scipy.sparse.vstack([missingness_filter(sol_df[info_df["PertNum"]==i],loc=100-max_missingness,scale=expon_scale,full_dropouts=full_dropouts) for i in range(len(pert_list))])
+
     # Create the AnnData object:
     print("Create AnnData object...")
-    sol_sparse = sparse.csc_matrix(sol_df.values)
-    grins_data = ad.AnnData(sol_sparse)
+    grins_data = ad.AnnData(sparse.csc_matrix(sol_df.values))
     grins_data.obs = info_df
-
-    print("Generate missing indices...")
-    grins_data.layers["missing_matrix"] = missingness_filter(sol_df.values,loc=100-max_missingness,scale=expon_scale,full_dropouts=full_dropouts)
-
+    grins_data.layers["missing_matrix"] = sol_sparse_missing
+    
     # Add perturbation column
     if pert_list is None:
         grins_data.obs["PertNum"] = -1
         grins_data.obs["perturbation"] = "ctrl"
     else:
-        grins_data.obs["perturbation"] = pd.Series(["_".join(list(pert_list[i].keys())) for i in grins_data.obs["ParamNum"].values])
-
+        grins_data.obs["perturbation"] = np.array(["_".join(sorted(list(pert_list[int(i)].keys()))) for i in grins_data.obs["PertNum"].values])
     grins_data.obs_names = [f"{int(info_df.loc[:,"PertNum"][i])}_{int(info_df.loc[:,"InitCondNum"][i])}_{int(info_df.loc[:,"ParamNum"][i])}" for i in range(info_df.shape[0])]
     grins_data.var_names = list(sol_df.columns)
 
-    #grins_data = grins_data[grins_data.obs["ParamNum"]<=100]
     return grins_data
 
 
@@ -98,12 +107,11 @@ def normalize_grins_adata(grins_data : ad.AnnData) -> ad.AnnData:
     sc.pp.calculate_qc_metrics(grins_data,percent_top=[20],inplace=True,log1p=True)
 
     # Log-normalize the layers:
-    print("Normalize Data...")
+    print("Normalize Data...")  
     grins_data.layers["log1p"] = grins_data.X.copy().tocsc()
     sc.pp.normalize_total(grins_data, target_sum=None,layer="log1p")
 
     sc.pp.log1p(grins_data, layer="log1p")
-
     return grins_data
 
 
@@ -143,6 +151,71 @@ def grins_ising_to_adata(path_to_data : str, grn_file : str) -> ad.AnnData:
 
 
 
+def get_subset_adata_all(grins_data : ad.AnnData, grn_file : str, ctrl_only : bool = False, max_missingness : int = 90) -> tuple[ad.AnnData, dict[str,ad.AnnData]]:
+    """
+    Returns all experimental adata files, and asserts that the contained in the GRiNS data are the same as in the union of genes from the experimental datasets.
+
+    
+    """
+
+    adata_dict = {pseq_path.split("/")[-1] : sc.read_h5ad(f"{pseq_path}/perturb_norm.h5ad") for pseq_path in glob(f"Data/Experimental/*")}
+    
+    for name, adata in adata_dict.items():
+        adata_dict[name] = adata[:,adata.var["pct_dropout_by_counts"]<max_missingness]
+
+    grins_gnames = set(grins_data.var_names)
+    adata_gnames = set().union(*[set(adata.var_names) for adata in adata_dict.values()])
+    grins_gnames = grins_gnames & adata_gnames # Only genes in adata remain in grins_data
+    grins_data = grins_data[:,sorted(list(grins_gnames))]
+
+    for name, adata in adata_dict.items():
+        if ctrl_only:
+            adata_dict[name] = adata[adata.obs["perturbation"]=="ctrl"]
+        adata_gnames = set(adata.var_names)
+        adata_dict[name] = adata[:,sorted(list(grins_gnames & adata_gnames))] # Only genes in grins_data remain in each adata
+        print(f"Save subset of {name}...")
+        ad.settings.allow_write_nullable_strings = True
+        adata_dict[name].write_h5ad(
+            f"Data/Experimental/{name}/perturb_norm_subset_{grn_file}.h5ad",
+            compression=hdf5plugin.FILTERS["zstd"]
+        )        
+
+    return grins_data
+
+
+def apply_missingness(grins_data : ad.AnnData, inplace : bool = True) -> ad.AnnData:
+    """
+    Takes the missing value information from missingness_filter and applies it to a layer.
+
+    Parameters:
+    -----------
+    grins_data : ad.AnnData
+        The grins data object.
+    layer : str, optional
+        The layer to apply the missingness to. If None, use grins_data.X
+    inplace : bool, optional
+        Whether or not this should be done inplace (if True, the QC metrics calculated on the raw data will be overwritten!)
+
+    Returns:
+    --------
+    grins_data : ad.AnnData
+        The modified grins data input.
+    """
+    if inplace:
+        data = grins_data
+    else:
+        data = grins_data.copy()
+
+    print("Applying missingness filter...")
+    data.obs.rename(columns=dict(zip([c for c in list(data.obs.columns) if "counts" in c],[f"nm_{c}" for c in list(data.obs.columns) if "counts" in c])),inplace=True) # Rename old QC columns to nonmissing (nm_)
+    data.var.rename(columns=dict(zip([c for c in list(data.obs.columns) if "counts" in c],[f"nm_{c}" for c in list(data.obs.columns) if "counts" in c])),inplace=True)
+    data.layers["log1p"]=sparse.csc_matrix.multiply(data.layers["log1p"].tocsc(),data.layers["missing_matrix"].tocsc()).tocsc()
+
+    # Calculate QC metrics:
+    sc.pp.calculate_qc_metrics(data,percent_top=[20],inplace=True,log1p=True,layer="log1p")
+    return data
+
+
 def get_full_grins():
     # Takes the parquet files from control and perturb cells as input, concatenates them, applies missingness, and saves them as full h5ad file
     # In case colnames dont align between them: set everything missing to 0
@@ -180,21 +253,6 @@ def missingness_filter(grins_matrix : np.matrix, loc : float = 10, scale : float
         A sparse matrix where all dropout entries are 0 and all entries to be kept are 1.
 
     Code for params generation (adjust the bins size until distribution fits histogram well):
-        bins = 125
-        mod_replogle_dropout = list(90-replogle_data.var["pct_dropout_by_counts"])
-        y, x = np.histogram(mod_replogle_dropout,bins=bins,range=(0,90))
-        plt.stairs(y,x)
-        plt.show()
-        #param = expon.fit(y,floc=0)
-        pdf_fitted = expon.pdf(np.linspace(0,100,1000),loc=10,scale=np.mean(y))
-        rvs = np.array([x if x < 100 else np.float64(100) for x in expon.rvs(loc=10,scale=np.mean(y),size=10000)])
-        plt.hist(rvs,bins=bins)
-        plt.show()
-        plt.plot(np.linspace(0,100,1000),pdf_fitted)
-        plt.hist(list(100-replogle_data.var["pct_dropout_by_counts"]),density=True,bins=bins)
-        plt.show()
-
-        Alternative:
         plt.hist(100-replogle_data.var["pct_dropout_by_counts"],bins=100,density=True)
         plt.xlim(0,100)
         x = np.linspace(0,100,1000)
@@ -218,67 +276,20 @@ def missingness_filter(grins_matrix : np.matrix, loc : float = 10, scale : float
 
         wrs_positions = np.argsort(keys)[::-1][:missing_rates[j]] # Get a number of entries equal to the lambda with the same rank as the gene mean expression
         if len(wrs_positions)>0:
-            missing_matrix[wrs_positions,gene_mean_order[j]]=0# for w in wrs_positions] -> [missing_indices[i],i]
+            missing_matrix[wrs_positions,gene_mean_order[j]]=0
 
     # Add full dropouts, if desired
     num_dropouts = int(missing_matrix.shape[1]*full_dropouts)
     if num_dropouts > 0:
         missing_matrix[random.sample(list(range(missing_matrix.shape[1])),num_dropouts),:] = 0
-
-    return sparse.csc_matrix(missing_matrix)
-
-
-
-def apply_missingness(grins_data : ad.AnnData ,layer : str ="log1p", inplace : bool = True) -> ad.AnnData:
-    """
-    Takes the missing value information from missingness_filter and applies it to a layer.
-    Note that the QC metrics for the nonmissing data are overwritten if inplace is True.
-
-    Parameters:
-    -----------
-    grins_data : ad.AnnData
-        The grins data object.
-    layer : str, optional
-        The layer to apply the missingness to. If None, use grins_data.X
-    inplace : bool, optional
-        Whether or not this should be done inplace (if True, the QC metrics calculated on the raw data will be overwritten!)
-
-    Returns:
-    --------
-    grins_data : ad.AnnData
-        The modified grins data input.
-    """
-    if inplace:
-        data = grins_data
-    else:
-        data = grins_data.copy()
-
-    if layer is None:
-        grins_matrix = data.X.copy().tocsc()
-        output = "missing_X"
-    else:
-        grins_matrix = data.layers[layer].copy().tocsc()
-        output = f"missing_{layer}"
-
-    print("Applying filter...")
-    data.obs.rename(columns=zip(list(data.obs.columns),[f"nm_{c}" for c in list(data.obs.columns) if "counts" in c]),inplace=True) # Rename old QC columns to nonmissing (nm_)
-    data.var.rename(columns=zip(list(data.var.columns),[f"nm_{c}" for c in list(data.var.columns) if "counts" in c]),inplace=True)
-    data.layers[output]=sparse.csc_matrix.multiply(grins_matrix,data.layers["missing_matrix"].copy().tocsc()).tocsc()
-
-    # Calculate QC metrics:
-    print("Calculate QC metrics...")
-    sc.pp.calculate_qc_metrics(data,percent_top=[20],inplace=True,log1p=True,layer=output)
-    """
-    grins_matrix = grins_data.layers[f"missing_{layer}"].todense()
-    for j,wrs_positions in grins_data.uns["missing_indices"].items():
-        grins_matrix[wrs_positions,int(j)] = 0.0
-    grins_data.layers[f"missing_{layer}"] = sparse.csc_matrix(grins_matrix)
-    """
-    return data
+    
+    #missing_X = sparse.csc_matrix(np.multiply(grins_matrix,missing_matrix))
+    
+    return sparse.csc_matrix(missing_matrix)#missing_X
+    
 
 
-
-def main(grn_file : str, is_racipe : bool = True, pert_file : str = None, num_replicates : int = 1, mode : str = "async", max_missingness : float = 90, expon_scale : float = 36.36, full_dropouts : float = 0) -> ad.AnnData:
+def main(grn_file : str, experimental : bool, is_racipe : bool = True, pert_file : str = None, num_replicates : int = 1, mode : str = "async", max_missingness : float = 90, expon_scale : float = 36.36, full_dropouts : float = 0) -> ad.AnnData:
     """
     Turns either the steady states generated by Racipe or the discrete on/off states generated by Racipe or Ising and turns them into an Anndata object.
 
@@ -338,15 +349,29 @@ def main(grn_file : str, is_racipe : bool = True, pert_file : str = None, num_re
             else:
                 grins_data = grins_ising_to_adata(path_to_data, grn_file) 
                 grins_data = grins_ising_to_continuous(grins_data,exp_data)
+            grins_data = apply_missingness(grins_data)
 
-            
+            # Create final subsets:
+            if experimental:
+                print("Subsetting experimental data")
+                grins_data = get_subset_adata_all(grins_data,grn_file,max_missingness=max_missingness)
+
             # Save the object:
             print(f"Save the AnnData object to {return_path}...")
-            ad.settings.allow_write_nullable_strings = True # <- remove later
+            ad.settings.allow_write_nullable_strings = True
             grins_data.write_h5ad(
-                return_path, # maybe change path later
+                f"{return_path}", # maybe change path later
                 compression=hdf5plugin.FILTERS["zstd"]
             )
+            """
+            del grins_data.layers["log1p"]
+            del grins_data.X
+            ad.settings.allow_write_nullable_strings = True # <- remove later
+            grins_data.write_h5ad(
+                f"{return_path}", # maybe change path later
+                compression=hdf5plugin.FILTERS["zstd"]
+            )
+            """
         else:
             print("Reading h5ad file...")
             grins_data = sc.read_h5ad(return_path)    
@@ -357,7 +382,8 @@ def main(grn_file : str, is_racipe : bool = True, pert_file : str = None, num_re
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("grn", help="Name of the GRN used in the project")
-    parser.add_argument("method", help="Racipe or Ising")
+    parser.add_argument("-e", "--experimental", action="store_true",help="Whether or not experimental data is used for comparison.")
+    parser.add_argument("-m","--method", help="Racipe or Ising (Defaults to Racipe.)")
     parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
     parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
     parser.add_argument("--max_missingness", type=float,help="The maximal percentage of missing data (Default: 90 percent).")
@@ -365,14 +391,19 @@ if __name__ == "__main__":
     parser.add_argument("--full_dropouts",type=float,help="How many genes should have 100 percent of their entries missing (Default: 0 percent)")
     parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
     parser.add_argument("--mode", help="If Ising, sync or async (Default: async)")
-    
+
     args = parser.parse_args()
 
     grn_file = args.grn
-    if args.method.lower() == "racipe":
-        is_racipe = True
-    elif args.method.lower() == "ising":
+    if args.method and args.method.lower() == "ising":
         is_racipe = False
+    else:
+        is_racipe = True
+
+    if args.experimental:
+        experimental = True
+    else:
+        experimental = False
 
     if args.use_perts:
         if args.pert_file:
@@ -389,11 +420,10 @@ if __name__ == "__main__":
         kwargs["expon_scale"] = args.expon_scale
     if args.full_dropouts:
         kwargs["full_dropouts"] = args.full_dropouts
-
     if args.num_replicates:
         kwargs["num_replicates"] = args.num_replicates
     if args.mode:
         kwargs["mode"] = args.mode
     
         
-    main(grn_file, is_racipe, pert_file, **kwargs)
+    main(grn_file, experimental, is_racipe, pert_file, **kwargs)

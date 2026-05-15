@@ -183,6 +183,7 @@ def filter_Norman_data(rawData, verbose = False):
     """
     
     data_filtered = filter_base(rawData, verbose=verbose)
+    data_filtered.obs["perturbation"]=["_".join(sorted(pert.split("_"))) for pert in data_filtered.obs["perturbation"]] # Make sure double perts are in alphabetical order
     """
     # Find double perturbations "gen_gen" : 
     mask_double_pert = data_filtered.obs["perturbation"].str.contains("_", na=False)
@@ -414,7 +415,7 @@ def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: i
         print(f"Total number of cells: {qc_data.n_obs}")
         print(qc_data.obs["outlier"].value_counts())
         print(qc_data.obs["mt_outlier"].value_counts())
-        print(f"Number of dropout genes: {sum(qc_data.var["pct_dropout_by_counts"]<90)}")
+        print(f"Number of dropout genes: {sum(qc_data.var["pct_dropout_by_counts"]>90)}")
 
     # filter cells
     qc_data = qc_data[(~qc_data.obs["outlier"]) & (~qc_data.obs["mt_outlier"])].copy()

@@ -31,7 +31,7 @@ def extract_pert_info(project_name : str, pert_file : str) -> list:
         The name of the project.
     pert_file : str, optional
         If None and experimental is True, a new .pert file is created from the perturbed genes of interestin the experimental datasets.
-        Otherwise, Data/Perts/pert_file.pert is loaded and potentially used for downstream sampling.
+        Otherwise, Data/Perts/pert_file.pert is loaded.
     
     Returns:
     --------
@@ -68,7 +68,7 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, pert_file : str, adata_
         A dict with the experimental dataset names as keys and the adata objects as values.
     pert_file : str, optional
         If None and experimental is True, a new .pert file is created from the perturbed genes of interestin the experimental datasets.
-        Otherwise, Data/Perts/pert_file.pert is loaded and potentially used for downstream sampling.
+        Otherwise, Data/Perts/pert_file.pert is loaded.
 
 
     Returns:
@@ -78,7 +78,7 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, pert_file : str, adata_
     all_perts : list[str]
         A list of all perturbed genes that will be used for pGRiNS.
     """
-    if pert_file is None: # Generate perturbation .pert file if not specified
+    if not os.path.exists(f"Data/Perts/{pert_file}.pert"): # Generate perturbation .pert file if not specified
         print("Creating new .pert file...")
         index = []
         current_index = 0
@@ -109,12 +109,12 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, pert_file : str, adata_
         all_perts = gene
     else: # Otherwise read existing .pert file
         print("Reading .pert file...")
-        all_perts = list(set(list(pd.read_csv(f"Data/Perts/{pert_file}.pert,",sep=" ")["Gene"])))
+        all_perts = list(set(list(pd.read_csv(f"Data/Perts/{pert_file}.pert",sep=" ")["Gene"])))
     return adata_dict, all_perts
 
 
 
-def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], subset_method : str) -> tuple[pd.DataFrame,dict[str,ad.AnnData]]:
+def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData]) -> pd.DataFrame:
     """
     Given a set of experimental datasets, this function removes all genes from them not in the GRN, and from the GRN it removes all genes not in any (union) or all (intersection) datasets.
 
@@ -124,15 +124,11 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
         The GRN.
     adata_dict : dict[str,ad.AnnData]
         A dict with the experimental dataset names as keys and the adata objects as values.
-    subset_method : str, optional
-        Whether or not genes from the GRN should be kept only if they are present in all experimental datasets (intersection), or any of them (union).
 
     Returns:
     --------
     grn_df : pd.DataFrame
         The input GRN, but without the genes not in the datasets.
-    adata_dict : dict[str,ad.AnnData]]
-        The input datasets, but without genes not in grn_df.
     """
 
     print("Created subset adata files...")
@@ -143,16 +139,9 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
         adata_genes = set(adata.var_names)
         adata = adata[:,sorted(list(grn_genes & adata_genes))]
         adata_genes_list.append(adata_genes)
-        
-        # Find highly variable genes and save new datasets
-        #sc.pp.highly_variable_genes(adata,n_top_genes=5000, subset=True,layer="log1p")
-        adata_dict[pseq] = adata
 
     # Remove genes not in datasets from GRN:
-    if subset_method.lower() == "union":
-        all_adata_genes = set().union(*adata_genes_list)
-    elif subset_method.lower() == "intersection":
-        all_adata_genes = set().union(*adata_genes_list).intersection(*adata_genes_list)
+    all_adata_genes = set().union(*adata_genes_list)
     
     # Only remove a gene from the GRN if it is not in the datasets AND if it has no outgoing edges, otherwise important relationships in the graph could be lost
     grn_remaining_genes = set(grn_genes & all_adata_genes)
@@ -161,7 +150,7 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
     grn_df = grn_df[grn_df["Source"].isin(list(grn_remaining_genes | grn_source_genes))]
     grn_df = grn_df[grn_df["Target"].isin(list(grn_remaining_genes | grn_source_genes))]
 
-    return grn_df, adata_dict
+    return grn_df
 
 
 
@@ -197,7 +186,7 @@ def split_sinks_from_grn(grn_df : pd.DataFrame, project_name : str) -> pd.DataFr
 
 
 
-def main(project_name : str, experimental : bool, pert_file : str, downstream_depth : int = None, subset_method : str = "Union", split_sinks : bool = False):
+def main(project_name : str, experimental : bool, pert_file : str = None, split_sinks : bool = False):
     """
     Creates a new project folder in Data/project_name, in which the input topos from Data/Topos are concatenated.
     If experimental data is provided in Data/Experimental, it is normalized and used for various subsetting procedures designed to remove unnecessary edges and nodes from the GRN.
@@ -213,12 +202,7 @@ def main(project_name : str, experimental : bool, pert_file : str, downstream_de
     experimental : bool
         Whether or not experimental data is provided.
     pert_file : str
-        If None and experimental is True, a new .pert file is created from the perturbed genes of interestin the experimental datasets.
-        Otherwise, Data/Perts/pert_file.pert is loaded and potentially used for downstream sampling.
-    downstream_depth : int, optional
-        How long the paths from pGOIs that are kept are. If None, all are kept.
-    subset_method : str, optional
-        Whether or not genes from the GRN should be kept only if they are present in all experimental datasets (intersection), or any of them (union).
+        Name of the newly created .pert file from experimental datasets.
     split_sinks : bool, optional
         Whether or not the sink nodes should be treated separately and not simulated in Racipe.
     
@@ -226,62 +210,50 @@ def main(project_name : str, experimental : bool, pert_file : str, downstream_de
     --------
     None
     """
-    
-    assert subset_method.lower() in ["union","intersection"]
-    os.makedirs(f"Data/Projects/{project_name}",exist_ok=True)
+    if not os.path.exists(f"Data/Projects/{project_name}/{project_name}.topo"):
+        os.makedirs(f"Data/Projects/{project_name}",exist_ok=True)
 
-    topo_files = sorted([pseq_path.split("/")[-1].split(".")[0] for pseq_path in glob(f"Data/Topos/*.topo")])
-    print(f".topo files {topo_files} are turned into {project_name}")
+        topo_files = sorted([pseq_path.split("/")[-1].split(".")[0] for pseq_path in glob(f"Data/Topos/*.topo")])
+        print(f".topo files {topo_files} are turned into {project_name}")
 
-    # Concatenate the input .topo files into grn_df
-    topo_dfs = [pd.read_csv(f"Data/Topos/{topo_file}.topo",sep=" ") for topo_file in topo_files]
-    grn_df = pd.concat(topo_dfs,axis=0).drop_duplicates(subset=["Source","Target"]).sort_values(by=["Source","Target"])
+        # Concatenate the input .topo files into grn_df
+        topo_dfs = [pd.read_csv(f"Data/Topos/{topo_file}.topo",sep=" ") for topo_file in topo_files]
+        grn_df = pd.concat(topo_dfs,axis=0).drop_duplicates(subset=["Source","Target"]).sort_values(by=["Source","Target"])
 
-    # -e: Get experimental perturb seq datasets and normalize them
-    if experimental:
-        pseqs = sorted([pseq_path.split("/")[-1] for pseq_path in glob(f"Data/Experimental/*")])
-        print(f"Experimental perturb seq datasets used: {pseqs}")
-        adata_dict = {pseq_file : normalize.normalize_adata_main(pseq_file) for pseq_file in pseqs}
-    else:
-        adata_dict = None
-    
-    # -p: Get a list of perturbations of genes of interest that are in the GRN
-    if adata_dict is not None or pert_file is not None:
-        adata_dict, all_perts = get_perts(grn_df, project_name, pert_file, adata_dict)
-    else:
-        print("Neither a .pert file, nor experimental data to draw perturbations from are specified.")
+        # -e: Get experimental perturb seq datasets and normalize them
+        if experimental:
+            pseqs = sorted([pseq_path.split("/")[-1] for pseq_path in glob(f"Data/Experimental/*")])
+            print(f"Experimental perturb seq datasets used: {pseqs}")
+            adata_dict = {pseq_file : normalize.normalize_adata_main(pseq_file) for pseq_file in pseqs}
+        else:
+            adata_dict = None
+        
+        # -p: Get a list of perturbations of genes of interest that are in the GRN
+        if pert_file is not None:
+            adata_dict, all_perts = get_perts(grn_df, project_name, pert_file, adata_dict)
 
-    # -e: Remove genes from GRN not in datasets, and genes from datasets not in GRN
-    if adata_dict is not None:
-        grn_df, adata_dict = subset_from_adata(grn_df, adata_dict,subset_method)
+        # -e: Remove genes from GRN not in datasets
+        if adata_dict is not None:
+            grn_df = subset_from_adata(grn_df, adata_dict)
 
-    # -s: Split sink nodes into separate .topo file
-    if split_sinks:
-        grn_df = split_sinks_from_grn(grn_df, project_name)
+        # -s: Split sink nodes into separate .topo file
+        if split_sinks:
+            grn_df = split_sinks_from_grn(grn_df, project_name)
 
-    # Save the output data structures to files:
-    grn_df.to_csv(f"Data/Projects/{project_name}/{project_name}.topo",sep=" ",index=False)
-    for pseq, adata in adata_dict.items():
-        ad.settings.allow_write_nullable_strings = True
-        adata.write_h5ad(
-            f"Data/Experimental/{pseq}/perturb_subset_{project_name}.h5ad",
-            compression=hdf5plugin.FILTERS["zstd"]
-        )
+        # Save the output data structures to files:
+        grn_df.to_csv(f"Data/Projects/{project_name}/{project_name}.topo",sep=" ",index=False)
 
 
 
 if __name__ == "__main__":
     """
     Example:
-    python3 Prep_Data/pgrins_prepare_input.py project_name -es
+    python3 Prep_Data/pgrins_prepare_input.py project_name -pes
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("grn", help="Name of the GRN used in the project")
     parser.add_argument("-e","--experimental", help="Whether or not perturb-seq control data is supplied",action="store_true")
-    parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
-    parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
-    parser.add_argument("--downstream_depth",type=int,help="Given a list of perturbed genes, keep only the genes with a minimal distance of d (and the edges along these paths)")
-    parser.add_argument("--subset_method", help="Whether or not the GRN should only contains genes in all experimental datasets, or any of them (default: Union)")
+    parser.add_argument("-p", "--create_perts", action="store_true",help="If true, Data/Perts/project_name_perts.pert is created from experimental data. Not necessary if other pert file was specified with --pert_file.")
     parser.add_argument("-s","--split_sinks", help="Whether or not sinks should be removed from the GRN",action="store_true")
     args = parser.parse_args()
 
@@ -293,15 +265,7 @@ if __name__ == "__main__":
         experimental = False
     if args.split_sinks:
         kwargs["split_sinks"] = args.split_sinks
-    if args.subset_method:
-        kwargs["subset_method"] = args.subset_method
-    if args.downstream_depth:
-        kwargs["downstream_depth"] = args.downstream_depth
-    if args.use_perts:
-        if args.pert_file:
-            pert_file = args.pert_file
-        else:
-            pert_file = f"{grn_file}_perts"
-    else:
-        pert_file = None
-    main(project_name, experimental, pert_file, **kwargs)
+    if args.create_perts:
+        kwargs["pert_file"] = f"{project_name}_perts"
+
+    main(project_name, experimental, **kwargs)
