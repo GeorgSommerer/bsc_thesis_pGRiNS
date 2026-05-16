@@ -164,6 +164,9 @@ def get_subset_adata_all(grins_data : ad.AnnData, grn_file : str, ctrl_only : bo
     for name, adata in adata_dict.items():
         if ctrl_only:
             adata_dict[name] = adata[adata.obs["perturbation"]=="ctrl"]
+        else:
+            # Remove all perturbations not in the .pert file
+            adata_dict[name] = adata[adata.obs["perturbation"].isin(list(grins_data.obs["perturbation"]).unique()+["ctrl"])]
         adata_gnames = set(adata.var_names)
         adata_dict[name] = adata[:,sorted(list(grins_gnames & adata_gnames))] # Only genes in grins_data remain in each adata
         print(f"Save subset of {name}...")
@@ -171,7 +174,7 @@ def get_subset_adata_all(grins_data : ad.AnnData, grn_file : str, ctrl_only : bo
         adata_dict[name].write_h5ad(
             f"Data/Experimental/{name}/perturb_norm_subset_{grn_file}.h5ad",
             compression=hdf5plugin.FILTERS["zstd"]
-        )        
+        )      
 
     return grins_data
 
@@ -350,7 +353,7 @@ def main(grn_file : str, experimental : bool, is_racipe : bool = True, pert_file
                 grins_data = grins_ising_to_adata(path_to_data, grn_file) 
             
             # Create final subsets:
-            if experimental:
+            if experimental and pert_list is not None:
                 print("Subsetting experimental data")
                 grins_data = get_subset_adata_all(grins_data,grn_file,max_missingness=max_missingness)
 
