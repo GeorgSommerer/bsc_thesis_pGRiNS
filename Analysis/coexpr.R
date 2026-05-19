@@ -9,13 +9,9 @@ library(CoDiNA)
 library(reshape2)
 setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
 
-# Large parts of 
-
-norman_list = list(name="Norman19")
-
 # 1) Get adjacency matrix:
 get_adj_matrix <- function(ds_list){
-  pert_mean_matrix <- read_delim(paste("../Data/Experimental/",ds_list$name,"/pert_mean.csv",sep=""),delim=" ")
+  pert_mean_matrix <- read_delim(paste("../Data/Experimental/",ds_list$name,"/",ds_list$name,"-",ds_list$model,"_pert_mean.csv",sep=""),delim=" ")
   
   ds_list$pert_mean_matrix <- pert_mean_matrix
   ds_list$uniqGenesymbols <- colnames(pert_mean_matrix)
@@ -55,8 +51,6 @@ get_adj_matrix <- function(ds_list){
   
   return(ds_list)
 }
-
-norman_list <- get_adj_matrix(norman_list)
 
 
 # 2) Get clusters/modules and use topGO to find pathways associated with modules
@@ -125,45 +119,72 @@ GO_enrichment <- function(ds_list,module,ont){
   return(ds_list)
 }
 
-norman_list <- get_modules(norman_list)
-
-mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-write_GO_IDs(norman_list,mart)
-
-onts <- c("MF","BP","CC")
-norman_list[["GO_results"]] = list()
-for (module in unique(norman_list$modules)){
-  norman_list[["GO_results"]][[module]] = list()
-  for (ont in onts){
-    norman_list <- GO_enrichment(norman_list,module,ont)
-  }
-}
-
 # Calculate confusion matrix between experimental and pGRiNS
-GO_conf_matrix <- matrix(0L, nrow=length(unique(norman_list$modules)),ncol=unique(pgrins_list$modules))
-dimnames(GO_conf_matrix) <- list(unique(norman_list$modules),unique(pgrins_list$modules))
-
-for (n_module in rownames(GO_conf_matrix)){
-  for (p_module in colnames(GO_conf_matrix)){
-    for (ont in onts){
-      # Get the number of shared GO IDs between exp and pGRiNS for each ont type and each module
-      GO_conf_matrix[n_module,p_module] <- GO_conf_matrix[n_module,p_module] + length(intersect(norman_list$GO_results[[n_module]][[ont]]$GO.ID,pgrins_list$GO_results[[n_module]][[ont]]$GO.ID))
+get_conf_matrix <- function(exp_ds,grins_ds){
+  GO_conf_matrix <- matrix(0L, nrow=length(unique(exp_ds$modules)),ncol=unique(pgrins_ds$modules))
+  dimnames(GO_conf_matrix) <- list(unique(exp_ds$modules),unique(pgrins_ds$modules))
+  
+  for (n_module in rownames(GO_conf_matrix)){
+    for (p_module in colnames(GO_conf_matrix)){
+      for (ont in onts){
+        # Get the number of shared GO IDs between exp and pGRiNS for each ont type and each module
+        GO_conf_matrix[n_module,p_module] <- GO_conf_matrix[n_module,p_module] + length(intersect(exp_ds$GO_results[[n_module]][[ont]]$GO.ID,pgrins_ds$GO_results[[n_module]][[ont]]$GO.ID))
+      }
     }
   }
+  heatmap(GO_conf_matrix)
 }
 
-heatmap(GO_conf_matrix)
+# How to measure goodness of confusion matrix?
 
 
 # 3) On the adjacency matrix: use CoDiNA to compare networks
+get_diff_net <- function(exp_ds,grins_ds){
+  diff_net <- MakeDiffNet(Data = list(exp_ds$network_df, grins_ds$network_df),Code = c("experimental", "pGRINS"))
+  # Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
+  # beta edges have different signs, and gamma edges belong to only 1 network
+  DiffNodes = ClusterNodes(diff_net, cutoff.external = 0, cutoff.internal = 1) # Maybe need to clean by Score_Phi_tilde/Score_internal>1?
+  
+  barplot(table(DiffNodes$Phi_tilde))
+  
+  common_genes = subset(DiffNodes$Node, DiffNodes$Phi_tilde == 'a')
+  exp_genes = subset(DiffNodes$Node, DiffNodes$Phi_tilde == 'g.experimental')
+  pgrins_genes = subset(DiffNodes$Node, DiffNodes$Phi_tilde == 'g.pGRINS')
+  print(paste("Common genes:",common_genes))
+  print(paste("Genes in experimental:",common_genes))
+  print(paste("Genes in pGRiNS:",common_genes))
+}
 
-diff_net <- MakeDiffNet(Data = list(norman_list$network_df, pgrins_list$network_df),Code = c("Norman19", "pGRINS"))
-# Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
-# beta edges have different signs, and gamma edges belong to only 1 network
-DiffNodes = ClusterNodes(diff_net, cutoff.external = 0, cutoff.internal = 1) # Maybe need to clean by Score_Phi_tilde/Score_internal>1?
 
-barplot(table(DiffNodes$Phi_tilde))
+######################################################################
+# Main:
+names = c("Norman19","Replogle22")
+models = c("experimental","pGRiNS")
 
-common_genes = subset(DiffNodes$Node, DiffNodes$Phi_tilde == 'a')
-norman_genes = subset(DiffNodes$Node, DiffNodes$Phi_tilde == 'g.Norman19')
-pgrins_genes = subset(DiffNodes$Node, DiffNodes$Phi_tilde == 'g.pGRINS')
+mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+onts <- c("MF","BP","CC")
+
+dataset_lists = list()
+for (name in names){
+  for (model in models){
+    dataset_lists[[name]][[model]] <- list(name=name,model=model)
+    
+    dataset_lists[[name]][[model]] <- get_adj_matrix(dataset_lists[[name]][[model]])
+    
+    dataset_lists[[name]][[model]] <- get_modules(dataset_lists[[name]][[model]])
+    
+    write_GO_IDs(dataset_lists[[name]][[model]],mart)
+    
+    dataset_lists[[name]][[model]][["GO_results"]] = list()
+    for (module in unique(dataset_lists[[name]][[model]]$modules)){
+      dataset_lists[[name]][[model]][["GO_results"]][[module]] = list()
+      for (ont in onts){
+        dataset_lists[[name]][[model]] <- GO_enrichment(dataset_lists[[name]][[model]],module,ont)
+      }
+    }
+  }
+  
+  get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
+  
+  get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
+}
