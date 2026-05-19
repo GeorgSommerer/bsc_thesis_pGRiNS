@@ -9,6 +9,8 @@ library(CoDiNA)
 library(reshape2)
 setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
 
+# Large parts of 
+
 norman_list = list(name="Norman19")
 
 # 1) Get adjacency matrix:
@@ -96,7 +98,7 @@ write_GO_IDs <- function(ds_list,mart){
     Genes2GO[i,1]=temp[1,1]
     Genes2GO[i,2]=tempGOs
   }
-  write.table(Genes2GO, paste(ds_list$name,"_Genes2Go.txt",sep=""), quote=FALSE, row.names=FALSE, col.names=FALSE, se="\t")
+  write.table(Genes2GO, paste("../Data/Experimental/",ds_list$name,"/Genes2Go.txt",sep=""), quote=FALSE, row.names=FALSE, col.names=FALSE, se="\t")
 }
 
 GO_enrichment <- function(ds_list,module,ont){
@@ -105,7 +107,7 @@ GO_enrichment <- function(ds_list,module,ont){
   names(geneList) <- ds_list$uniqGenesymbols
   
   # Read Gene2GO map:
-  Genes2GOmap=readMappings(file = paste(ds_list$name,"_Genes2Go.txt",sep=""))
+  Genes2GOmap=readMappings(file = paste("../Data/Experimental/",ds_list$name,"/Genes2Go.txt",sep=""))
   
   # Build the topGO object:
   GOdata = new("topGOdata", ontology = ont, allGenes = geneList, annot = annFUN.gene2GO, gene2GO = Genes2GOmap)
