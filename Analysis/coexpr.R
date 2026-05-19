@@ -92,7 +92,7 @@ write_GO_IDs <- function(ds_list,mart){
     Genes2GO[i,1]=temp[1,1]
     Genes2GO[i,2]=tempGOs
   }
-  write.table(Genes2GO, paste("../Data/Experimental/",ds_list$name,"/Genes2Go.txt",sep=""), quote=FALSE, row.names=FALSE, col.names=FALSE, se="\t")
+  write.table(Genes2GO, paste("../Data/Experimental/",ds_list$name,"/coexpr_Genes2Go.txt",sep=""), quote=FALSE, row.names=FALSE, col.names=FALSE, se="\t")
 }
 
 GO_enrichment <- function(ds_list,module,ont){
@@ -184,7 +184,7 @@ for (name in names){
     }
   }
   
-  get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
+  #get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
   
-  get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
+  #get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
 }
