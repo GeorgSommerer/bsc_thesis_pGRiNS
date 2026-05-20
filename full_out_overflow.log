@@ -8230,3 +8230,12 @@ Running steady state simulations for replicate: 001
 ********************************
 [Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
 ********************************
+nohup: Eingabe wird ignoriert
+RACIPE:
+Running pert with 1000 cells for 134 perturbation sets (134 per batch), a batch size of 1000 and 2048 steps.
+Generating parameters...
+Perturbation effect file generated for KeggoRo
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 134000
+Running steady state simulations for replicate: 001
+  0%|          | 0/134 [00:00<?, ?it/s]

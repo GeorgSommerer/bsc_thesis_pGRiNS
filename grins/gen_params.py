@@ -403,8 +403,6 @@ def sample_param_df(
     prange_df: pd.DataFrame,
     num_params: int = 2**10,
     rng: int | np.random.Generator | None = None,
-    pert_dict : dict = None,
-    pert_factor : int = 50
 ) -> pd.DataFrame:
     """
     Samples parameter values based on the provided parameter range DataFrame.
@@ -709,7 +707,6 @@ def gen_param_range_df(
     sampling_method: Union[str, dict] = "Sobol",
     thr_rows: bool = True,
     rng: int | np.random.Generator | None = None,
-    pert_dict : dict = None
 ) -> pd.DataFrame:
     """
     Generate a parameter range DataFrame from the topology DataFrame.
@@ -780,8 +777,6 @@ def gen_param_df(
     sampling_method: Union[str, dict] = "Sobol",
     thr_rows: bool = True,
     rng: int | np.random.Generator | None = None,
-    pert_dict : dict = None,
-    pert_factor : int = 50
 ) -> pd.DataFrame:
     """
     Generate the final parameter DataFrame by sampling parameters.
@@ -821,7 +816,7 @@ def gen_param_df(
             rng=rng,
         )
     # Use the sample_param_df function to sample the parameters
-    param_df = sample_param_df(prange_df, num_params, rng=rng,pert_dict=pert_dict,pert_factor=pert_factor)
+    param_df = sample_param_df(prange_df, num_params, rng=rng)
     # Add the ParamNum column to the DataFrame
     return param_df
 
@@ -870,3 +865,24 @@ def gen_init_cond(
     # A new columns for the intial condition numbers
     # initcond_df["InitCondNum"] = initcond_df.index + 1
     return initcond_df
+
+
+def gen_pert_genes(pert_list, pert_factor):
+    """
+    Creates a dataframe containing information on which genes will be perturbed by what factor in each perturbation.
+    """
+    pert_genes = sorted(list(set().union(*[set(pert_dict.keys()) for pert_dict in pert_list])))
+    pg_index_dict = {pert_genes[i]:i for i in range(len(pert_genes))} # Which column matches which gene
+
+    pert_df = np.ones((len(pert_list),len(pert_genes))) # 1 row per perturbation set, 1 col per perturbed gene
+    for i in range(len(pert_list)):
+        # Scale sampled values for perturbed genes depending on the type
+        for gene, typ in pert_list[i].items():
+            if typ == 1: # CRISPRa
+                pert_df[i,pg_index_dict[gene]] *= pert_factor
+            elif typ == 2: # CRISPRi
+                pert_df[i,pg_index_dict[gene]] /= pert_factor
+            elif typ == 3: # CRISPR KO
+                pert_df[i,pg_index_dict[gene]] = 0.0
+    pert_df = pd.DataFrame(pert_df,columns=[f"Pert_{gene}" for gene in pert_genes])
+    return pert_df

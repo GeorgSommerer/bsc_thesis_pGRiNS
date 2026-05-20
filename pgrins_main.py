@@ -99,7 +99,7 @@ if args.pert_ratio:
 if args.pert_factor:
     kwargs_b1["pert_factor"]=args.pert_factor
     kwargs_b2["pert_factor"]=args.pert_factor
-if args.pert_batch_size:
+if args.pert_batch_size is not None:
     kwargs_b1["pert_batch_size"]=args.pert_batch_size
     kwargs_b2["pert_batch_size"]=args.pert_batch_size
 

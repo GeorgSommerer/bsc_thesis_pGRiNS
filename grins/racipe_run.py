@@ -6,6 +6,7 @@ from grins.gen_params import (
     gen_param_df,
     gen_init_cond,
     gen_param_range_df,
+    gen_pert_genes,
     parse_topos,
     _get_rng
 )
@@ -31,6 +32,9 @@ from typing import Union
 from scipy.signal import find_peaks
 import warnings
 import ast
+
+import scanpy as sc
+import hdf5plugin
 
 
 # Function to generate the required directory structure
@@ -83,10 +87,7 @@ def gen_topo_param_files(
     sampling_method: str | dict = "Sobol",
     rng: int | np.random.Generator | None = None,
     pert_list : list = None,
-    pert_factor : int = 50,
-    pert_batch_size : int = 0,
-    pert_ratio : float = 1,
-    split_sinks = False
+    pert_factor : int = 50
 ):
     """
     Generate parameter files for simulation.
@@ -119,10 +120,8 @@ def gen_topo_param_files(
     None
         The parameter files and initial conditions are generated and saved in the specified replicate directories.
     """
-    if pert_list is None:
-        suffix = "ctrl"
-    else:
-        suffix = f"pert"
+    if pert_list is not None:
+        suffix="pert"
     # Get the name of the topo file
     topo_name = topo_file.split("/")[-1].split(".")[0]
     # Parse the topo file
@@ -138,98 +137,51 @@ def gen_topo_param_files(
     # Specify directory where all the generated ode system file will be saved
     sim_dir = f"{save_dir}/{topo_name}"
     # Generate the ODE system for diffrax
-    gen_diffrax_odesys(topo_df, topo_name, sim_dir)
-    # Generate the parameter dataframe and save in each of the replicate folders
-    for rep in range(1, num_replicates + 1):
-        # Derive a deterministic seed for this specific replicate
-        rep_seed = main_rng.integers(0, 2**32)
-        rep_rng = np.random.default_rng(rep_seed)
-        # Generate the parameter range dataframe
-        #if pert_list is None:
-        param_range_df = gen_param_range_df(
-            topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
-        )
-        # Save the parameter range dataframe
-        param_range_df.to_csv(
-            f"{sim_dir}/{rep:03}/{topo_name}_param_range_{rep:03}_{suffix}.csv",
-            index=False,
-            sep="\t",
-        )
-        #else: # param_range.csv is generated during parameter narrowing in the perturbed run
-        #        sink_param_range_df = pd.read_csv(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks_{suffix}.csv",sep="\t")
-        
-        # # Generate the parameter dataframe with the default values
-        if pert_list is None:
+    gen_diffrax_odesys(topo_df, topo_name, sim_dir,pert_list,suffix)
+    if pert_list is None:
+        # Generate the parameter dataframe and save in each of the replicate folders
+        for rep in range(1, num_replicates + 1):
+            # Derive a deterministic seed for this specific replicate
+            rep_seed = main_rng.integers(0, 2**32)
+            rep_rng = np.random.default_rng(rep_seed)
+            # Generate the parameter range dataframe
+            param_range_df = gen_param_range_df(
+                topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
+            )
+            # Save the parameter range dataframe
+            param_range_df.to_csv(
+                f"{sim_dir}/{rep:03}/{topo_name}_param_range_{rep:03}_ctrl.csv",
+                index=False,
+                sep="\t",
+            )
+            # # Generate the parameter dataframe with the default values
             param_df = gen_param_df(param_range_df, num_params, rng=rep_rng)
             param_df = param_df.assign(ParamNum=param_df.index + 1)
             param_df.to_parquet(
-                f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_{suffix}.parquet", index=False
+                f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_ctrl.parquet", index=False
             )
+            # Generate the initial conditions dataframe
             initcond_df = gen_init_cond(
                 topo_df=topo_df, num_init_conds=num_init_conds, rng=rep_rng
             )
             initcond_df = initcond_df.assign(InitCondNum=initcond_df.index + 1)
             initcond_df.to_parquet(
-                f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_{suffix}.parquet",
+                f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_ctrl.parquet",
                 index=False,
             )
-        else:
-            # For each perturbation set, sample cell parameters from control data
-            ctrl_cells = sc.read_h5ad(f"Data/Projects/{topo_name}/perturb_norm_ctrl_reduced.h5ad")
-            ctrl_nonsink_params = pd.read_parquet(f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_ctrl.parquet")
-            ctrl_ics = pd.read_parquet(f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_ctrl.parquet")
+        print(f"Parameter and Intial Condition files generated for {topo_name}")
 
-            if split_sinks:
-                ctrl_sink_params = pd.read_parquet(f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_sinks_ctrl.parquet")
-                sink_param_df = []
+    else:
+        # Generate which genes will be affected by which perturbations
+        pert_df = gen_pert_genes(pert_list,pert_factor)
+        pert_df = pert_df.assign(PertNum=pert_df.index)
+        for rep in range(1,num_replicates+1):
+            pert_df.to_parquet(
+                f"{sim_dir}/{rep:03}/{topo_name}_pert_genes_{rep:03}.parquet", index=False
+            )
+        print(f"Perturbation effect file generated for {topo_name}")
 
-            for pert_fragment in tqdm(range(0,len(pert_list),pert_batch_size)):
-                this_pert_list = pert_list[pert_fragment:pert_fragment+pert_batch_size]
-
-                nonsink_param_df = []
-                ic_df = []
-                for pert_dict in this_pert_list:
-                    pert_choices = np.random.choice(list(ctrl_cells.obs_names),int(pert_ratio*num_params*num_init_conds),replace=False)
-                    print(f"{len(pert_choices)} cells chosen")
-                    this_nonsink_param_df = ctrl_nonsink_params.loc[[int(cell.split("_")[2]) for cell in pert_choices]]
-                    # Scale sampled values for perturbed genes depending on the type
-                    for pert in pert_dict.keys():
-                        if pert_dict[pert] == 1: # CRISPRa
-                            this_nonsink_param_df[f"Prod_{pert}"]*=pert_factor
-                        elif pert_dict[pert] == 2: # CRISPRi
-                            this_nonsink_param_df[f"Prod_{pert}"]/=pert_factor
-                        elif pert_dict[pert] == 3: # CRISPR KO
-                            this_nonsink_param_df[f"Prod_{pert}"]=0.0
-                    nonsink_param_df.append(this_nonsink_param_df)
-
-                    if split_sinks:
-                        this_sink_param_df = ctrl_sink_params.loc[[int(cell.split("_")[2]) for cell in pert_choices]]
-                        sink_param_df.append(this_sink_param_df)
-
-                    this_ic_df = ctrl_ics.loc[[int(cell.split("_")[1]) for cell in pert_choices]]
-                    ic_df.append(this_ic_df)
-
-
-                pd.concat(nonsink_param_df,ignore_index=True).to_parquet(
-                    f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_{suffix}_{pert_fragment}.parquet", index=False
-                )
-                pd.concat(ic_df,ignore_index=True).to_parquet(
-                    f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_{suffix}_{pert_fragment}.parquet", index=False
-                )
-
-            if split_sinks:
-                pd.concat(sink_param_df,ignore_index=True).to_parquet(
-                    f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_sinks_{suffix}.parquet", index=False
-                )
-
-
-    print(f"Parameter and Intial Condition files generated for {topo_name}")
     return None
-
-def gen_param_df_pert(ctrl_params, ctrl_cells,num_params, pert_dict, pert_factor):
-    choices = np.random.choice(list(ctrl_data.obs_names),num_params)
-    chosen_params = [int(cell.split("_")[2]) for cell in choices]
-    chosen_ics = [int(cell.split("_")[1]) for cell in choices]
 
 
 # Function to load the ODE system from a specified topology folder as a module so that the ODETerm can be initialized from the ODE system
@@ -263,7 +215,7 @@ def load_odeterm(topo_name, simdir):
 
 
 # Function to generate the combinations of initial conditions and parameters
-def _gen_combinations(num_init_conds, num_params,pert_list = None,no_cells=0):
+def _gen_combinations(num_init_conds, num_params,pert_genes = None,topo_name = None,pert_ratio = 0.01):
     """
     Generate combinations of initial conditions and parameters.
 
@@ -282,13 +234,21 @@ def _gen_combinations(num_init_conds, num_params,pert_list = None,no_cells=0):
         A 2D array where each row represents a combination of an initial condition and a parameter. The first column contains indices of initial conditions, and the second column contains indices of parameters.
     """
     # Generate the combinations more efficiently using numpy
-    if pert_list is None:
+    if pert_genes is None:
         i = jnp.repeat(jnp.arange(num_init_conds), num_params)
         p = jnp.tile(jnp.arange(num_params), num_init_conds)
         icprm_comb = jnp.stack([i, p], axis=1)
-    else: # Only look at the combinations for each perturb set
-        icprm_comb = jnp.stack([jnp.arange(no_cells),jnp.arange(no_cells)],axis=1)
-        #icprm_comb = jnp.concatenate([jnp.stack([jnp.repeat(jnp.arange(p*num_init_conds,(p+1)*num_init_conds), num_params),jnp.tile(jnp.arange(p*num_params,(p+1)*num_params), num_init_conds)],axis=1) for p in range(len(pert_list))],axis=0)
+    else:
+        cell_data = sc.read_h5ad(f"Data/Projects/{topo_name}/perturb_norm_ctrl_reduced.h5ad")
+        icprm_comb = []
+        # For each perturbation, sample random cells from the synth control data
+        for pert_index in range(pert_genes.shape[0]):
+            cell_choices = np.random.choice(list(cell_data.obs_names),int(num_init_conds*num_params*pert_ratio),replace=False)
+            i = jnp.array([int(cell.split("_")[1]) for cell in cell_choices])
+            p = jnp.array([int(cell.split("_")[2]) for cell in cell_choices])
+            g = jnp.repeat(pert_index,len(i))
+            icprm_comb.append(jnp.stack([i,p,g],axis=1))
+        icprm_comb = jnp.vstack(icprm_comb)   
     return icprm_comb
 
 
@@ -304,6 +264,7 @@ def parameterise_solveode(
     max_steps,
     initial_conditions,
     parameters,
+    pert_genes = None
 ):
     """
     Parameterise the ODE system and return the right functions.
@@ -341,6 +302,11 @@ def parameterise_solveode(
     if saveat.subs.ts is None:
         # Function to solve the ODEs
         def solve_steadystate_ode(pi_row):
+            if pert_genes is not None:
+                # Add Pert_{pert_gene_name} as parameters
+                param_row = jnp.hstack([parameters[pi_row[1]][:-1],pert_genes[pi_row[2]][:-1]])
+            else:
+                param_row = parameters[pi_row[1]][:-1]
             sol = diffeqsolve(
                 ode_term,  # ODETerm
                 solver,  # Solver
@@ -348,7 +314,7 @@ def parameterise_solveode(
                 t1,  # End time
                 dt0,  # Time step
                 tuple(initial_conditions[pi_row[0]][:-1]),  # Initial conditions
-                tuple(parameters[pi_row[1]][:-1]),  # Parameters
+                tuple(param_row),  # Parameters
                 max_steps=max_steps,
                 saveat=saveat,
                 stepsize_controller=stepsize_controller,
@@ -381,6 +347,10 @@ def parameterise_solveode(
     else:
         # Function to solve the ODEs
         def solve_timeseries_ode(pi_row):
+            if pert_genes is not None:
+                param_row = jnp.hstack([parameters[pi_row[1]][:-1],pert_genes[pi_row[2]][:-1]])
+            else:
+                param_row = parameters[pi_row[1]][:-1]
             sol = diffeqsolve(
                 ode_term,  # ODETerm
                 solver,  # Solver
@@ -388,7 +358,7 @@ def parameterise_solveode(
                 t1,  # End time
                 dt0,  # Time step
                 tuple(initial_conditions[pi_row[0]][:-1]),  # Initial conditions
-                tuple(parameters[pi_row[1]][:-1]),  # Parameters
+                tuple(param_row),  # Parameters
                 max_steps=max_steps,
                 saveat=saveat,
                 stepsize_controller=stepsize_controller,
@@ -418,6 +388,8 @@ def topo_simulate(
     replicate_dir,
     initial_conditions,
     parameters,
+    pert_genes = None,
+    pert_ratio=0.01,
     t0=0.0,
     tmax=200.0,
     dt0=0.01,
@@ -427,7 +399,7 @@ def topo_simulate(
     max_steps=2048,
     batch_size=10000,
     ode_term_dir=None,
-    pert_list=None
+    suffix = "ctrl"
 ):
     """
     Simulates the ODE system defined by the topology file and saves the results in the replicate directory. The ode system is loaded as a diffrax ode term and the initial conditions and parameters are passed as jax arrays. The simulation is run for the specified time range and time steps and the results are saved in parquet format in the replicate directory.
@@ -483,7 +455,7 @@ def topo_simulate(
         simul_dir = ode_term_dir.rstrip("/")
     # Getting the node and paramter order from the ODE system file
     node_order, param_order = get_node_param_order(
-        os.path.join(simul_dir, f"{topo_name}.py")
+        os.path.join(simul_dir, f"{topo_name}_{suffix}.py")
     )
     # Validating and reordering the node and parameters to align with the unpacking in the odesys function
     if node_order:
@@ -502,6 +474,8 @@ def topo_simulate(
         initial_conditions = initial_conditions[ic_cols]
     if param_order:
         actual_params = set(parameters.columns) - {"ParamNum"}
+        if pert_genes is not None:
+            param_order = [p for p in param_order if p not in set(pert_genes.columns)]
         expected_params = set(param_order)
         if actual_params != expected_params:
             raise ValueError(
@@ -514,17 +488,16 @@ def topo_simulate(
         )
         parameters = parameters[p_cols]
     # Load the ODE system as a diffrax ode term
-    ode_term = load_odeterm(topo_name, simul_dir)
+    ode_term = load_odeterm(f"{topo_name}_{suffix}", simul_dir)
     # Getting the intial conditions dataframe column names
     ic_columns = initial_conditions.columns
     # Converting the initial conditions and parameters to jax arrays
     initial_conditions = jnp.array(initial_conditions.to_numpy())
     parameters = jnp.array(parameters.to_numpy())
+    if pert_genes is not None:
+        pert_genes = jnp.array(pert_genes.to_numpy())
     # Get the combinations of initial conditions and parameters
-    if pert_list is None:
-        icprm_comb = _gen_combinations(len(initial_conditions), len(parameters))
-    else:
-        icprm_comb = _gen_combinations(len(initial_conditions), len(parameters),pert_list=pert_list,no_cells=initial_conditions.shape[0])
+    icprm_comb = _gen_combinations(len(initial_conditions), len(parameters),pert_genes=pert_genes,topo_name=topo_name,pert_ratio=pert_ratio)
     
     print(f"Number of combinations to simulate: {len(icprm_comb)}")
     # Processing the time steps
@@ -560,6 +533,7 @@ def topo_simulate(
         max_steps,
         initial_conditions,
         parameters,
+        pert_genes,
     )
     # Jit compile the solveode function
     solveode_fn = jit(solveode_fn)
@@ -646,7 +620,8 @@ def run_all_replicates(
     discretize=True,
     gk_threshold=1.01,
     pert_list = None,
-    pert_fragment = 0
+    pert_ratio=0.01,
+    suffix = "ctrl"
 ):
     """
     Run simulations for all replicates of the specified topo file. The initial conditions and parameters are loaded from the replicate folders. The directory structure is assumed to be the same as that generated by the gen_topo_param_files function, with the main directory with the topo file name which has the parameter range file the ODE system file and the replicate folders with the initial conditions and parameters dataframes.
@@ -713,10 +688,8 @@ def run_all_replicates(
     # if discretize and not normalize:
     #     normalize = True
     # Get the name of the topo file
-    if pert_list is None:
-        suffix = "ctrl"
-    else:
-        suffix = f"pert_{pert_fragment}"
+    if pert_list is not None:
+        suffix = "pert"
     topo_name = topo_file.split("/")[-1].split(".")[0]
     # Get the list of replicate folders
     replicate_folders = sorted(
@@ -730,14 +703,13 @@ def run_all_replicates(
     for replicate_dir in replicate_folders:
         # Getting the base name of the replicate directory
         replicate_base = os.path.basename(replicate_dir.rstrip("/"))
-        # Load the initial conditions and parameters dataframes
-        init_cond_path = (
-            f"{replicate_dir}/{topo_name}_init_conds_{replicate_base}_{suffix}.parquet"
-        )
-        params_path = f"{replicate_dir}/{topo_name}_params_{replicate_base}_{suffix}.parquet"
         # Read the initial conditions and parameters dataframes
-        init_conds = pd.read_parquet(init_cond_path)
-        params = pd.read_parquet(params_path)
+        init_conds = pd.read_parquet(f"{replicate_dir}/{topo_name}_init_conds_{replicate_base}_ctrl.parquet")
+        params = pd.read_parquet(f"{replicate_dir}/{topo_name}_params_{replicate_base}_ctrl.parquet")
+        if pert_list is not None:
+            pert_genes = pd.read_parquet(f"{replicate_dir}/{topo_name}_pert_genes_{replicate_base}.parquet")
+        else:
+            pert_genes = None
         # Starting the timer
         start_time = time.time()
         # Run the simulation for the specified topo file and given initial conditions and parameters
@@ -745,6 +717,7 @@ def run_all_replicates(
             topo_file=topo_file,
             replicate_dir=replicate_dir,
             initial_conditions=init_conds,
+            pert_genes=pert_genes,
             parameters=params,
             t0=t0,
             tmax=tmax,
@@ -754,9 +727,9 @@ def run_all_replicates(
             abs_tol=abs_tol,
             max_steps=max_steps,
             batch_size=batch_size,
-            pert_list=pert_list
+            suffix=suffix,
+            pert_ratio=pert_ratio
         )
-        print("sol df shape",sol_df.shape)
         # Ending the timer
         print(f"Time taken for replicate {replicate_base}: {time.time() - start_time}")
         if discretize:
@@ -783,10 +756,11 @@ def run_all_replicates(
         # Check if the time seires is given or not to name the solution file
         if pert_list is None:
             sol_df["PertNum"] = -1 #"ctrl"
+        
         else:
-            sol_df["ParamNum"] = sol_df["ParamNum"] % int(len(params)/len(pert_list))
-            sol_df["InitCondNum"] = sol_df["InitCondNum"] % int(len(init_conds)/len(pert_list))
-            sol_df["PertNum"] = np.repeat(np.arange(len(pert_list)),int(len(init_conds)*len(params)/(len(pert_list)**2)))
+            sol_df["ParamNum"] = sol_df["ParamNum"].astype(int)-1 # increased by 1 for some reason
+            sol_df["InitCondNum"] = sol_df["InitCondNum"].astype(int)-1
+            sol_df["PertNum"] = np.repeat(np.arange(len(pert_list)),int(len(params)*len(init_conds)*pert_ratio))
         
         if tsteps is None:
             # Save the solution dataframe

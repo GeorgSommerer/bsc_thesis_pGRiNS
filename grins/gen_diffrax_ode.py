@@ -23,7 +23,7 @@ def _gen_edge_hills(edge):
 
 
 # Function to take in the target rwos and generate the ODE for a node
-def gen_node_ode(target_edges, node_name):
+def gen_node_ode(target_edges, node_name,pert_genes):
     """
     Generate the ordinary differential equation (ODE) for a given node.
 
@@ -35,17 +35,22 @@ def gen_node_ode(target_edges, node_name):
     - ODE string representing the regulation terms for the node.
 
     """
+    # Check if gene will be perturbed
+    if node_name in pert_genes:
+        G_term = f"Pert_{node_name}*Prod_{node_name}"
+    else:
+        G_term = f"Prod_{node_name}"
     # Check if the target_edges is empty
     if not target_edges.empty:
         # Apply gen_edge_hills to each row and convert the values to a string joined by *
-        return f"Prod_{node_name}*{'*'.join(target_edges.apply(_gen_edge_hills, axis=1))} - Deg_{node_name}*{node_name}"
+        return f"{G_term}*{'*'.join(target_edges.apply(_gen_edge_hills, axis=1))} - Deg_{node_name}*{node_name}"
     else:
         # Only Production term - degradation term
-        return f"Prod_{node_name} - Deg_{node_name}*{node_name}"
+        return f"{G_term} - Deg_{node_name}*{node_name}"
 
 
 # Function to the generate the ODE file for diffrax from a topo file
-def gen_diffrax_odesys(topo_df, topo_name, save_dir="."):
+def gen_diffrax_odesys(topo_df, topo_name, save_dir=".",pert_list=[],suffix="ctrl"):
     """
     Generate the ODE system code for diffrax based on the given topology dataframe.
 
@@ -61,6 +66,9 @@ def gen_diffrax_odesys(topo_df, topo_name, save_dir="."):
     param_names_list, target_nodes, source_nodes = gen_param_names(topo_df)
     # List of unique nodes
     unique_nodes = sorted(set(target_nodes + source_nodes))
+    # Get all genes that will be perturbed
+    pert_genes = set().union(*[set(pert_dict.keys()) for pert_dict in pert_list])
+    param_names_list += [f"Pert_{gene}" for gene in sorted(list(pert_genes))]
     # Inititalise a list to store the ODE strings
     ode_list = [
         "import grins.reg_funcs as regfn\n",
@@ -73,11 +81,11 @@ def gen_diffrax_odesys(topo_df, topo_name, save_dir="."):
         # Get the edges where n is the target node
         target_edges = topo_df[topo_df["Target"] == nod]
         # The diffrax ODE for each node is d_<nod> = <ODE>
-        ode_list.append("\t" + f"d_{nod} = {gen_node_ode(target_edges, nod)}")
+        ode_list.append("\t" + f"d_{nod} = {gen_node_ode(target_edges, nod,pert_genes)}")
     # Append the d_y line
     ode_list.append(f"\td_y = ({', '.join([f'd_{nod}' for nod in unique_nodes])})")
     # Append the end line
     ode_list.append("\treturn d_y\n")
     # Write the lines to a file
-    with open(f"{save_dir}/{topo_name}.py", "w") as f:
+    with open(f"{save_dir}/{topo_name}_{suffix}.py", "w") as f:
         f.write("\n".join(ode_list))
