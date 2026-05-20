@@ -134,7 +134,7 @@ def racipe_simulate_sinks(grn_file,sol_df,replicate,num_init_conds,suffix):
     """
 
 
-def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 1000, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, pert_ratio : float = 0.1,pert_factor : int = 50,pert_batch_size : int = None):
+def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 1000, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, pert_ratio : float = 0.01,pert_factor : int = 50,pert_batch_size : int = None):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
     Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
@@ -176,17 +176,18 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
 
     if pert_list is None:
         suffix = "ctrl"
+        print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps.")
+
     else:
         suffix = "pert"
         if pert_batch_size is None:
             pert_batch_size = int(1/pert_ratio)
         elif pert_batch_size == 0:
             pert_batch_size = len(pert_list)
-        
-        num_params = int(num_params*len(pert_list)*pert_ratio)
-        num_init_conds = int(num_init_conds*len(pert_list)*pert_ratio)
 
-    print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps.")
+        print(f"Running {suffix} with {int(num_params*num_init_conds*pert_ratio)} cells for {len(pert_list)} perturbation sets ({pert_batch_size} perts per batch), a batch size of {batch_size} and {max_steps} steps.")
+
+
 
     # Generate parameters and initial conditions for the GRN:
     if pert_list is None:
@@ -204,11 +205,13 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             sampling_method=sampling_method,
             pert_list = pert_list,
             pert_factor = pert_factor,
-            pert_batch_size=pert_batch_size
+            pert_batch_size=pert_batch_size,
+            pert_ratio=pert_ratio,
+            split_sinks=split_sinks
         )
     
     # If sink nodes were removed, it is necessary to generate parameters for them here (analogous to code from gen_topo_param_files):
-    if split_sinks and not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_sinks_{suffix}.parquet"):
+    if pert_file is None and split_sinks and not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_sinks_{suffix}.parquet"):
         print("Generating parameters for sinks...")
         sink_df = pd.read_csv(f"{grn_path}_sinks.topo",sep=" ")
         main_rng = gen_params._get_rng(None)
@@ -434,7 +437,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
     parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
     parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
-    parser.add_argument("--pert_ratio",type=float,help="How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.")
+    parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unclustered unperturbed run. Defaults to 1%. Must be smaller than the percentage of cells kept during clustering.")
     parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_pert_gene parameters should be scaled. Defaults to 50 (*50 million for CRISPRa, /50 for CRISPRi).")
     parser.add_argument("--pert_batch_size",type=int,help="The number of perturbations for which cells are simulated in one run, as too many at once might not fit into memory parameter/IC wise. Defaults to 1/pert_ratio (10) since this results in the same number of params/ICs as for the unperturbed run. Set to 0 if all perts should be simulated at once.")
     

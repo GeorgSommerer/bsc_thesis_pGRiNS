@@ -84,7 +84,9 @@ def gen_topo_param_files(
     rng: int | np.random.Generator | None = None,
     pert_list : list = None,
     pert_factor : int = 50,
-    pert_batch_size : int = 0
+    pert_batch_size : int = 0,
+    pert_ratio : float = 1,
+    split_sinks = False
 ):
     """
     Generate parameter files for simulation.
@@ -163,28 +165,6 @@ def gen_topo_param_files(
             param_df.to_parquet(
                 f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_{suffix}.parquet", index=False
             )
-        else:
-            for pert_fragment in tqdm(range(0,len(pert_list),pert_batch_size)):
-                this_pert_list = pert_list[pert_fragment:pert_fragment+pert_batch_size]
-                param_df = pd.concat(
-                    [gen_param_df(param_range_df,int(num_params/len(pert_list)),pert_dict=pert_dict,pert_factor=pert_factor) for pert_dict in this_pert_list],ignore_index=True
-                )
-                # print(param_df)
-                param_df = param_df.assign(ParamNum=param_df.index + 1+int(pert_fragment*num_params/len(pert_list))) # Indices of perts of current fragment
-                param_df.to_parquet(
-                    f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_{suffix}_{pert_fragment}.parquet", index=False
-        )
-        # Generate the initial conditions dataframe
-        """
-        if pert_list is None:
-            irange_df = None
-        else: # Specify the min/max ranges
-            irange_df = pd.read_csv(
-                f"{sim_dir}/{rep:03}/{topo_name}_ic_range_{rep:03}_{suffix}.csv",
-                sep="\t",
-            )
-        """
-        if pert_list is None:
             initcond_df = gen_init_cond(
                 topo_df=topo_df, num_init_conds=num_init_conds, rng=rep_rng
             )
@@ -194,20 +174,62 @@ def gen_topo_param_files(
                 index=False,
             )
         else:
+            # For each perturbation set, sample cell parameters from control data
+            ctrl_cells = sc.read_h5ad(f"Data/Projects/{topo_name}/perturb_norm_ctrl_reduced.h5ad")
+            ctrl_nonsink_params = pd.read_parquet(f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_ctrl.parquet")
+            ctrl_ics = pd.read_parquet(f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_ctrl.parquet")
+
+            if split_sinks:
+                ctrl_sink_params = pd.read_parquet(f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_sinks_ctrl.parquet")
+                sink_param_df = []
+
             for pert_fragment in tqdm(range(0,len(pert_list),pert_batch_size)):
                 this_pert_list = pert_list[pert_fragment:pert_fragment+pert_batch_size]
-                initcond_df = pd.concat([gen_init_cond(
-                    topo_df=topo_df, num_init_conds=int(num_init_conds/len(pert_list)), rng=rep_rng
-                ) for pert_dict in this_pert_list],ignore_index=True)
 
-                initcond_df = initcond_df.assign(InitCondNum=initcond_df.index + 1+int(pert_fragment*num_init_conds/len(pert_list)))
+                nonsink_param_df = []
+                ic_df = []
+                for pert_dict in this_pert_list:
+                    pert_choices = np.random.choice(list(ctrl_cells.obs_names),int(pert_ratio*num_params*num_init_conds),replace=False)
+                    print(f"{len(pert_choices)} cells chosen")
+                    this_nonsink_param_df = ctrl_nonsink_params.loc[[int(cell.split("_")[2]) for cell in pert_choices]]
+                    # Scale sampled values for perturbed genes depending on the type
+                    for pert in pert_dict.keys():
+                        if pert_dict[pert] == 1: # CRISPRa
+                            this_nonsink_param_df[f"Prod_{pert}"]*=pert_factor
+                        elif pert_dict[pert] == 2: # CRISPRi
+                            this_nonsink_param_df[f"Prod_{pert}"]/=pert_factor
+                        elif pert_dict[pert] == 3: # CRISPR KO
+                            this_nonsink_param_df[f"Prod_{pert}"]=0.0
+                    nonsink_param_df.append(this_nonsink_param_df)
 
-                initcond_df.to_parquet(
-                    f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_{suffix}_{pert_fragment}.parquet",
-                    index=False,
+                    if split_sinks:
+                        this_sink_param_df = ctrl_sink_params.loc[[int(cell.split("_")[2]) for cell in pert_choices]]
+                        sink_param_df.append(this_sink_param_df)
+
+                    this_ic_df = ctrl_ics.loc[[int(cell.split("_")[1]) for cell in pert_choices]]
+                    ic_df.append(this_ic_df)
+
+
+                pd.concat(nonsink_param_df,ignore_index=True).to_parquet(
+                    f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_{suffix}_{pert_fragment}.parquet", index=False
                 )
+                pd.concat(ic_df,ignore_index=True).to_parquet(
+                    f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_{suffix}_{pert_fragment}.parquet", index=False
+                )
+
+            if split_sinks:
+                pd.concat(sink_param_df,ignore_index=True).to_parquet(
+                    f"{sim_dir}/{rep:03}/{topo_name}_init_conds_{rep:03}_sinks_{suffix}.parquet", index=False
+                )
+
+
     print(f"Parameter and Intial Condition files generated for {topo_name}")
     return None
+
+def gen_param_df_pert(ctrl_params, ctrl_cells,num_params, pert_dict, pert_factor):
+    choices = np.random.choice(list(ctrl_data.obs_names),num_params)
+    chosen_params = [int(cell.split("_")[2]) for cell in choices]
+    chosen_ics = [int(cell.split("_")[1]) for cell in choices]
 
 
 # Function to load the ODE system from a specified topology folder as a module so that the ODETerm can be initialized from the ODE system
@@ -241,7 +263,7 @@ def load_odeterm(topo_name, simdir):
 
 
 # Function to generate the combinations of initial conditions and parameters
-def _gen_combinations(num_init_conds, num_params,pert_list = None):
+def _gen_combinations(num_init_conds, num_params,pert_list = None,no_cells=0):
     """
     Generate combinations of initial conditions and parameters.
 
@@ -265,7 +287,8 @@ def _gen_combinations(num_init_conds, num_params,pert_list = None):
         p = jnp.tile(jnp.arange(num_params), num_init_conds)
         icprm_comb = jnp.stack([i, p], axis=1)
     else: # Only look at the combinations for each perturb set
-        icprm_comb = jnp.concatenate([jnp.stack([jnp.repeat(jnp.arange(p*num_init_conds,(p+1)*num_init_conds), num_params),jnp.tile(jnp.arange(p*num_params,(p+1)*num_params), num_init_conds)],axis=1) for p in range(len(pert_list))],axis=0)
+        icprm_comb = jnp.stack([jnp.arange(no_cells),jnp.arange(no_cells)],axis=1)
+        #icprm_comb = jnp.concatenate([jnp.stack([jnp.repeat(jnp.arange(p*num_init_conds,(p+1)*num_init_conds), num_params),jnp.tile(jnp.arange(p*num_params,(p+1)*num_params), num_init_conds)],axis=1) for p in range(len(pert_list))],axis=0)
     return icprm_comb
 
 
@@ -501,7 +524,7 @@ def topo_simulate(
     if pert_list is None:
         icprm_comb = _gen_combinations(len(initial_conditions), len(parameters))
     else:
-        icprm_comb = _gen_combinations(int(len(initial_conditions)/len(pert_list)), int(len(parameters)/len(pert_list)),pert_list=pert_list)
+        icprm_comb = _gen_combinations(len(initial_conditions), len(parameters),pert_list=pert_list,no_cells=initial_conditions.shape[0])
     
     print(f"Number of combinations to simulate: {len(icprm_comb)}")
     # Processing the time steps

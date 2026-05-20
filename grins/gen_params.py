@@ -501,17 +501,6 @@ def sample_param_df(
     # Scale the sampled values for each parameter
     for col in sampled_df.columns:
         sampled_df[col] = scale_col(sampled_df[col], col)
-
-    # Scale sampled values for perturbed genes depending on the type
-    if pert_dict is not None:
-        for pert in pert_dict.keys():
-            if pert_dict[pert] == 1: # CRISPRa
-                sampled_df[f"Prod_{pert}"]*=pert_factor
-            elif pert_dict[pert] == 2: # CRISPRi
-                sampled_df[f"Prod_{pert}"]/=pert_factor
-            elif pert_dict[pert] == 3: # CRISPR KO
-                sampled_df[f"Prod_{pert}"]=0.0
-
     # Return the sampled DataFrame with the original parameter order
     return sampled_df[original_order]
 

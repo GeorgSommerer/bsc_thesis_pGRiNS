@@ -8074,4 +8074,159 @@ Simulating pert sets 20 to 29:
 Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
 Number of combinations to simulate: 10000
 Running steady state simulations for replicate: 001
-  0%|          | 0/10 [00:00<?, ?it/s]
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [6:50:05<61:30:46, 24605.14s/it] 20%|██        | 2/10 [6:53:52<22:48:43, 10265.41s/it] 30%|███       | 3/10 [6:57:42<11:02:59, 5682.76s/it]  40%|████      | 4/10 [7:01:32<5:53:00, 3530.15s/it]  50%|█████     | 5/10 [7:05:21<3:14:58, 2339.78s/it] 60%|██████    | 6/10 [7:09:11<1:48:09, 1622.47s/it] 70%|███████   | 7/10 [7:13:01<58:21, 1167.11s/it]   80%|████████  | 8/10 [7:16:50<28:57, 868.66s/it]  90%|█████████ | 9/10 [7:20:39<11:08, 668.63s/it]100%|██████████| 10/10 [7:24:28<00:00, 532.92s/it]100%|██████████| 10/10 [7:24:28<00:00, 2666.86s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 26700.96532893181
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 30 to 39:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0517 01:26:34.495153  108724 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0517 02:53:44.638133  108630 slow_operation_alarm.cc:140] The operation took 1h29m10.14229248s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [6:54:15<62:08:17, 24855.30s/it] 20%|██        | 2/10 [6:58:03<23:02:31, 10368.94s/it] 30%|███       | 3/10 [7:01:53<11:09:34, 5739.22s/it]  40%|████      | 4/10 [7:05:43<5:56:24, 3564.01s/it]  50%|█████     | 5/10 [7:09:31<3:16:46, 2361.35s/it] 60%|██████    | 6/10 [7:13:20<1:49:04, 1636.18s/it] 70%|███████   | 7/10 [7:17:09<58:48, 1176.22s/it]   80%|████████  | 8/10 [7:20:58<29:09, 874.70s/it]  90%|█████████ | 9/10 [7:24:48<11:12, 672.94s/it]100%|██████████| 10/10 [7:28:38<00:00, 536.17s/it]100%|██████████| 10/10 [7:28:38<00:00, 2691.80s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 26944.644227981567
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 40 to 49:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 1000 and 2048 steps.
+********** C1: Create unperturbed adata object: **********
+Reading h5ad file...
+********** D1: Get best control cells: **********
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Simulating pert sets 0 to 9:
+Simulating pert sets 10 to 19:
+Simulating pert sets 20 to 29:
+Simulating pert sets 30 to 39:
+Simulating pert sets 40 to 49:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0517 21:39:59.080529  256459 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0517 23:05:47.383400  256354 slow_operation_alarm.cc:140] The operation took 1h27m48.303044823s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [6:44:42<60:42:25, 24282.85s/it] 20%|██        | 2/10 [6:48:31<22:31:05, 10133.15s/it] 30%|███       | 3/10 [6:52:20<10:54:34, 5610.64s/it]  40%|████      | 4/10 [6:56:09<5:48:36, 3486.12s/it]  50%|█████     | 5/10 [6:59:58<3:12:38, 2311.68s/it] 60%|██████    | 6/10 [7:03:48<1:46:55, 1603.86s/it] 70%|███████   | 7/10 [7:07:37<57:43, 1154.40s/it]   80%|████████  | 8/10 [7:11:26<28:39, 859.87s/it]  90%|█████████ | 9/10 [7:15:16<11:02, 662.80s/it]100%|██████████| 10/10 [7:19:06<00:00, 529.17s/it]100%|██████████| 10/10 [7:19:06<00:00, 2634.61s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 26370.18365263939
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 50 to 59:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [7:11:55<64:47:20, 25915.66s/it] 20%|██        | 2/10 [7:15:44<24:00:44, 10805.56s/it] 30%|███       | 3/10 [7:19:33<11:37:12, 5976.03s/it]  40%|████      | 4/10 [7:23:23<6:10:45, 3707.55s/it]  50%|█████     | 5/10 [7:27:12<3:24:26, 2453.34s/it] 60%|██████    | 6/10 [7:31:02<1:53:08, 1697.24s/it] 70%|███████   | 7/10 [7:34:51<1:00:51, 1217.28s/it] 80%|████████  | 8/10 [7:38:40<30:05, 902.79s/it]    90%|█████████ | 9/10 [7:42:30<11:32, 692.31s/it]100%|██████████| 10/10 [7:46:19<00:00, 549.30s/it]100%|██████████| 10/10 [7:46:19<00:00, 2797.91s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 28018.775280714035
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 60 to 69:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [7:04:51<63:43:42, 25491.39s/it] 20%|██        | 2/10 [7:08:40<23:37:30, 10631.28s/it] 30%|███       | 3/10 [7:12:29<11:26:09, 5881.34s/it]  40%|████      | 4/10 [7:16:19<6:05:00, 3650.12s/it]  50%|█████     | 5/10 [7:20:09<3:21:23, 2416.76s/it] 60%|██████    | 6/10 [7:23:59<1:51:32, 1673.24s/it] 70%|███████   | 7/10 [7:27:48<1:00:03, 1201.33s/it] 80%|████████  | 8/10 [7:31:38<29:43, 891.96s/it]    90%|█████████ | 9/10 [7:35:27<11:24, 684.87s/it]100%|██████████| 10/10 [7:39:17<00:00, 544.20s/it]100%|██████████| 10/10 [7:39:17<00:00, 2755.71s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 27593.10724234581
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 70 to 79:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0518 20:43:02.835061  256459 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 1000 and 2048 steps.
+********** C1: Create unperturbed adata object: **********
+Reading h5ad file...
+********** D1: Get best control cells: **********
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1 replicates, 13400 parameters, 1340 initial conditions, a batch size of 1000 and 2048 steps.
+Simulating pert sets 0 to 9:
+Simulating pert sets 10 to 19:
+Simulating pert sets 20 to 29:
+Simulating pert sets 30 to 39:
+Simulating pert sets 40 to 49:
+Simulating pert sets 50 to 59:
+Simulating pert sets 60 to 69:
+Simulating pert sets 70 to 79:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0519 03:35:33.595323  267720 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0519 05:03:04.653968  267626 slow_operation_alarm.cc:140] The operation took 1h29m31.058833255s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [6:48:01<61:12:10, 24481.21s/it] 20%|██        | 2/10 [6:51:49<22:41:59, 10214.88s/it] 30%|███       | 3/10 [6:55:38<10:59:45, 5655.01s/it]  40%|████      | 4/10 [6:59:27<5:51:16, 3512.73s/it]  50%|█████     | 5/10 [7:03:15<3:14:02, 2328.52s/it] 60%|██████    | 6/10 [7:07:04<1:47:38, 1614.68s/it] 70%|███████   | 7/10 [7:10:53<58:04, 1161.62s/it]   80%|████████  | 8/10 [7:14:42<28:49, 864.71s/it]  90%|█████████ | 9/10 [7:18:31<11:05, 665.78s/it]100%|██████████| 10/10 [7:22:20<00:00, 531.01s/it]100%|██████████| 10/10 [7:22:20<00:00, 2654.03s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 26563.885905504227
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 80 to 89:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [7:05:39<63:50:59, 25539.95s/it] 20%|██        | 2/10 [7:09:28<23:40:08, 10651.01s/it] 30%|███       | 3/10 [7:13:18<11:27:27, 5892.55s/it]  40%|████      | 4/10 [7:17:08<6:05:41, 3656.98s/it]  50%|█████     | 5/10 [7:20:58<3:21:45, 2421.08s/it] 60%|██████    | 6/10 [7:24:47<1:51:43, 1675.90s/it] 70%|███████   | 7/10 [7:28:36<1:00:08, 1202.99s/it] 80%|████████  | 8/10 [7:32:26<29:46, 893.07s/it]    90%|█████████ | 9/10 [7:36:15<11:25, 685.61s/it]100%|██████████| 10/10 [7:40:06<00:00, 545.02s/it]100%|██████████| 10/10 [7:40:06<00:00, 2760.61s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 27639.472951173782
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 90 to 99:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [7:18:28<65:46:14, 26308.28s/it] 20%|██        | 2/10 [7:22:16<24:22:18, 10967.31s/it] 30%|███       | 3/10 [7:26:06<11:47:28, 6064.04s/it]  40%|████      | 4/10 [7:29:55<6:16:04, 3760.71s/it]  50%|█████     | 5/10 [7:33:45<3:27:16, 2487.32s/it] 60%|██████    | 6/10 [7:37:34<1:54:37, 1719.46s/it] 70%|███████   | 7/10 [7:41:24<1:01:37, 1232.48s/it] 80%|████████  | 8/10 [7:45:13<30:26, 913.21s/it]    90%|█████████ | 9/10 [7:49:02<11:39, 699.38s/it]100%|██████████| 10/10 [7:52:53<00:00, 554.63s/it]100%|██████████| 10/10 [7:52:53<00:00, 2837.34s/it]
+sol df shape (10000, 1986)
+Time taken for replicate 001: 28400.468731880188
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating pert sets 100 to 109:
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 10000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0520 02:51:45.092331  267720 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
