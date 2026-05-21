@@ -851,7 +851,7 @@ def gen_init_cond(
     init_conds = _gen_sobol_seq(len(unique_nodes), num_init_conds, rng=rng)
     initcond_df = pd.DataFrame(init_conds, columns=unique_nodes)
 
-    if True:#pert_list is None:
+    if True:
         # Scale initial conditions between 1 and 100
         for col in initcond_df.columns:
             initcond_df[col] = 1 + initcond_df[col]*(100-1)

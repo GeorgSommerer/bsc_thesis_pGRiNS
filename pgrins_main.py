@@ -4,6 +4,8 @@ import os
 from Prep_Data import pgrins_prepare_input, pgrins_prepare_output
 import pgrins_run_grins, pgrins_cluster
 
+# Ran with nohup python3 -u pgrins_main.py KeggoRo_final -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 4096 --pert_factor 100 > out_final_2105.log 2>&1 &
+
 ########################################################
 parser = argparse.ArgumentParser()
 
@@ -25,10 +27,9 @@ parser.add_argument("--sampling_method",help="Way of sampling parameters in Raci
 parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
 
 # B1/B2:
-parser.add_argument("--pert_ratio",type=float,help="How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.")
+parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unclustered unperturbed run. Defaults to 1%. Must be smaller than the percentage of cells kept during clustering.")
 parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_pert_gene parameters should be scaled. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).")
-parser.add_argument("--pert_batch_size",type=int,help="The number of perturbations for which cells are simulated in one run, as too many at once might not fit into memory parameter/IC wise. Defaults to 1/pert_ratio (10) since this results in the same number of params/ICs as for the unperturbed run. Set to 0 if all perts should be simulated at once.")
-    
+   
 # B/C:
 parser.add_argument("--mode", help="If Ising, sync or async (Default: async)")
 parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
@@ -39,7 +40,6 @@ parser.add_argument("--expon_scale",type=float,help="Given an experimental datas
 parser.add_argument("--full_dropouts",type=float,help="How many genes should have 100 percent of their entries missing (Default: 0 percent)")        
 
 # D:
-parser.add_argument("--pval_treshold", type=float,help="The critical treshold level where genes with p values below that value are assigned DEGs. Defaults to 0.1 (0.05 is not chosen because of the high variance between perturbed cells).")
 parser.add_argument("--min_num_pcs", type=int,help="The minimal number of principal components to use for UMAP. Defaults to 10.")
 parser.add_argument("--min_cluster_size_pct", type=float,help="The minimal size a cluster must have relative to all cells in grins_data to be considered for the best cluster. Defaults to 0.01.")
 parser.add_argument("--max_num_clusters", type=int,help="The maximal number of clusters considered as best cluster. Defaults to 10.")
@@ -99,11 +99,9 @@ if args.pert_ratio:
 if args.pert_factor:
     kwargs_b1["pert_factor"]=args.pert_factor
     kwargs_b2["pert_factor"]=args.pert_factor
-if args.pert_batch_size is not None:
-    kwargs_b1["pert_batch_size"]=args.pert_batch_size
-    kwargs_b2["pert_batch_size"]=args.pert_batch_size
 
 if args.max_missingness:
+    kwargs_a["max_missingness"] = args.max_missingness
     kwargs_c["max_missingness"] = args.max_missingness
 if args.expon_scale:
     kwargs_c["expon_scale"] = args.expon_scale
@@ -112,8 +110,6 @@ if args.full_dropouts:
 
 if args.min_num_pcs:
     kwargs_d["min_num_pcs"] = args.min_num_pcs
-if args.pval_treshold:
-    kwargs_d["pval_treshold"] = args.pval_treshold
 if args.min_cluster_size_pct:
     kwargs_d["min_cluster_size_pct"] = args.min_cluster_size_pct
 if args.max_num_clusters:
@@ -137,7 +133,7 @@ ugrins_data = pgrins_prepare_output.main(grn_file=project_name, experimental=exp
 ########################################################
 # D1: Get best control cells
 print("*"*10,"D1: Get best control cells:","*"*10)
-pgrins_cluster.main(grn_file=project_name, experimental=experimental,grins_data=ugrins_data, pert_file=None, **kwargs_d)
+pgrins_cluster.main(grn_file=project_name, experimental=experimental,grins_data=ugrins_data, **kwargs_d)
 del ugrins_data
 
 ########################################################
@@ -150,8 +146,3 @@ if pert_file is not None:
     # C2: Create perturbed adata object
     print("*"*10,"C2: Create perturbed adata object:","*"*10)
     pgrins_data = pgrins_prepare_output.main(grn_file=project_name, experimental=experimental,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
-
-    ########################################################
-    # D2: Get best cells for each perturbation and full output
-    print("*"*10,"D2: Get best cells for each perturbation and full output:","*"*10)
-    pgrins_cluster.main(grn_file=project_name, experimental=experimental,grins_data = pgrins_data, pert_file=pert_file, **kwargs_d)
