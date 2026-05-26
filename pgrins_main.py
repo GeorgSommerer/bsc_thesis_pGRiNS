@@ -4,8 +4,13 @@ import os
 from Prep_Data import pgrins_prepare_input, pgrins_prepare_output
 import pgrins_run_grins, pgrins_cluster
 
-# Ran with nohup python3 -u pgrins_main.py KeggoRo_final -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 4096 --pert_factor 100 > out_final_2105.log 2>&1 &
+"""
+Ran with
+nohup python3 -u pgrins_main.py KeggoRo_final_2205 -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 > out_final_2205.log 2>&1 &
 
+Tested arguments with
+nohup python3 -u pgrins_main.py dorothea_test -p --pert_file dorothea_tf2_abc_perts --num_params 250 --num_init_conds 15 --batch_size 1500 --max_steps 3000 --tmax 1000 --pert_factor 1000 --pert_ratio 0.1 --num_replicates 2 --max_missingness 80 --expon_scale 30 --full_dropouts 20 --min_num_pcs 15 --min_cluster_size_pct 0.005 --max_num_clusters 12 > doro_test_out_2605.log 2>&1
+"""
 ########################################################
 parser = argparse.ArgumentParser()
 
@@ -15,22 +20,19 @@ parser.add_argument("-m", "--method", help="Racipe or Ising. Defaults to Racipe.
 parser.add_argument("-e","--experimental", action="store_true",help="If control data is supplied, perturbations are taken from all directories in Data/Experimental.")
 parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
 parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
-
-# A/B:
 parser.add_argument("-s","--split_sinks", help="Whether or not sinks should be removed from the GRN",action="store_true")
 
-# B1 only:
+# B:
 parser.add_argument("--num_init_conds",type=int,help="Number of initial conditions (Default: 100 for Racipe, 2**14 for Ising)")
 parser.add_argument("--num_params",type=int,help="Number of params (Default: 1000 for Racipe)")
 parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
 parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
 parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
-
-# B1/B2:
-parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unclustered unperturbed run. Defaults to 1%. Must be smaller than the percentage of cells kept during clustering.")
+parser.add_argument("--tmax", type=int, help="Maximum time for the simulation (Default: 200)")
+parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unclustered unperturbed run. Defaults to 0.01. Must be smaller than the percentage of cells kept during clustering.")
 parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_pert_gene parameters should be scaled. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).")
    
-# B/C:
+# B/C/D:
 parser.add_argument("--mode", help="If Ising, sync or async (Default: async)")
 parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
 
@@ -47,8 +49,7 @@ parser.add_argument("--max_num_clusters", type=int,help="The maximal number of c
 args = parser.parse_args()
 
 kwargs_a = {}
-kwargs_b1 = {}
-kwargs_b2 = {}
+kwargs_b = {}
 kwargs_c = {}
 kwargs_d = {}
 
@@ -75,30 +76,34 @@ else:
 
 if args.split_sinks:
     kwargs_a["split_sinks"] = args.split_sinks
-    kwargs_b1["split_sinks"] = args.split_sinks
+    kwargs_b["split_sinks"] = args.split_sinks
+    kwargs_c["split_sinks"] = args.split_sinks
 
 if args.mode:
-    kwargs_b1["mode"]=args.mode
+    kwargs_b["mode"]=args.mode
     kwargs_c["mode"]=args.mode
 if args.num_replicates:
-    kwargs_b1["num_replicates"]=args.num_replicates
+    kwargs_b["num_replicates"]=args.num_replicates
     kwargs_c["num_replicates"]=args.num_replicates
+    kwargs_d["num_replicates"]=args.num_replicates
 if args.num_init_conds:
-    kwargs_b1["num_init_conds"]=args.num_init_conds
+    kwargs_b["num_init_conds"]=args.num_init_conds
 if args.num_params:
-    kwargs_b1["num_params"]=args.num_params
+    kwargs_b["num_params"]=args.num_params
 if args.batch_size:
-    kwargs_b1["batch_size"]=args.batch_size
+    kwargs_b["batch_size"]=args.batch_size
 if args.sampling_method:
-    kwargs_b1["sampling_method"]=args.sampling_method
+    kwargs_b["sampling_method"]=args.sampling_method
 if args.max_steps:
-    kwargs_b1["max_steps"]=args.max_steps
+    kwargs_b["max_steps"]=args.max_steps
+if args.tmax:
+    kwargs_b["tmax"]=args.tmax
 if args.pert_ratio:
-    kwargs_b1["pert_ratio"]=args.pert_ratio
-    kwargs_b2["pert_ratio"]=args.pert_ratio
+    kwargs_b["pert_ratio"]=args.pert_ratio
+    kwargs_b["pert_ratio"]=args.pert_ratio
 if args.pert_factor:
-    kwargs_b1["pert_factor"]=args.pert_factor
-    kwargs_b2["pert_factor"]=args.pert_factor
+    kwargs_b["pert_factor"]=args.pert_factor
+    kwargs_b["pert_factor"]=args.pert_factor
 
 if args.max_missingness:
     kwargs_a["max_missingness"] = args.max_missingness
@@ -123,26 +128,25 @@ pgrins_prepare_input.main(project_name=project_name, experimental=experimental, 
 ########################################################
 # B1: Run unperturbed GRiNS
 print("*"*10,"B1: Run unperturbed GRiNS:","*"*10)
-pgrins_run_grins.main(grn_file=project_name,is_racipe=is_racipe,pert_file=None,**kwargs_b1)
+pgrins_run_grins.main(grn_file=project_name,is_racipe=is_racipe,pert_file=None,**kwargs_b)
 
 ########################################################
 # C1: Create unperturbed adata object
 print("*"*10,"C1: Create unperturbed adata object:","*"*10)
-ugrins_data = pgrins_prepare_output.main(grn_file=project_name, experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
+pgrins_prepare_output.main(grn_file=project_name,is_racipe=is_racipe, pert_file=None, **kwargs_c)
 
 ########################################################
 # D1: Get best control cells
 print("*"*10,"D1: Get best control cells:","*"*10)
-pgrins_cluster.main(grn_file=project_name, experimental=experimental,grins_data=ugrins_data, **kwargs_d)
-del ugrins_data
+pgrins_cluster.main(grn_file=project_name, experimental=experimental, **kwargs_d)
 
 ########################################################
 if pert_file is not None:
     # B2: Run perturbed GRiNS
     print("*"*10,"B2: Run perturbed GRiNS:","*"*10)
-    pgrins_run_grins.main(grn_file=project_name,is_racipe=is_racipe,pert_file=pert_file,**kwargs_b2)
+    pgrins_run_grins.main(grn_file=project_name,is_racipe=is_racipe,pert_file=pert_file,**kwargs_b)
 
     ########################################################
     # C2: Create perturbed adata object
     print("*"*10,"C2: Create perturbed adata object:","*"*10)
-    pgrins_data = pgrins_prepare_output.main(grn_file=project_name, experimental=experimental,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
+    pgrins_prepare_output.main(grn_file=project_name,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)

@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from scipy.stats import median_abs_deviation
 from scipy import sparse
 import os
-import hdf5plugin
 
 
 # Normalizes the raw input dataset
@@ -287,10 +286,10 @@ def process_GEARS(norm_data):
     norm_data.var["gene_name"] = norm_data.var.index
 
     # Turn pertGene in the perturbation column into pertGene+ctrl in the condition column
-    is_not_ctrl = norm_data.obs["perturbation"] != "ctrl"
-    norm_data.obs["condition"] = np.asarray([pert.split("_")[0] for pert in norm_data.obs["perturbation"]])
+    norm_data.obs["condition"] = np.asarray([pert.replace("_","+") for pert in norm_data.obs["perturbation"]])
     norm_data.obs["condition_name"] = norm_data.obs["condition"] # Unsure what condition_name is supposed to be, but apparently necessary (set to same as condition)
-    norm_data.obs.loc[is_not_ctrl,"condition"] += "+ctrl"
+    add_ctrl = (norm_data.obs["perturbation"] != "ctrl") & (~norm_data.obs["perturbation"].contains("+"))
+    norm_data.obs.loc[is_not_ctrl,"condition"] += "+ctrl" # Add +ctrl to rows with no ctrl or double perturbation
 
 # Helper function for QC
 def is_outlier(x: ad.AnnData, metric: str, nmads: int) -> pd.Series:
@@ -501,11 +500,8 @@ def normalize_adata_main(pseq_file : str):
         norm_data = data_normalization(qc_data, n_top_genes = 0, verbose = True)
         norm_data = norm_data[:,norm_data.var_names.sort_values()]
         print("Saving file")
-        ad.settings.allow_write_nullable_strings = True
-
         norm_data.write_h5ad(
-            out_path,
-            compression=hdf5plugin.FILTERS["zstd"]
+            out_path
         )
 
     else:

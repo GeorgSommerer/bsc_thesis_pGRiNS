@@ -33,8 +33,7 @@ from scipy.signal import find_peaks
 import warnings
 import ast
 
-import scanpy as sc
-import hdf5plugin
+import pickle
 
 
 # Function to generate the required directory structure
@@ -217,7 +216,7 @@ def load_odeterm(topo_name, simdir):
 
 
 # Function to generate the combinations of initial conditions and parameters
-def _gen_combinations(num_init_conds, num_params,pert_genes = [],topo_name = None,pert_ratio = 0.01):
+def _gen_combinations(num_init_conds, num_params,pert_genes = [],topo_name = None,replicate:int=1,pert_ratio = 0.01):
     """
     Generate combinations of initial conditions and parameters.
 
@@ -236,16 +235,24 @@ def _gen_combinations(num_init_conds, num_params,pert_genes = [],topo_name = Non
         A 2D array where each row represents a combination of an initial condition and a parameter. The first column contains indices of initial conditions, and the second column contains indices of parameters.
     """
     # Generate the combinations more efficiently using numpy
-    if pert_genes == []:
+    if len(pert_genes) == 0:
         i = jnp.repeat(jnp.arange(num_init_conds), num_params)
         p = jnp.tile(jnp.arange(num_params), num_init_conds)
         icprm_comb = jnp.stack([i, p], axis=1)
     else:
-        cell_data = sc.read_h5ad(f"Data/Projects/{topo_name}/perturb_norm_ctrl_reduced.h5ad")
+        with open(f'Data/Projects/{topo_name}/{replicate:03}/ctrl_best_cells.pickle', 'rb') as f:
+            best_cells = pickle.load(f)
         icprm_comb = []
+        cells_per_pert = int(num_init_conds*num_params*pert_ratio)
+        # Sample without replacement if enough cells are provided, otherwise replacement is necessary
+        if len(best_cells)<int(num_init_conds*num_params*pert_ratio):
+            print(f"Not enough cells in best cluster found ({len(best_cells)}) to sample {cells_per_pert} cells without replacement")
+            replacement = True
+        else:
+            replacement = False
         # For each perturbation, sample random cells from the synth control data
         for pert_index in range(pert_genes.shape[0]):
-            cell_choices = np.random.choice(list(cell_data.obs_names),int(num_init_conds*num_params*pert_ratio),replace=False)
+            cell_choices = np.random.choice(best_cells,cells_per_pert,replace=replacement)
             i = jnp.array([int(cell.split("_")[1]) for cell in cell_choices])
             p = jnp.array([int(cell.split("_")[2]) for cell in cell_choices])
             g = jnp.repeat(pert_index,len(i))
@@ -304,7 +311,7 @@ def parameterise_solveode(
     if saveat.subs.ts is None:
         # Function to solve the ODEs
         def solve_steadystate_ode(pi_row):
-            if pert_genes != []:
+            if len(pert_genes) != 0:
                 # Add Pert_{pert_gene_name} as parameters
                 param_row = jnp.hstack([parameters[pi_row[1]][:-1],pert_genes[pi_row[2]][:-1]])
             else:
@@ -349,7 +356,7 @@ def parameterise_solveode(
     else:
         # Function to solve the ODEs
         def solve_timeseries_ode(pi_row):
-            if pert_genes != []:
+            if len(pert_genes) != 0:
                 param_row = jnp.hstack([parameters[pi_row[1]][:-1],pert_genes[pi_row[2]][:-1]])
             else:
                 param_row = parameters[pi_row[1]][:-1]
@@ -401,6 +408,7 @@ def topo_simulate(
     max_steps=2048,
     batch_size=10000,
     ode_term_dir=None,
+    replicate=1,
     suffix = "ctrl"
 ):
     """
@@ -476,7 +484,7 @@ def topo_simulate(
         initial_conditions = initial_conditions[ic_cols]
     if param_order:
         actual_params = set(parameters.columns) - {"ParamNum"}
-        if pert_genes != []:
+        if len(pert_genes) != 0:
             param_order = [p for p in param_order if p not in set(pert_genes.columns)]
         expected_params = set(param_order)
         if actual_params != expected_params:
@@ -496,10 +504,10 @@ def topo_simulate(
     # Converting the initial conditions and parameters to jax arrays
     initial_conditions = jnp.array(initial_conditions.to_numpy())
     parameters = jnp.array(parameters.to_numpy())
-    if pert_genes != []:
+    if len(pert_genes) != 0:
         pert_genes = jnp.array(pert_genes.to_numpy())
     # Get the combinations of initial conditions and parameters
-    icprm_comb = _gen_combinations(len(initial_conditions), len(parameters),pert_genes=pert_genes,topo_name=topo_name,pert_ratio=pert_ratio)
+    icprm_comb = _gen_combinations(len(initial_conditions), len(parameters),pert_genes=pert_genes,replicate=replicate,topo_name=topo_name,pert_ratio=pert_ratio)
     
     print(f"Number of combinations to simulate: {len(icprm_comb)}")
     # Processing the time steps
@@ -703,6 +711,7 @@ def run_all_replicates(
             if os.path.basename(folder.rstrip("/")).isdigit()
         ],
     )
+    print(replicate_folders)
     # Loop through the replicate folders and run the simulation for each replicate
     for replicate_dir in replicate_folders:
         # Getting the base name of the replicate directory

@@ -14,7 +14,6 @@ import sys
 import os
 import argparse
 from tqdm import tqdm
-import gc
 
 from itertools import product, groupby
 from operator import itemgetter
@@ -53,7 +52,6 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
     sink_dict = {}
     sink_gene_to_id = {sink_genes[i]:i for i in range(len(sink_genes))}
     #sink_gk_dict = {}
-    np.warnings.filterwarnings('once')
     for batch in tqdm(range(0,sol_df_full.shape[0],batch_size)):
         # Get cells for current batch, and arrange the sink params so that the param numbers match up
         sol_df = sol_df_full.iloc[batch:batch+batch_size]
@@ -137,7 +135,7 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
     """
 
 
-def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 1000, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, batch_size = 1000, pert_ratio : float = 0.01,pert_factor : int = 50):
+def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 1000, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, tmax=200,batch_size = 1000, pert_ratio : float = 0.01,pert_factor : int = 50):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
     Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
@@ -176,11 +174,11 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
 
     if pert_list == []:
         suffix = "ctrl"
-        print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps.")
+        print(f"Running {suffix} with {num_replicates} replicates, {num_params} parameters, {num_init_conds} initial conditions, a batch size of {batch_size} and {max_steps} steps in the time inveral [0,{tmax}] using {sampling_method} sampling.")
 
     else:
         suffix = "pert"
-        print(f"Running {suffix} with {int(num_params*num_init_conds*pert_ratio)} cells for {len(pert_list)} perturbation sets, a batch size of {batch_size} and {max_steps} steps.")
+        print(f"Running {suffix} with {int(num_params*num_init_conds*pert_ratio)} cells for {len(pert_list)} perturbation sets each (scaling factor of {pert_factor}), a batch size of {batch_size} and {max_steps} steps in the time inveral [0,{tmax}] using {sampling_method} sampling.")
 
 
 
@@ -240,6 +238,7 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
                 f"{grn_path}.topo",
                 save_dir,
                 max_steps=max_steps,
+                tmax=tmax,
                 batch_size=batch_size,
                 discretize=False,
                 pert_list = pert_list,
@@ -417,6 +416,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
     parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
     parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
+    parser.add_argument("--tmax", type=int, help="Maximum time for the simulation (Default: 200)")
     parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unclustered unperturbed run. Defaults to 1%. Must be smaller than the percentage of cells kept during clustering.")
     parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_pert_gene parameters should be scaled. Defaults to 50 (*50 million for CRISPRa, /50 for CRISPRi).")
     
@@ -452,6 +452,8 @@ if __name__ == "__main__":
         kwargs["sampling_method"]=args.sampling_method
     if args.max_steps:
         kwargs["max_steps"]=args.max_steps
+    if args.tmax:
+        kwargs["tmax"]=args.tmax
     if args.pert_ratio:
         kwargs["pert_ratio"]=args.pert_ratio
     if args.pert_factor:

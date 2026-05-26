@@ -5,7 +5,6 @@ from scipy import sparse
 
 import scanpy as sc
 import anndata as ad
-import hdf5plugin
 
 import os
 import sys
@@ -85,7 +84,7 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, pert_file : str, adata_
         gene = []
         types = []
         for pseq, adata in adata_dict.items():
-            pert_sets = [pert.split("_") for pert in set(list(adata.obs["perturbation"]))]
+            pert_sets = sorted([pert.split("_") for pert in set(list(adata.obs["perturbation"]))])
             pert_sets.remove(["ctrl"])
 
             if "Norman" in pseq:
@@ -121,10 +120,11 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
     for name, adata in adata_dict.items():
         adata_dict[name] = adata[:,adata.var["pct_dropout_by_counts"]<max_missingness]
 
-    grins_gnames = set(list(grn_df["Source"])+list(grn_df["Target"]))
-    grins_sources = set(list(grn_df["Source"]))
     adata_gnames = set().union(*[set(adata.var_names) for adata in adata_dict.values()])
-    grins_gnames = grins_gnames & adata_gnames # Only genes in adata remain in grins_data
+    grn_df_adata = grn_df[(grn_df["Source"].isin(adata_gnames)) & (grn_df["Target"].isin(adata_gnames))] # All rows where both genes are in the adata datasets
+    grn_df_plus_sources = grn_df[grn_df["Target"].isin(set(list(grn_df["Source"])))] # Also keep all rows that impact outgoing edges, otherwise important relationships in the graph could be lost
+    
+    grins_gnames = set(list(grn_df_adata["Source"])) | set(list(grn_df_adata["Target"]))
 
     for pseq, adata in adata_dict.items():
         adata_genes = set(adata.var_names)
@@ -133,22 +133,19 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
         # Remove perturbations for which genes are not expressed
         kept_perts = ["ctrl"]
         for pert in adata.obs["perturbation"].unique():
-            if False not in [p in grins_sources and p in adata.var_names for p in pert.split("_")]: # All perturbed genes of a perturbation set must be both among the source nodes of the GRN, and among the genes in adata
+            print([(p, p in list(grn_df_adata["Source"]), p in adata_genes) for p in pert.split("_")])
+            if False not in [(p in list(grn_df_adata["Source"])) & (p in adata_genes) for p in pert.split("_")]: # All perturbed genes of a perturbation set must be both among the source nodes of the GRN, and among the genes in adata
                 kept_perts.append(pert)
         adata = adata[adata.obs["perturbation"].isin(kept_perts)]
         adata_dict[pseq] = adata
 
         print(f"Save subset of {pseq}...")
-        ad.settings.allow_write_nullable_strings = True
         adata_dict[pseq].write_h5ad(
-            f"Data/Experimental/{pseq}/perturb_norm_subset_{grn_file}.h5ad",
-            compression=hdf5plugin.FILTERS["zstd"]
+            f"Data/Experimental/{pseq}/perturb_norm_subset_{grn_file}.h5ad"
         )     
 
-    # Only remove a gene from the GRN if it is not in the datasets AND if it has no outgoing edges, otherwise important relationships in the graph could be lost
-    grn_source_genes = set(grn_df["Source"].values)
-    grn_df = grn_df[grn_df["Source"].isin(list(grins_gnames | grn_source_genes))]
-    grn_df = grn_df[grn_df["Target"].isin(list(grins_gnames | grn_source_genes))]
+    grn_df = pd.concat([grn_df_adata,grn_df_plus_sources]).drop_duplicates()
+    assert(len( set().union(*[set(adata.var_names) for adata in adata_dict.values()]) - set(list(grn_df["Source"])+list(grn_df["Target"])) ) == 0)
 
     return grn_df, adata_dict
 

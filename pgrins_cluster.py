@@ -4,7 +4,6 @@ from scipy import sparse
 
 import scanpy as sc
 import anndata as ad
-import hdf5plugin
 import igraph
 
 import numpy as np
@@ -88,7 +87,7 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     
     """
     
-    print("Running PCA")
+    print(f"Running PCA, keeping at least {min_num_pcs} PCs")
     sc.pp.pca(grins_data, svd_solver="arpack",layer="log1p")
 
     # Number of PCs to keep:
@@ -107,7 +106,7 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     cluster_labels = grins_data.obs["leiden"]
     cluster_counts = cluster_labels.value_counts()
     large_clusters = len(list(cluster_counts[cluster_counts>grins_data.shape[0]*min_cluster_size_pct].keys()))
-    print(f"{large_clusters} clusters definable with >{100*min_cluster_size_pct}% of cells.")
+    print(f"{large_clusters} clusters definable with >{100*min_cluster_size_pct}% of cells (at most, {max_num_clusters} are needed).")
 
     clusters = np.array(list(cluster_counts.keys()))
     print(f"Calculating Silhouette score for {len(clusters)} clusters")
@@ -142,43 +141,44 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     
     grins_data.uns["clustering_results"] = {}
     grins_data.uns["clustering_results"]["best_clusters"]=best_clusters
-    grins_data.uns["clustering_results"]["scores"]=mse_results
+    if adata_mean is not None:
+        grins_data.uns["clustering_results"]["scores"]=mse_results
 
     
     return list(grins_data.obs["best_cells"]), grins_data
 
 
 
-def main(grn_file,experimental, grins_data = None, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10):
+def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10,num_replicates:int=1):
+    for replicate in range(1,num_replicates+1):
+        if not os.path.exists(f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"):
 
-    if not os.path.exists(f"Data/Projects/{grn_file}/perturb_norm_ctrl_reduced.h5ad"):
+            grins_data = sc.read_h5ad(f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl.h5ad")
 
-        if grins_data is None: # grins_data can either be provided in the pipeline, or loaded if the file is run standalone
-            grins_data = sc.read_h5ad(f"Data/Projects/{grn_file}/perturb_norm_ctrl.h5ad")
+            if experimental:
+                print("Calculating adata mean")
+                adata_list = [sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}.h5ad") for pseq_path in glob(f"Data/Experimental/*")]
+                adata_list = [adata[adata.obs["perturbation"]=="ctrl"] for adata in adata_list]
+                adata_genes, adata_mean = get_adata_ctrl_mean(adata_list)
+                print(grins_data)
+                grins_data = grins_data[:,adata_genes] # Remove source genes not in adata from grins_data
+                del adata_list
+            else:
+                adata_mean = None      
 
-        if experimental:
-            print("Calculating adata mean")
-            adata_list = [sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}.h5ad") for pseq_path in glob(f"Data/Experimental/*")]
-            adata_list = [adata[adata.obs["perturbation"]=="ctrl"] for adata in adata_list]
-            adata_genes, adata_mean = get_adata_ctrl_mean(adata_list)
-            del adata_list
-        else:
-            adata_mean = None      
+            # Collect the chosen cells, then subset the whole adata object by them
+            best_cells, grins_data_clustered = calc_clusters(grins_data,adata_mean=adata_mean,min_num_pcs=min_num_pcs,min_cluster_size_pct=min_cluster_size_pct, max_num_clusters=max_num_clusters)     
+            grins_data = grins_data[best_cells]
+            best_cell_index = list(grins_data.obs.index)
 
-        # Collect the chosen cells, then subset the whole adata object by them
-        best_cells, grins_data_clustered = calc_clusters(grins_data,adata_mean=adata_mean,grins_ctrl_data=grins_ctrl_data,min_num_pcs=min_num_pcs,min_cluster_size_pct=min_cluster_size_pct, max_num_clusters=max_num_clusters)     
-        grins_data = grins_data[best_cells]
-
-        print("Saving final file")
-        ad.settings.allow_write_nullable_strings = True
-        # File containing all cells and information about the clustering process (for plotting):
-        grins_data_clustered.write_h5ad(
-            f"Data/Projects/{grn_file}/perturb_norm_ctrl_clustered.h5ad",
-            compression=hdf5plugin.FILTERS["zstd"]
-        ) 
-        with open(f'Data/Projects/{grn_file}/ctrl_best_cells.pickle', 'wb') as f:
-            pickle.dump(best_cells, f, pickle.HIGHEST_PROTOCOL)
-        
+            print("Saving final file")
+            # File containing all cells and information about the clustering process (for plotting):
+            grins_data_clustered.write_h5ad(
+                f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"
+            ) 
+            with open(f'Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle', 'wb') as f:
+                pickle.dump(best_cell_index, f, pickle.HIGHEST_PROTOCOL)
+            
 
 
 
@@ -206,5 +206,7 @@ if __name__ == "__main__":
         kwargs["min_cluster_size_pct"] = args.min_cluster_size_pct
     if args.max_num_clusters:
         kwargs["max_num_clusters"] = args.max_num_clusters
+    if args.num_replicates:
+        kwargs["num_replicates"]=args.num_replicates
 
     main(grn_file, experimental, **kwargs)
