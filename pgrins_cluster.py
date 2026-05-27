@@ -160,7 +160,6 @@ def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : f
                 adata_list = [sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}.h5ad") for pseq_path in glob(f"Data/Experimental/*")]
                 adata_list = [adata[adata.obs["perturbation"]=="ctrl"] for adata in adata_list]
                 adata_genes, adata_mean = get_adata_ctrl_mean(adata_list)
-                print(grins_data)
                 grins_data = grins_data[:,adata_genes] # Remove source genes not in adata from grins_data
                 del adata_list
             else:

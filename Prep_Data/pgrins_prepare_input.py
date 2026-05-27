@@ -133,7 +133,6 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
         # Remove perturbations for which genes are not expressed
         kept_perts = ["ctrl"]
         for pert in adata.obs["perturbation"].unique():
-            print([(p, p in list(grn_df_adata["Source"]), p in adata_genes) for p in pert.split("_")])
             if False not in [(p in list(grn_df_adata["Source"])) & (p in adata_genes) for p in pert.split("_")]: # All perturbed genes of a perturbation set must be both among the source nodes of the GRN, and among the genes in adata
                 kept_perts.append(pert)
         adata = adata[adata.obs["perturbation"].isin(kept_perts)]

@@ -56,7 +56,7 @@ def grins_racipe_to_adata(grn_file, path_to_data : str, split_sinks : bool = Fal
         tuples_in_df = pd.MultiIndex.from_frame(sol_df[["InitCondNum","ParamNum"]])
         sol_df = sol_df[tuples_in_df.isin(best_cell_tups)]
         if split_sinks:
-            sopert_sol_dfl_df = pd.concat([pd.read_parquet(f"{path_to_data}_pert.parquet"),pd.read_parquet(f"{path_to_data}_sinks_pert.parquet")],axis=1)[sol_df.columns] # Remove source genes not in adata from pert_df
+            pert_sol_df = pd.concat([pd.read_parquet(f"{path_to_data}_pert.parquet"),pd.read_parquet(f"{path_to_data}_sinks_pert.parquet")],axis=1)[sol_df.columns] # Remove source genes not in adata from pert_df
         else:
             pert_sol_df = pd.read_parquet(f"{path_to_data}_pert.parquet")[sol_df.columns]
         sol_df = pd.concat([sol_df,pert_sol_df],axis=0,ignore_index=True)

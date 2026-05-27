@@ -6,7 +6,7 @@ import pgrins_run_grins, pgrins_cluster
 
 """
 Ran with
-nohup python3 -u pgrins_main.py KeggoRo_final_2205 -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 > out_final_2205.log 2>&1 &
+nohup python3 -u pgrins_main.py KeggoRo_final_2205 -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 100 > out_final_2205.log 2>&1 &
 
 Tested arguments with
 nohup python3 -u pgrins_main.py dorothea_test -p --pert_file dorothea_tf2_abc_perts --num_params 250 --num_init_conds 15 --batch_size 1500 --max_steps 3000 --tmax 1000 --pert_factor 1000 --pert_ratio 0.1 --num_replicates 2 --max_missingness 80 --expon_scale 30 --full_dropouts 20 --min_num_pcs 15 --min_cluster_size_pct 0.005 --max_num_clusters 12 > doro_test_out_2605.log 2>&1

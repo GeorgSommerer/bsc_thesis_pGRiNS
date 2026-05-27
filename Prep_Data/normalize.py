@@ -288,8 +288,8 @@ def process_GEARS(norm_data):
     # Turn pertGene in the perturbation column into pertGene+ctrl in the condition column
     norm_data.obs["condition"] = np.asarray([pert.replace("_","+") for pert in norm_data.obs["perturbation"]])
     norm_data.obs["condition_name"] = norm_data.obs["condition"] # Unsure what condition_name is supposed to be, but apparently necessary (set to same as condition)
-    add_ctrl = (norm_data.obs["perturbation"] != "ctrl") & (~norm_data.obs["perturbation"].contains("+"))
-    norm_data.obs.loc[is_not_ctrl,"condition"] += "+ctrl" # Add +ctrl to rows with no ctrl or double perturbation
+    add_ctrl = (norm_data.obs["condition"] != "ctrl") & (~norm_data.obs["condition"].str.contains('+',regex=False))
+    norm_data.obs.loc[add_ctrl,"condition"] += "+ctrl" # Add +ctrl to rows with no ctrl or double perturbation
 
 # Helper function for QC
 def is_outlier(x: ad.AnnData, metric: str, nmads: int) -> pd.Series:
