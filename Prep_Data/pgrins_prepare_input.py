@@ -238,6 +238,8 @@ def main(project_name : str, experimental : bool, pert_file : str = None, split_
 
         # Save the output data structures to files:
         grn_df.to_csv(f"Data/Projects/{project_name}/{project_name}.topo",sep=" ",index=False)
+    else:
+        print("Done!")
 
 
 

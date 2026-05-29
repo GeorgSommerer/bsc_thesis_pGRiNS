@@ -252,6 +252,7 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
             print(f"Simulating sinks for replicate {replicate:03}...")
             racipe_simulate_sinks(grn_file, sol_df, replicate, num_init_conds,suffix,batch_size)
+    print("Done!")
 
 
 def ising_cleanup(grn_file : str,replicate : int,mode : str,no_fragments : int, fragment_size : int):

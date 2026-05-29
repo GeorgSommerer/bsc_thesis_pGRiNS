@@ -150,3 +150,5 @@ if pert_file is not None:
     # C2: Create perturbed adata object
     print("*"*10,"C2: Create perturbed adata object:","*"*10)
     pgrins_prepare_output.main(grn_file=project_name,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
+    
+print("All done!")

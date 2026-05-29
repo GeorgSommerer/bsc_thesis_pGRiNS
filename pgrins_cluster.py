@@ -20,6 +20,7 @@ from glob import glob
 import pickle
 
 from Prep_Data import pgrins_prepare_output
+from Analysis import plotting_funs
 
 
 def get_adata_ctrl_mean(adata_list : ad.AnnData) -> np.array:
@@ -171,12 +172,16 @@ def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : f
             best_cell_index = list(grins_data.obs.index)
 
             print("Saving final file")
+            plotting_funs.plot_pca_results(grn_file,grins_data_clustered)
+            plotting_funs.plot_umap_results(grn_file,grins_data_clustered)
             # File containing all cells and information about the clustering process (for plotting):
             grins_data_clustered.write_h5ad(
                 f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"
             ) 
             with open(f'Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle', 'wb') as f:
                 pickle.dump(best_cell_index, f, pickle.HIGHEST_PROTOCOL)
+        else:
+            print("Done!")
             
 
 
