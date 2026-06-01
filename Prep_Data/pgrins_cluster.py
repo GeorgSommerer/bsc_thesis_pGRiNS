@@ -1,6 +1,7 @@
 from sklearn.metrics import silhouette_score, silhouette_samples, mean_squared_error
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy import sparse
+from scipy.stats import pearsonr
 
 import scanpy as sc
 import anndata as ad
@@ -18,9 +19,16 @@ from tqdm import tqdm
 import os
 from glob import glob
 import pickle
+from pathlib import Path
 
-from Prep_Data import pgrins_prepare_output
-from Analysis import plotting_funs
+try:
+    from Prep_Data import pgrins_prepare_output
+    from Analysis import plotting_funs
+except:
+    sys.path.append("..")
+    sys.path.append("/".join(str(Path.cwd()).split("/")[:-1]))
+    from Prep_Data import pgrins_prepare_output
+    from Analysis import plotting_funs
 
 
 def get_adata_ctrl_mean(adata_list : ad.AnnData) -> np.array:

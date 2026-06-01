@@ -1,8 +1,8 @@
 import argparse
 import os
 
-from Prep_Data import pgrins_prepare_input, pgrins_prepare_output
-import pgrins_run_grins, pgrins_cluster
+from Prep_Data import pgrins_prepare_input, pgrins_prepare_output, pgrins_cluster
+from grins import pgrins_run_grins
 
 """
 Ran with
@@ -10,6 +10,13 @@ nohup python3 -u pgrins_main.py KeggoRo_final_2205 -eps --num_params 1000 --num_
 
 Tested arguments with
 nohup python3 -u pgrins_main.py dorothea_test -p --pert_file dorothea_tf2_abc_perts --num_params 250 --num_init_conds 15 --batch_size 1500 --max_steps 3000 --tmax 1000 --pert_factor 1000 --pert_ratio 0.1 --num_replicates 2 --max_missingness 80 --expon_scale 30 --full_dropouts 20 --min_num_pcs 15 --min_cluster_size_pct 0.005 --max_num_clusters 12 > doro_test_out_2605.log 2>&1
+
+31.05.
+nohup python3 -u pgrins_main.py doro_abcd_only -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 --remove_outliers > Logs/out_abcd.log 2>&1 &
+
+1.6.
+nohup python3 -u pgrins_main.py KeggoRo -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 50 --tmax 200 >> Logs/doro_abcd_0106.log 2>&1 &
+
 """
 ########################################################
 parser = argparse.ArgumentParser()
@@ -40,6 +47,9 @@ parser.add_argument("--num_replicates", type=int,help="Number of replicates to b
 parser.add_argument("--max_missingness", type=float,help="The maximal percentage of missing data (Default: 90 percent).")
 parser.add_argument("--expon_scale",type=float,help="Given an experimental dataset, this is the mean of pct_dropout_by_counts from adata.var among the genes with pct_dropout_by_counts<max_missingness (Default: 42.2 for Replogle22)")
 parser.add_argument("--full_dropouts",type=float,help="How many genes should have 100 percent of their entries missing (Default: 0 percent)")        
+parser.add_argument("--outlier_cutoff_min_pct", type=float,help="What percentage of cells of a gene should be negative or missing in order for them to be removed. Defaults to 1%.")
+parser.add_argument("--outlier_cutoff_max",type=float,help="How high the mean raw counts should be in order to be treated as an outlier. Defaults to 10000. For reference, Norman19 and Replogle22 have few genes with >100 raw counts.")
+parser.add_argument("--remove_outliers",action="store_true",help="If True, outlier genes are removed. Otherwise, they are set to zero.")
 
 # D:
 parser.add_argument("--min_num_pcs", type=int,help="The minimal number of principal components to use for UMAP. Defaults to 10.")
@@ -112,6 +122,14 @@ if args.expon_scale:
     kwargs_c["expon_scale"] = args.expon_scale
 if args.full_dropouts:
     kwargs_c["full_dropouts"] = args.full_dropouts
+if args.outlier_cutoff_min_pct:
+    kwargs_c["outlier_cutoff_min_pct"] = args.outlier_cutoff_min_pct
+if args.outlier_cutoff_max:
+    kwargs_c["outlier_cutoff_max"] = args.outlier_cutoff_max
+if args.remove_outliers:
+    kwargs_c["remove_outliers"] = True
+else:
+    kwargs_c["remove_outliers"] = False
 
 if args.min_num_pcs:
     kwargs_d["min_num_pcs"] = args.min_num_pcs
@@ -133,7 +151,7 @@ pgrins_run_grins.main(grn_file=project_name,is_racipe=is_racipe,pert_file=None,*
 ########################################################
 # C1: Create unperturbed adata object
 print("*"*10,"C1: Create unperturbed adata object:","*"*10)
-pgrins_prepare_output.main(grn_file=project_name,is_racipe=is_racipe, pert_file=None, **kwargs_c)
+pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
 
 ########################################################
 # D1: Get best control cells
@@ -149,6 +167,6 @@ if pert_file is not None:
     ########################################################
     # C2: Create perturbed adata object
     print("*"*10,"C2: Create perturbed adata object:","*"*10)
-    pgrins_prepare_output.main(grn_file=project_name,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
+    pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
     
 print("All done!")

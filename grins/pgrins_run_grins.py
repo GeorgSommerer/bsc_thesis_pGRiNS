@@ -1,10 +1,8 @@
 import jax
 import jax.numpy as jnp
 from jax import config
+import pathlib
 
-import grins.racipe_run as racipe
-from grins import ising_bool, gen_params, reg_funcs
-from Prep_Data import pgrins_prepare_input
     
 
 import pandas as pd
@@ -18,7 +16,19 @@ from tqdm import tqdm
 from itertools import product, groupby
 from operator import itemgetter
 
-
+try:
+    import racipe_run as racipe
+    import ising_bool, gen_params, reg_funcs
+except:
+    import grins.racipe_run as racipe
+    from grins import ising_bool, gen_params, reg_funcs
+try:
+    from Prep_Data import pgrins_prepare_input
+except:
+    sys.path.append("..")
+    sys.path.append("/".join(str(Path.cwd()).split("/")[:-1]))
+    from Prep_Data import pgrins_prepare_input
+    
 def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,batch_size):
     """
     After the steady states of the non-sink nodes of the GRN have been simulated, all that is left is to determine the steady state concentrations of the sink nodes.
