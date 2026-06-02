@@ -149,7 +149,7 @@ get_conf_matrix <- function(exp_ds,pgrins_ds){
 
 # 3) On the adjacency matrix: use CoDiNA to compare networks
 get_diff_net <- function(exp_ds,grins_ds){
-  diff_net <- MakeDiffNet(Data = list(exp_ds$network_df, grins_ds$network_df),Code = c("experimental", "pGRINS"))
+  diff_net <- MakeDiffNet(Data = list(exp_ds, grins_ds),Code = c("experimental", "pGRINS"))
   # Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
   # beta edges have different signs, and gamma edges belong to only 1 network
   diff_net <- subset(diff_net, diff_net$Score_Phi_tilde/diff_net$Score_internal > 1)
@@ -205,12 +205,25 @@ for (name in names){
 }
 
 for (name in names){
+  # Function to turn GRN into adjacency matrices
+  # get_modules -> topGO analysis
+}
+
+for (name in names){
   dataset_lists[[name]][["GO_conf_matrix"]] <- get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
   print(dataset_lists[[name]][["GO_conf_matrix"]])
 }
 
 for (name in names){
-  dataset_lists[[name]][["DiffNodes"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
+  # DiffNet on all 3 networks at once???
+  dataset_lists[[name]][["DiffNodes_pGRiNS"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,dataset_lists[[name]][["pGRiNS"]]$network_df)
+  
+  nonsink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo.topo", delim=" ")
+  sink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo_sinks.topo", delim=" ")
+  grn <- bind_rows(nonsink_df,sink_df) %>% filter("Source","Target") %>% mutate("wTO"=1)
+  dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,grn)
 }
+
+
 
 load("./.RData")

@@ -17,6 +17,9 @@ nohup python3 -u pgrins_main.py doro_abcd_only -eps --num_params 1000 --num_init
 1.6.
 nohup python3 -u pgrins_main.py KeggoRo -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 50 --tmax 200 >> Logs/doro_abcd_0106.log 2>&1 &
 
+2.6.
+nohup python3 -u pgrins_main.py KeggoRo_0206 -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 >> Logs/KeggoRo_0206.log 2>&1 &
+
 """
 ########################################################
 parser = argparse.ArgumentParser()

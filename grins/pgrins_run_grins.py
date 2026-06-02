@@ -193,13 +193,13 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
 
 
     # Generate parameters and initial conditions for the GRN:
-    
     if pert_list == []:
-        path = f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}.parquet"
+        gen_paths = [f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_params_{rep:03}.parquet" for rep in range(1,num_replicates+1)]+[f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_init_conds_{rep:03}.parquet" for rep in range(1,num_replicates+1)]
+        if split_sinks:
+            gen_paths += [f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_params_{rep:03}_sinks.parquet" for rep in range(1,num_replicates+1)]
     else:
-        path = f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_pert_genes_{num_replicates:03}.parquet"
-    
-    if not os.path.exists(path):
+        gen_paths = [f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_pert_genes_{rep:03}.parquet" for rep in range(1,num_replicates+1)]
+    if False in [os.path.exists(path) for path in gen_paths]:
         print("Generating parameters...")
         racipe.gen_topo_param_files(
             f"{grn_path}.topo",
@@ -209,10 +209,11 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             num_init_conds,
             sampling_method=sampling_method,
             pert_list = pert_list,
-            pert_factor = pert_factor
+            pert_factor = pert_factor,
+            split_sinks=split_sinks
             
         )
-        
+    """
     # If sink nodes were removed, it is necessary to generate parameters for them here (analogous to code from gen_topo_param_files):
     if pert_list == [] and split_sinks and not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_sinks.parquet"):
         print("Generating parameters for sinks...")
@@ -240,9 +241,9 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
                 f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_params_{replicate:03}_sinks.parquet", index=False
             )
             del sink_param_range_df, sink_param_df
-
+    """
     # Run Racipe for all replicates:
-    if not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_{suffix}.parquet"):
+    if False in [os.path.exists(f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_steadystate_solutions_{rep:03}_{suffix}.parquet") for rep in range(1,num_replicates+1)]:
         #if pert_list is None:
         racipe.run_all_replicates(
                 f"{grn_path}.topo",
@@ -256,7 +257,7 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             )
         
     # If split_sinks is true, calculate non-sinks steady states; in any case, save as filename_expr.parquet for consistency
-    if split_sinks and not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_steadystate_solutions_{num_replicates:03}_sinks_{suffix}.parquet"):
+    if split_sinks and not False in [os.path.exists(f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_steadystate_solutions_{rep:03}_sinks_{suffix}.parquet") for rep in range(1,num_replicates+1)]:
         for replicate in range(1,num_replicates+1):
             sol_df = pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
             sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes

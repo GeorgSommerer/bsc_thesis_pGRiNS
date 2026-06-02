@@ -1,7 +1,7 @@
 from sklearn.metrics import silhouette_score, silhouette_samples, mean_squared_error
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy import sparse
-from scipy.stats import pearsonr
+from scipy.stats import spearmanr
 
 import scanpy as sc
 import anndata as ad
@@ -134,11 +134,11 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
         print(f"Calculating MSES for {len(best_clusters)} clusters")
         # Get the MSEs between the adata control mean and each cluster mean:
         mse_results = [
-            mean_squared_error(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze())
+            spearmanr(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze())
             for cluster in best_clusters
         ]
         # Get the cells in GRiNS in the cluster with the lowest MSE:
-        best_cluster_overall = best_clusters[np.argmin(mse_results)]
+        best_cluster_overall = best_clusters[np.argmax(mse_results)]
     else: # ctrl case without experimental data: take the cluster with the highest silhouette score
         best_cluster_overall = best_clusters[0]
 

@@ -1,0 +1,46 @@
+python3 -u pgrins_run_grins.py sKeggoro_abcd Racipe -s --batch_size 4000
+
+
+Running control run for RACIPE:
+Loading ODE system from: Data/SimulResults_Racipe/sKeggoro_abcd
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+0
+E0425 12:29:24.808414  837333 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0425 13:56:54.555268  837238 slow_operation_alarm.cc:140] The operation took 1h29m29.747043719s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+4000
+8000
+12000
+16000
+20000
+24000
+28000
+32000
+36000
+40000
+44000
+48000
+52000
+56000
+60000
+64000
+68000
+72000
+76000
+80000
+84000
+88000
+92000
+96000
+Time taken for replicate 001 and 001: 30252.38865828514
+Normalising and Discretising the solutions
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py:847: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  return norm_df
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/racipe_run.py:966: UserWarning: Some g/k values exceed the hard threshold of 1.01, check your input data. Potential reason if running with default values would be solver accuracy - lower rel_tol and abs_tol values.

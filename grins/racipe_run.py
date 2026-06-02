@@ -86,7 +86,8 @@ def gen_topo_param_files(
     sampling_method: str | dict = "Sobol",
     rng: int | np.random.Generator | None = None,
     pert_list : list = [],
-    pert_factor : int = 50
+    pert_factor : int = 50,
+    split_sinks : bool = False
 ):
     """
     Generate parameter files for simulation.
@@ -127,6 +128,12 @@ def gen_topo_param_files(
     topo_name = topo_file.split("/")[-1].split(".")[0]
     # Parse the topo file
     topo_df = parse_topos(topo_file)
+    
+    if split_sinks:
+        topo_sink_df = parse_topos(f"{topo_file.split(".")[0]}_sinks.topo")
+        topo_nonsink_df = topo_df
+        topo_df = pd.concat([topo_nonsink_df,topo_sink_df],axis=0)
+    
     # Initialising the main random generator
     main_rng = _get_rng(rng)
     # # Generate the parameter names
@@ -137,11 +144,11 @@ def gen_topo_param_files(
     gen_sim_dirstruct(topo_file, save_dir, num_replicates)
     # Specify directory where all the generated ode system file will be saved
     sim_dir = f"{save_dir}/{topo_name}"
-    # Generate the ODE system for diffrax
-    gen_diffrax_odesys(topo_df, topo_name, sim_dir,pert_list,suffix)
     if pert_list == []:
         # Generate the parameter dataframe and save in each of the replicate folders
         for rep in range(1, num_replicates + 1):
+            # Generate the ODE system for diffrax (moved inside loop so that it is regenerated for every param range iteration)
+            gen_diffrax_odesys(topo_df, topo_name, sim_dir,pert_list,suffix)
             # Derive a deterministic seed for this specific replicate
             rep_seed = main_rng.integers(0, 2**32)
             rep_rng = np.random.default_rng(rep_seed)
@@ -149,6 +156,18 @@ def gen_topo_param_files(
             param_range_df = gen_param_range_df(
                 topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
             )
+            if split_sinks:
+                # All params whose names end with sink genes belong to the sink genes df
+                param_range_df_sinks = param_range_df[param_range_df["Parameter"].str.endswith(tuple([f"_{sink}" for sink in topo_sink_df["Target"].unique()]))]
+                param_range_df = param_range_df[~param_range_df["Parameter"].str.endswith(tuple([f"_{sink}" for sink in topo_sink_df["Target"].unique()]))]
+                param_range_df_sinks.to_csv(
+                    f"{sim_dir}/{rep:03}/{topo_name}_param_range_{rep:03}_sinks.csv",
+                    index=False,
+                    sep="\t",
+                )
+                # If sinks are split off, the ODE needs to be regenerated so that sink genes do not appear in it
+                gen_diffrax_odesys(topo_nonsink_df, topo_name, sim_dir,pert_list,suffix) 
+            
             # Save the parameter range dataframe
             param_range_df.to_csv(
                 f"{sim_dir}/{rep:03}/{topo_name}_param_range_{rep:03}.csv",
@@ -161,9 +180,16 @@ def gen_topo_param_files(
             param_df.to_parquet(
                 f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}.parquet", index=False
             )
+            if split_sinks:
+                param_df_sinks = gen_param_df(param_range_df_sinks, num_params, rng=rep_rng)
+                param_df_sinks = param_df_sinks.assign(ParamNum=param_df_sinks.index + 1)
+                param_df_sinks.to_parquet(
+                    f"{sim_dir}/{rep:03}/{topo_name}_params_{rep:03}_sinks.parquet", index=False
+                )   
+
             # Generate the initial conditions dataframe
             initcond_df = gen_init_cond(
-                topo_df=topo_df, num_init_conds=num_init_conds, rng=rep_rng
+                topo_df=topo_nonsink_df, num_init_conds=num_init_conds, rng=rep_rng
             )
             initcond_df = initcond_df.assign(InitCondNum=initcond_df.index + 1)
             initcond_df.to_parquet(
@@ -474,8 +500,8 @@ def topo_simulate(
         if actual_nodes != expected_nodes:
             raise ValueError(
                 f"Node mismatch in {replicate_dir}.\n"
-                f"Missing: {expected_nodes - actual_nodes}\n"
-                f"Extra: {actual_nodes - expected_nodes}"
+                f"Missing: {len(expected_nodes - actual_nodes)} genes: {expected_nodes - actual_nodes}\n"
+                f"Extra: {len(actual_nodes - expected_nodes)} genes: {actual_nodes - expected_nodes}"
             )
         # Force the exact order for y unpacking
         ic_cols = node_order + (
@@ -490,8 +516,8 @@ def topo_simulate(
         if actual_params != expected_params:
             raise ValueError(
                 f"Parameter mismatch in {replicate_dir}.\n"
-                f"Missing: {expected_params - actual_params}\n"
-                f"Extra: {actual_params - expected_params}"
+                f"Missing: {len(expected_params-actual_params)} params: {expected_params - actual_params}\n"
+                f"Extra: {len(actual_params-expected_params)} params: {actual_params - expected_params}"
             )
         p_cols = param_order + (
             ["ParamNum"] if "ParamNum" in parameters.columns else []
@@ -630,8 +656,7 @@ def run_all_replicates(
     discretize=True,
     gk_threshold=1.01,
     pert_list = [],
-    pert_ratio=0.01,
-    suffix = "ctrl"
+    pert_ratio=0.01
 ):
     """
     Run simulations for all replicates of the specified topo file. The initial conditions and parameters are loaded from the replicate folders. The directory structure is assumed to be the same as that generated by the gen_topo_param_files function, with the main directory with the topo file name which has the parameter range file the ODE system file and the replicate folders with the initial conditions and parameters dataframes.
@@ -716,6 +741,9 @@ def run_all_replicates(
     for replicate_dir in replicate_folders:
         # Getting the base name of the replicate directory
         replicate_base = os.path.basename(replicate_dir.rstrip("/"))
+        print(f"Replicate {replicate_base}/{len(replicate_folder):03}")
+        if os.path.exists(f"{save_dir}/{grn_file}/{replicate_base}/{grn_file}_steadystate_solutions_{replicate_base}_{suffix}.parquet"):
+            continue
         # Read the initial conditions and parameters dataframes
         init_conds = pd.read_parquet(f"{replicate_dir}/{topo_name}_init_conds_{replicate_base}.parquet")
         params = pd.read_parquet(f"{replicate_dir}/{topo_name}_params_{replicate_base}.parquet")

@@ -1,0 +1,1634 @@
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+.topo files ['dorothea_abcd', 'kegg'] are turned into KeggoRo
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Normalizing file:  Norman19
+Total measured cells: 111445
+Total measured genes: 33694
+Percent of control cells: 10.637534209699853 %
+Unique perturbations: 236
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 103
+Hemoglobin genes: 12
+Done calculating qc metrics
+Total number of cells: 111445
+outlier
+False    110762
+True        683
+Name: count, dtype: int64
+mt_outlier
+False    97622
+True     13823
+Name: count, dtype: int64
+Number of dropout genes: 25882
+Total number of cells after filtering of low quality cells: 97120
+Median counts: 14263.0
+Done!
+Saving file
+Normalizing file:  Replogle22
+Total measured cells: 310385
+Total measured genes: 8563
+Unique genes in the df (w/o ctrl): batch                          48
+gene                         2057
+gene_id                      2057
+transcript                     57
+gene_transcript              2176
+guide_id                     2176
+percent_mito               288746
+UMI_count                   28790
+z_gemgroup_UMI             245702
+core_scale_factor              48
+core_adjusted_UMI_count    244091
+disease                         1
+cancer                          1
+cell_line                       1
+sex                             1
+age                             1
+perturbation                 2057
+organism                        1
+perturbation_type               1
+tissue_type                     1
+ncounts                     28562
+ngenes                       5034
+nperts                          1
+percent_ribo               288989
+cell_type                       1
+condition                    2057
+condition_name               2057
+dtype: int64
+Percent of control cells: 3.4444319152020877 %
+Unique perturbations: 2057
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 89
+Hemoglobin genes: 7
+Done calculating qc metrics
+Total number of cells: 310385
+outlier
+False    309250
+True       1135
+Name: count, dtype: int64
+mt_outlier
+True     270798
+False     39587
+Name: count, dtype: int64
+Number of dropout genes: 41
+Total number of cells after filtering of low quality cells: 39438
+Median counts: 13679.0
+Done!
+Saving file
+Created subset adata files...
+[('ARID1A', False, True)]
+[('BCORL1', False, True)]
+[('FOSB', False, False)]
+[('KLF1', True, True), ('SET', False, True)]
+[('OSR2', False, False)]
+[('BAK1', True, True), ('KLF1', True, True)]
+[('FOXA3', False, False), ('FOXL2', True, True)]
+[('IRF1', True, False), ('SET', False, True)]
+[('IGDCC3', False, False), ('MAPK1', True, True)]
+[('UBASH3B', False, False)]
+[('CBL', True, True), ('PTPN12', False, True)]
+[('MAP2K6', False, False)]
+[('PTPN12', False, True), ('SAMD1', False, True)]
+[('UBASH3A', False, False)]
+[('IER5L', False, False), ('LYL1', True, True)]
+[('CDKN1A', False, False), ('CDKN1C', False, True)]
+[('AHR', False, False), ('FEV', False, True)]
+[('LHX1', False, True)]
+[('FOXA3', False, False)]
+[('SGK1', True, False), ('TBX3', False, False)]
+[('C3orf72', False, False), ('FOXL2', True, True)]
+[('PRTG', False, False), ('TGFBR2', False, False)]
+[('CDKN1A', False, False)]
+[('HOXB9', False, True)]
+[('ctrl', False, False)]
+[('CSRNP1', False, False)]
+[('ISL2', False, False)]
+[('MAP2K3', False, False), ('MAP2K6', False, False)]
+[('CDKN1C', False, True)]
+[('MAP7D1', False, True)]
+[('CBL', True, True), ('TGFBR2', False, False)]
+[('IKZF3', False, True), ('MAPK1', True, True)]
+[('PTPN12', False, True), ('SNAI1', False, False)]
+[('ELMSAN1', False, True), ('LHX1', False, True)]
+[('FOXA3', False, False), ('FOXF1', False, False)]
+[('CEBPB', True, True), ('PTPN12', False, True)]
+[('PTPN1', True, True)]
+[('ZBTB25', False, False)]
+[('MAPK1', True, True), ('PRTG', False, False)]
+[('SET', False, True)]
+[('IKZF3', False, True), ('MAP2K3', False, False)]
+[('DUSP9', False, False), ('PRTG', False, False)]
+[('COL2A1', False, True), ('KLF1', True, True)]
+[('KLF1', True, True), ('TGFBR2', False, False)]
+[('CNN1', False, True)]
+[('SAMD1', False, True)]
+[('MAML2', False, False)]
+[('SNAI1', False, False), ('ZBTB10', False, True)]
+[('KLF1', True, True), ('MAP2K6', False, False)]
+[('BAK1', True, True)]
+[('HOXC13', False, True), ('ZC3HAV1', False, True)]
+[('IER5L', False, False)]
+[('DLX2', False, False)]
+[('CDKN1B', True, True)]
+[('RREB1', False, True)]
+[('CELF2', False, True)]
+[('HNF4A', False, False)]
+[('ETS2', True, True)]
+[('CBL', True, True), ('PTPN9', False, True)]
+[('COL1A1', False, False)]
+[('SLC6A9', False, False)]
+[('KIF18B', False, True), ('KIF2C', False, True)]
+[('CEBPE', False, False), ('RUNX1T1', False, False)]
+[('PTPN9', False, True)]
+[('FOSB', False, False), ('UBASH3B', False, False)]
+[('ELMSAN1', False, True), ('MAP2K3', False, False)]
+[('ETS2', True, True), ('MAP7D1', False, True)]
+[('TBX2', False, False)]
+[('PRTG', False, False)]
+[('UBASH3A', False, False), ('UBASH3B', False, False)]
+[('CDKN1B', True, True), ('CDKN1C', False, True)]
+[('IGDCC3', False, False), ('ZBTB25', False, False)]
+[('KLF1', True, True)]
+[('SPI1', True, True)]
+[('RUNX1T1', False, False)]
+[('FOSB', False, False), ('OSR2', False, False)]
+[('CNNM4', False, False)]
+[('PLK4', False, True)]
+[('TBX3', False, False)]
+[('CLDN6', False, True)]
+[('CBFA2T3', False, True)]
+[('BPGM', False, True)]
+[('KIF18B', False, True)]
+[('BCL2L11', True, True)]
+[('CEBPE', False, False), ('ZC3HAV1', False, True)]
+[('PTPN12', False, True), ('ZBTB25', False, False)]
+[('TBX2', False, False), ('TBX3', False, False)]
+[('CEBPE', False, False)]
+[('CNN1', False, True), ('MAPK1', True, True)]
+[('TMSB4X', False, True)]
+[('BPGM', False, True), ('SAMD1', False, True)]
+[('ZC3HAV1', False, True)]
+[('IGDCC3', False, False)]
+[('ELMSAN1', False, True)]
+[('CNN1', False, True), ('ETS2', True, True)]
+[('CITED1', False, False)]
+[('CEBPE', False, False), ('KLF1', True, True)]
+[('FOXA1', False, False)]
+[('FOXA1', False, False), ('FOXA3', False, False)]
+[('TSC22D1', False, True)]
+[('ETS2', True, True), ('PRTG', False, False)]
+[('HOXA13', False, False)]
+[('TGFBR2', False, False)]
+[('PTPN12', False, True), ('PTPN9', False, True)]
+[('ZNF318', True, True)]
+[('MAPK1', True, True)]
+[('FOXA1', False, False), ('HOXB9', False, True)]
+[('TP73', False, False)]
+[('C19orf26', False, False)]
+[('IRF1', True, False)]
+[('PTPN12', False, True), ('ZBTB10', False, True)]
+[('ETS2', True, True), ('TGFBR2', False, False)]
+[('CEBPE', False, False), ('PTPN12', False, True)]
+[('PTPN12', False, True)]
+[('SNAI1', False, False)]
+[('MAP4K3', False, True)]
+[('MAP2K3', False, False)]
+[('GLB1L2', False, False)]
+[('STIL', False, True)]
+[('KIAA1804', False, False)]
+[('CEBPA', False, False), ('CEBPB', True, True)]
+[('ELMSAN1', False, True), ('MAP2K6', False, False)]
+[('CEBPE', False, False), ('SPI1', True, True)]
+[('KIF2C', False, True)]
+[('RHOXF2', False, True), ('SET', False, True)]
+[('CEBPB', True, True), ('LYL1', True, True)]
+[('IGDCC3', False, False), ('PRTG', False, False)]
+[('MEIS1', False, False)]
+[('CEBPB', True, True), ('MAPK1', True, True)]
+[('BAK1', True, True), ('TMSB4X', False, True)]
+[('FOXF1', False, False)]
+[('DLX2', False, False), ('SNAI1', False, False)]
+[('CBL', True, True), ('CNN1', False, True)]
+[('MAP4K5', False, True)]
+[('CEBPE', False, False), ('CNN1', False, True)]
+[('ARRDC3', False, False)]
+[('CBL', True, True), ('UBASH3B', False, False)]
+[('CDKN1A', False, False), ('CDKN1B', True, True)]
+[('SLC38A2', False, True)]
+[('BAK1', True, True), ('BCL2L11', True, True)]
+[('SGK1', True, False), ('TBX2', False, False)]
+[('COL2A1', False, True)]
+[('FOSB', False, False), ('PTPN12', False, True)]
+[('PTPN12', False, True), ('UBASH3A', False, False)]
+[('SLC4A1', False, False)]
+[('CEBPA', False, False), ('KLF1', True, True)]
+[('MIDN', False, True)]
+[('CEBPB', True, True)]
+[('CEBPE', False, False), ('SET', False, True)]
+[('MAP2K3', False, False), ('SLC38A2', False, True)]
+[('CBL', True, True)]
+[('OSR2', False, False), ('UBASH3B', False, False)]
+[('PRDM1', False, False)]
+[('IKZF3', False, True)]
+[('CNN1', False, True), ('UBASH3B', False, False)]
+[('MAP2K6', False, False), ('SPI1', True, True)]
+[('ETS2', True, True), ('IGDCC3', False, False)]
+[('DUSP9', False, False), ('IGDCC3', False, False)]
+[('KMT2A', True, True)]
+[('S1PR2', False, False), ('SGK1', True, False)]
+[('ETS2', True, True), ('IKZF3', False, True)]
+[('DUSP9', False, False), ('SNAI1', False, False)]
+[('S1PR2', False, False)]
+[('FOXL2', True, True)]
+[('CEBPB', True, True), ('CEBPE', False, False)]
+[('MAPK1', True, True), ('TGFBR2', False, False)]
+[('ATL1', False, False)]
+[('BPGM', False, True), ('ZBTB1', False, False)]
+[('CKS1B', True, True)]
+[('RHOXF2', False, True)]
+[('FOXA1', False, False), ('KLF1', True, True)]
+[('AHR', False, False), ('KLF1', True, True)]
+[('UBASH3B', False, False), ('ZBTB25', False, False)]
+[('PTPN13', False, False)]
+[('FOXA3', False, False), ('HOXB9', False, True)]
+[('CEBPA', False, False), ('CEBPE', False, False)]
+[('HOXC13', False, True)]
+[('DUSP9', False, False), ('MAPK1', True, True)]
+[('BCL2L11', True, True), ('TGFBR2', False, False)]
+[('CEBPE', False, False), ('ETS2', True, True)]
+[('SAMD1', False, True), ('ZBTB1', False, False)]
+[('HK2', False, True)]
+[('FOXL2', True, True), ('HOXB9', False, True)]
+[('DUSP9', False, False), ('KLF1', True, True)]
+[('C3orf72', False, False)]
+[('CEBPA', False, False)]
+[('FEV', False, True), ('MAP7D1', False, True)]
+[('EGR1', True, True)]
+[('AHR', False, False)]
+[('LYL1', True, True)]
+[('FEV', False, True)]
+[('RHOXF2', False, True), ('ZBTB25', False, False)]
+[('PTPN9', False, True), ('UBASH3B', False, False)]
+[('FOXF1', False, False), ('HOXB9', False, True)]
+[('C19orf26', False, False), ('TGFBR2', False, False)]
+[('ZBTB1', False, False)]
+[('OSR2', False, False), ('PTPN12', False, True)]
+[('PTPN12', False, True), ('UBASH3B', False, False)]
+[('FOSB', False, False), ('IKZF3', False, True)]
+[('DUSP9', False, False)]
+[('NCL', False, True)]
+[('CEBPA', False, False), ('ZC3HAV1', False, True)]
+[('IKZF3', False, True), ('MAP2K6', False, False)]
+[('FOXL2', True, True), ('ZNF318', True, True)]
+[('CNN1', False, True), ('UBASH3A', False, False)]
+[('IGDCC3', False, False), ('TGFBR2', False, False)]
+[('SNAI1', False, False), ('UBASH3B', False, False)]
+[('FOXA1', False, False), ('FOXF1', False, False)]
+[('ELMSAN1', False, True), ('ZBTB10', False, True)]
+[('SGK1', True, False)]
+[('FOXL2', True, True), ('MEIS1', False, False)]
+[('NIT1', False, True)]
+[('ZBTB10', False, True)]
+[('CEBPE', False, False), ('FOSB', False, False)]
+[('FOXA1', False, False), ('FOXL2', True, True)]
+[('CBFA2T3', False, True), ('POU3F2', True, False)]
+[('POU3F2', True, False)]
+[('CLDN6', False, True), ('KLF1', True, True)]
+[('FOXO4', False, False)]
+[('ETS2', True, True), ('MAPK1', True, True)]
+[('FEV', False, True), ('ISL2', False, False)]
+[('FOXL2', True, True), ('POU3F2', True, False)]
+[('HES7', False, False)]
+[('PLK4', False, True), ('STIL', False, True)]
+[('CBL', True, True), ('UBASH3A', False, False)]
+[('DUSP9', False, False), ('ETS2', True, True)]
+[('FOXF1', False, False), ('FOXL2', True, True)]
+[('SAMD1', False, True), ('UBASH3B', False, False)]
+[('CEBPA', False, False), ('JUN', True, True)]
+[('CEBPB', True, True), ('JUN', True, True)]
+[('JUN', True, True)]
+[('CEBPB', True, True), ('OSR2', False, False)]
+[('SAMD1', False, True), ('TGFBR2', False, False)]
+[('CBFA2T3', False, True), ('PRDM1', False, False)]
+[('CEBPB', True, True), ('FOSB', False, False)]
+[('DLX2', False, False), ('ZBTB10', False, True)]
+[('CBFA2T3', False, True), ('FEV', False, True)]
+Save subset of Norman19...
+[('RPL10A', False, True)]
+[('NUP98', False, True)]
+[('RRM2', False, True)]
+[('MRPS14', False, True)]
+[('RPL5', False, True)]
+[('RPL31', False, True)]
+[('CKAP5', False, True)]
+[('LSG1', False, True)]
+[('SFSWAP', False, True)]
+[('TRRAP', False, True)]
+[('PSTK', False, True)]
+[('HSPA9', False, True)]
+[('NOP16', False, True)]
+[('POLA1', False, True)]
+[('MRPS28', False, True)]
+[('U2SURP', False, True)]
+[('GFER', False, True)]
+[('ZMAT2', False, True)]
+[('PMPCB', False, True)]
+[('RPS13', False, True)]
+[('BCAS2', False, True)]
+[('RPS26', False, True)]
+[('MAK16', False, True)]
+[('GRPEL1', False, True)]
+[('EIF3A', False, True)]
+[('ctrl', False, False)]
+[('NIP7', False, True)]
+[('RPS19', False, True)]
+[('KRR1', False, True)]
+[('INTS8', False, True)]
+[('DYNC1I2', False, True)]
+[('TSR2', False, True)]
+[('ARGLU1', False, True)]
+[('COG2', False, True)]
+[('CDK11A', False, True)]
+[('DNM1L', False, True)]
+[('SPCS2', False, True)]
+[('RPL3', False, True)]
+[('SLC39A9', False, True)]
+[('RPLP2', False, True)]
+[('PPIE', False, True)]
+[('CRNKL1', False, True)]
+[('XPO1', False, True)]
+[('PSMD7', False, True)]
+[('RPS14', False, True)]
+[('RPL17', False, True)]
+[('NAA38', False, True)]
+[('RTCB', False, True)]
+[('RPL21', False, True)]
+[('CNN2', False, True)]
+[('RPS28', False, True)]
+[('CDK1', False, True)]
+[('USP39', False, True)]
+[('CHEK1', True, True)]
+[('U2AF1', False, False)]
+[('NOL6', False, True)]
+[('SF3A2', False, True)]
+[('DDX47', False, False)]
+[('FBL', False, True)]
+[('DHFR', False, True)]
+[('AAAS', False, True)]
+[('CCND1', False, False)]
+[('SLC25A10', False, True)]
+[('LSM5', False, True)]
+[('RPL7', False, True)]
+[('NSUN4', False, True)]
+[('TIMM23B', False, True)]
+[('BUB1', True, True)]
+[('POLR1B', False, True)]
+[('ASF1B', False, True)]
+[('HSPA5', True, True)]
+[('RPL24', False, True)]
+[('ZNF574', False, True)]
+[('TOMM22', False, True)]
+[('RPS24', False, True)]
+[('DNAJC19', False, True)]
+[('LSM6', False, True)]
+[('WBP11', False, True)]
+[('PLRG1', False, True)]
+[('RPL19', False, True)]
+[('WDR12', False, True)]
+[('NOP2', False, True)]
+[('HIRA', False, True)]
+[('EIF3M', False, True)]
+[('PSMB5', False, True)]
+[('PSMB7', False, True)]
+[('HAUS4', False, True)]
+[('KIF11', False, True)]
+[('RPL32', False, True)]
+[('PRELID3B', False, True)]
+[('RCL1', False, True)]
+[('MAT2A', False, True)]
+[('RPL34', False, True)]
+[('DONSON', False, True)]
+[('RPL36', False, True)]
+[('PHB2', True, True)]
+[('ARCN1', False, True)]
+[('RIOK1', False, True)]
+[('EBNA1BP2', False, True)]
+[('EGLN2', True, True)]
+[('RPL4', False, True)]
+[('INTS1', False, True)]
+[('NMD3', False, True)]
+[('ZNF317', False, True)]
+[('ACTR8', False, True)]
+[('ALG13', False, True)]
+[('AATF', False, True)]
+[('POLR1A', False, True)]
+[('RPL23A', False, True)]
+[('RPF2', False, True)]
+[('RPS15A', False, True)]
+[('RPL30', False, True)]
+[('POLR3B', False, True)]
+[('RPS7', False, True)]
+[('LETM1', False, True)]
+[('DDX23', False, True)]
+[('UBE2M', False, True)]
+[('MCM10', False, True)]
+[('DDX56', False, True)]
+[('SNRNP27', False, True)]
+[('TBCE', False, False)]
+[('ACTR1A', False, True)]
+[('PHB', False, True)]
+[('EIF3H', False, True)]
+[('ATF5', False, True)]
+[('PFN1', False, True)]
+[('RRS1', False, True)]
+[('AKIRIN2', False, True)]
+[('EEF2', False, True)]
+[('MRPS31', False, True)]
+[('RPS11', False, True)]
+[('TPX2', False, True)]
+[('POLR2F', False, True)]
+[('RPS20', False, True)]
+[('FASTKD5', False, True)]
+[('FAM32A', False, True)]
+[('PPARGC1B', True, True)]
+[('SYF2', False, True)]
+[('ACD', False, True)]
+[('CCDC86', False, True)]
+[('FCF1', False, True)]
+[('KRT10', False, True)]
+[('TLN1', True, True)]
+[('RPL26', False, True)]
+[('CWF19L2', False, True)]
+[('ATP6V1E1', False, True)]
+[('CUL2', False, True)]
+[('RBM39', False, True)]
+[('RFC3', False, True)]
+[('SURF6', False, True)]
+[('EIF4G1', False, True)]
+[('RPL27A', False, True)]
+[('HEATR1', False, True)]
+[('MFAP1', False, True)]
+[('KANSL3', False, True)]
+[('MRPS24', False, True)]
+[('BCAR1', True, True)]
+[('TMA16', False, True)]
+[('SPDYE2', False, False)]
+[('UTP15', False, True)]
+[('INTS2', False, True)]
+[('CS', False, True)]
+[('RSL24D1', False, True)]
+[('CNOT3', False, True)]
+[('LIN54', False, True)]
+[('LTV1', False, True)]
+[('RPS23', False, True)]
+[('PSMC4', False, True)]
+[('ESPN', False, False)]
+[('MDN1', False, True)]
+[('RPL6', False, True)]
+[('HUS1', False, True)]
+[('EIF4E', False, True)]
+[('NIFK', False, True)]
+[('ORC1', False, True)]
+[('NUBP2', False, True)]
+[('CMTR1', False, True)]
+[('TBCA', False, True)]
+[('DCTN1', False, True)]
+[('PRPF8', False, True)]
+[('HSPE1', False, True)]
+[('PRPF4B', False, True)]
+[('WBP1L', False, True)]
+[('MED22', False, True)]
+[('SRP9', False, True)]
+[('AQR', False, True)]
+[('SPATA5L1', False, True)]
+[('ABCB7', False, True)]
+[('DPH1', False, False)]
+[('STARD7', False, True)]
+[('TMSB10', False, True)]
+[('RPS4X', False, True)]
+[('VPS54', False, True)]
+[('PIAS4', False, True)]
+[('RPL38', False, True)]
+[('HSPA8', False, True)]
+[('RPL23', False, True)]
+[('PSMC2', False, True)]
+[('NLE1', False, True)]
+[('ERAL1', False, True)]
+[('YEATS4', False, True)]
+[('PRPF4', False, True)]
+[('NSA2', False, True)]
+[('EIF6', False, True)]
+[('RPL10', False, True)]
+[('CCDC115', False, True)]
+[('WTAP', False, True)]
+[('SLC7A5', True, True)]
+[('NOC3L', False, True)]
+[('EIF2S3', False, True)]
+[('CADM4', False, False)]
+[('RPS6', False, True)]
+[('H3F3A', False, True)]
+[('GNL3', False, True)]
+[('CCNB1', False, True)]
+[('PSMG2', False, True)]
+[('RPS12', False, True)]
+[('NUP54', False, True)]
+[('WDR43', False, True)]
+[('SNRNP200', False, True)]
+[('BUB3', False, True)]
+[('PDCD5', False, True)]
+[('KAT8', False, True)]
+[('TXNL4B', False, True)]
+[('NR2C2AP', False, True)]
+[('BDP1', False, True)]
+[('ANAPC15', False, True)]
+[('HNRNPR', False, True)]
+[('RPL37', False, True)]
+[('ANKRD11', False, True)]
+[('NRDE2', False, True)]
+[('TSEN2', False, True)]
+[('PTMA', False, True)]
+[('IMP4', False, True)]
+[('PSMG3', False, True)]
+[('RPS27A', True, True)]
+[('NPB', False, False)]
+[('RPL13', False, True)]
+[('CCNK', False, True)]
+[('RPL35A', False, True)]
+[('NPEPPS', False, True)]
+[('PRORP', False, True)]
+[('TFAM', False, True)]
+[('TEFM', False, True)]
+[('MRPS23', False, True)]
+[('MRPS35', False, True)]
+[('SAMM50', True, True)]
+[('EIF2S1', True, True)]
+[('PCF11', False, True)]
+[('WDR75', False, True)]
+[('MRPS11', False, True)]
+[('CDC27', False, True)]
+[('HMGCR', False, True)]
+[('PSMD1', False, True)]
+[('DAP3', False, True)]
+[('RPS29', False, True)]
+[('DCUN1D5', False, True)]
+[('ANAPC13', False, True)]
+[('SRRM2', False, True)]
+[('SFPQ', False, True)]
+[('SF3B4', False, True)]
+[('RPL11', False, True)]
+[('SETD2', False, True)]
+[('DNTTIP2', False, True)]
+[('RPL37A', False, True)]
+[('SDAD1', False, True)]
+[('DENR', False, True)]
+[('CDIPT', True, True)]
+[('LST1', False, False)]
+[('EIF2B4', False, True)]
+[('NUP62', False, True)]
+[('LSM2', False, True)]
+[('RPS17', False, True)]
+[('TRMT10C', False, True)]
+[('EFTUD2', False, True)]
+[('SNRPF', False, True)]
+[('LSM7', False, True)]
+[('SLC4A5', False, False)]
+[('PPP2R1A', False, True)]
+[('MRPS2', False, True)]
+[('MRPS21', False, True)]
+[('VPS18', False, False)]
+[('PPP2CA', True, True)]
+[('METAP2', False, True)]
+[('CENPJ', False, True)]
+[('DDX24', False, True)]
+[('ARPC2', False, True)]
+[('MRPS7', False, True)]
+[('RPAIN', False, True)]
+[('C12orf60', False, False)]
+[('PPP1R8', False, True)]
+[('WDR26', False, True)]
+[('HSD17B12', False, True)]
+[('PNPT1', False, True)]
+[('PPP4R2', False, True)]
+[('JMJD6', False, True)]
+[('TEX10', False, True)]
+[('PPIH', False, True)]
+[('POLR3F', False, True)]
+[('EIF3B', False, True)]
+[('METAP1', False, True)]
+[('CDC16', False, True)]
+[('SPC24', False, True)]
+[('RPL36A', False, True)]
+[('RPL18', False, True)]
+[('NDUFA2', False, True)]
+[('RPS18', False, True)]
+[('N6AMT1', False, True)]
+[('RPL27', False, True)]
+[('WDR36', False, True)]
+[('BARD1', False, True)]
+[('TXNL4A', False, True)]
+[('TBCC', False, True)]
+[('CDC5L', False, True)]
+[('RPS16', False, True)]
+[('PRELID1', False, True)]
+[('FNBP4', False, True)]
+[('CEP152', False, True)]
+[('PRPF18', False, True)]
+[('RPS3', False, True)]
+[('DDX51', False, True)]
+[('ALYREF', False, True)]
+[('TADA3', False, True)]
+[('OXA1L', False, True)]
+[('PSMB6', False, True)]
+[('RPA2', False, True)]
+[('MRPS22', False, True)]
+[('POLRMT', False, True)]
+[('RPL15', False, True)]
+[('REXO2', False, True)]
+[('DNAJA3', False, True)]
+[('KIN', False, True)]
+[('KPNB1', False, True)]
+[('RPL14', False, True)]
+[('DCTN5', False, True)]
+[('TIPIN', False, True)]
+[('DHX16', False, True)]
+[('RPS9', False, True)]
+[('RPL8', False, True)]
+[('TNPO3', False, True)]
+[('CTBP2', False, False)]
+[('PPAN', False, True)]
+[('SPTSSA', False, True)]
+[('PTCD1', False, True)]
+[('GTPBP4', False, True)]
+[('IARS2', False, True)]
+[('GTF3C2', False, True)]
+[('PABPN1', False, True)]
+[('RARS', False, True)]
+[('KATNB1', False, True)]
+[('PNO1', False, True)]
+[('KANSL2', False, True)]
+[('PHAX', False, True)]
+[('USF2', True, True)]
+[('TIMM13', False, True)]
+[('SUPV3L1', False, True)]
+[('EIF5A', False, True)]
+[('RPLP0', False, True)]
+[('NCL', False, True)]
+[('BCR', False, True)]
+[('CTR9', False, True)]
+[('NOL11', False, True)]
+[('RBMX2', False, True)]
+[('HMGB1', False, True)]
+[('CWC15', False, True)]
+[('GNL3L', False, True)]
+[('RPL9', False, True)]
+[('RPL39', False, True)]
+[('EIF2B5', False, True)]
+[('WDR74', False, True)]
+[('DSN1', False, True)]
+[('MED12', False, True)]
+[('TRAPPC4', False, True)]
+[('RHOQ', False, True)]
+[('EIF4G2', False, True)]
+[('CHCHD4', False, True)]
+[('PRRC2A', False, True)]
+[('SART1', False, True)]
+[('BUB1B', False, True)]
+[('CCDC137', False, True)]
+[('ACTB', True, True)]
+[('SNRNP70', False, True)]
+[('NOL8', False, True)]
+[('FGFR1OP', False, True)]
+[('PRIM1', False, True)]
+[('ISCA2', False, True)]
+[('SNX15', False, True)]
+[('NKAP', False, True)]
+[('PRKRIP1', False, True)]
+[('COPB1', False, True)]
+[('KLHL11', False, False)]
+[('NEDD1', False, True)]
+[('PRPF3', False, True)]
+[('MOG', False, False)]
+[('CNOT1', False, True)]
+[('TUBGCP2', False, True)]
+[('DDX46', False, True)]
+[('CACNB3', False, False)]
+[('ROMO1', False, True)]
+[('SSBP1', False, True)]
+[('WDR4', False, True)]
+[('URB2', False, True)]
+[('RPL18A', False, True)]
+[('SF3B3', False, True)]
+[('CPNE7', False, True)]
+[('SCAF1', False, True)]
+[('GSPT1', False, True)]
+[('CA5A', False, False)]
+[('OR2A1', False, False)]
+[('SMU1', False, True)]
+[('DDX18', False, True)]
+[('HIST2H3D', False, False)]
+[('PPP1R15B', False, True)]
+[('TARS', False, True)]
+[('COASY', False, True)]
+[('C14orf178', False, False)]
+[('SRSF7', False, True)]
+[('MYBBP1A', False, True)]
+[('BYSL', False, True)]
+[('TRAPPC1', False, True)]
+[('SNW1', False, True)]
+[('DPH6', False, True)]
+[('PAF1', False, True)]
+[('RMI1', False, True)]
+[('RRP12', False, True)]
+[('PYROXD1', False, False)]
+[('MRPL39', False, True)]
+[('GBF1', False, True)]
+[('PELP1', False, True)]
+[('ACIN1', False, True)]
+[('RBM17', False, True)]
+[('PSMC1', False, True)]
+[('TRNT1', False, True)]
+[('RPL12', False, True)]
+[('DHX15', False, True)]
+[('UQCRC1', False, True)]
+[('SNRPE', False, True)]
+[('UBL5', True, True)]
+[('TWISTNB', False, True)]
+[('TUBGCP6', False, True)]
+[('WDR3', False, True)]
+[('CLASRP', False, True)]
+[('UBE2L3', True, True)]
+[('RANGAP1', False, True)]
+[('RNF8', False, True)]
+[('NCBP2', False, True)]
+[('ZBTB17', False, True)]
+[('PTPMT1', False, True)]
+[('PDCD11', False, True)]
+[('PMF1', False, True)]
+[('ALG14', False, True)]
+[('SSRP1', False, True)]
+[('GNL2', False, True)]
+[('YY1', True, True)]
+[('TSEN34', False, True)]
+[('ARPC4', False, True)]
+[('RPS3A', False, True)]
+[('SNRPG', False, True)]
+[('CHMP6', False, True)]
+[('RPF1', False, True)]
+[('SNRNP40', False, True)]
+[('TOMM40', False, True)]
+[('PPP4C', False, True)]
+[('GEMIN6', False, True)]
+[('NSF', False, True)]
+[('TEAD3', False, False)]
+[('GON4L', False, True)]
+[('BRIX1', False, True)]
+[('C9orf78', False, True)]
+[('CEP192', False, True)]
+[('CDC23', False, True)]
+[('SRP72', False, True)]
+[('MRPL1', False, True)]
+[('PAM16', False, True)]
+[('BRF1', False, True)]
+[('MAGOH', False, True)]
+[('SPC25', False, True)]
+[('DHX33', True, True)]
+[('DDB1', False, True)]
+[('EXOC3', False, True)]
+[('KIF23', False, True)]
+[('CPSF3', False, True)]
+[('NAA35', False, True)]
+[('UPF1', False, True)]
+[('CBX1', False, True)]
+[('SNRNP48', False, True)]
+[('COA5', False, True)]
+[('GTF3C3', False, True)]
+[('TRIAP1', False, True)]
+[('RPS10', False, True)]
+[('NUP205', False, True)]
+[('POLR1E', False, True)]
+[('PSMA1', False, True)]
+[('RPS5', False, True)]
+[('RPSA', False, True)]
+[('ABCF1', False, True)]
+[('MRPS34', False, True)]
+[('CRCP', False, True)]
+[('SRSF11', False, True)]
+[('SEC16A', False, True)]
+[('AURKAIP1', False, True)]
+[('KIF18B', False, True)]
+[('MCRS1', False, True)]
+[('TOMM20', False, True)]
+[('EIF3E', False, True)]
+[('BOP1', False, True)]
+[('RTEL1', False, True)]
+[('PIK3C3', False, True)]
+[('COG6', False, True)]
+[('CHORDC1', False, True)]
+[('SMC4', False, True)]
+[('RRN3', False, True)]
+[('PES1', False, True)]
+[('PRPF19', False, True)]
+[('MRPS10', False, True)]
+[('EIF3I', False, True)]
+[('AP2M1', False, True)]
+[('NACA', False, True)]
+[('BAP1', True, True)]
+[('PHF5A', False, True)]
+[('TAF1D', False, True)]
+[('LENG8', False, True)]
+[('SEPHS2', False, True)]
+[('FOLR3', False, False)]
+[('RBM28', False, True)]
+[('RPS10-NUDT3', False, False)]
+[('DLD', False, True)]
+[('NXF1', False, True)]
+[('SNAPC4', True, True)]
+[('MRPS5', False, True)]
+[('CIAO1', False, True)]
+[('XPO5', False, True)]
+[('LARS', False, True)]
+[('RPA1', False, True)]
+[('TSSK3', False, False)]
+[('PRPF6', False, True)]
+[('JAZF1', False, False)]
+[('POLA2', False, True)]
+[('CDC37', False, True)]
+[('DICER1', False, True)]
+[('MZT1', False, True)]
+[('GTF3C1', False, True)]
+[('MRPS26', False, True)]
+[('ZNF284', False, False)]
+[('PTCD3', False, True)]
+[('UFM1', False, True)]
+[('LTBP3', False, False)]
+[('TKT', False, True)]
+[('IK', False, True)]
+[('METTL1', False, True)]
+[('QARS', False, True)]
+[('BRF2', True, True)]
+[('KIAA1143', False, True)]
+[('POLR2D', False, True)]
+[('CUL1', True, True)]
+[('TAMM41', False, True)]
+[('RPL26L1', False, True)]
+[('RPA3', False, True)]
+[('WDR18', False, True)]
+[('MRPL9', False, True)]
+[('YTHDC1', False, True)]
+[('SNRNP25', False, True)]
+[('ZRSR2', False, True)]
+[('TTK', True, True)]
+[('DNAJC8', False, True)]
+[('UPF2', False, True)]
+[('KRTAP4-2', False, False)]
+[('RSL1D1', False, True)]
+[('SLU7', False, True)]
+[('SLC1A5', False, True)]
+[('SNRPA1', False, True)]
+[('AHCTF1', False, True)]
+[('SDHAF2', False, True)]
+[('LCE1C', False, False)]
+[('MTG2', False, True)]
+[('XRCC1', False, True)]
+[('RNPS1', False, True)]
+[('CHTOP', False, True)]
+[('WDR55', False, True)]
+[('FNTA', False, True)]
+[('PSMD6', False, True)]
+[('MEX3A', False, True)]
+[('CYFIP1', False, True)]
+[('TRNP1', False, False)]
+[('UBE2D3', False, True)]
+[('SON', False, True)]
+[('FTSJ3', False, True)]
+[('NDC80', False, True)]
+[('AAMP', False, True)]
+[('PAXBP1', False, True)]
+[('GLRX5', False, True)]
+[('DNAJA1', False, True)]
+[('NUF2', False, True)]
+[('HSPD1', False, True)]
+[('SMC2', True, True)]
+[('UBE2H', False, True)]
+[('HGS', True, True)]
+[('YARS2', False, True)]
+[('CCT4', False, True)]
+[('NUP160', False, True)]
+[('ILF3', False, True)]
+[('ALG1L', False, False)]
+[('SMC5', False, True)]
+[('BCL2L1', True, True)]
+[('SUGP1', False, True)]
+[('IPO9', False, True)]
+[('PRC1', False, True)]
+[('C19orf53', False, True)]
+[('GABPA', True, True)]
+[('GTF2H2', False, True)]
+[('TLCD1', False, True)]
+[('FBXO5', False, True)]
+[('PSMD2', False, True)]
+[('COPZ1', False, True)]
+[('HIST1H2BL', False, False)]
+[('USP7', False, True)]
+[('GTF3C5', False, True)]
+[('COPS6', False, True)]
+[('SHQ1', False, True)]
+[('LRRC37A3', False, False)]
+[('MRPS9', False, True)]
+[('DHX8', False, True)]
+[('SF3B2', False, True)]
+[('RPS27', False, True)]
+[('RAB4A', True, True)]
+[('PPIL4', False, True)]
+[('HYPK', False, False)]
+[('NOL12', False, True)]
+[('WDR25', False, False)]
+[('PPP6C', False, True)]
+[('NAGLU', False, True)]
+[('SF3B5', False, True)]
+[('DDX5', False, True)]
+[('CDC73', False, True)]
+[('C6orf15', False, False)]
+[('TRA2B', False, True)]
+[('EXOC1', True, True)]
+[('NSRP1', False, True)]
+[('PTK2', True, True)]
+[('HARS', False, True)]
+[('EIF3G', False, True)]
+[('RAN', False, True)]
+[('XRCC5', False, True)]
+[('ISG20L2', False, True)]
+[('SRRM1', False, True)]
+[('SMUG1', False, True)]
+[('EDC4', False, True)]
+[('MRPS6', False, True)]
+[('MCMBP', False, True)]
+[('DDX27', False, True)]
+[('TMEM240', False, False)]
+[('SIN3A', True, True)]
+[('PPP1CA', True, True)]
+[('PGS1', False, True)]
+[('RAD51', False, True)]
+[('ARHGAP11B', False, False)]
+[('SLC39A7', False, True)]
+[('BTF3L4', False, True)]
+[('BGLAP', False, False)]
+[('EIF2B2', False, True)]
+[('C16orf86', False, False)]
+[('VPS72', False, True)]
+[('OLFML3', False, False)]
+[('OPA1', False, True)]
+[('ZNF236', False, False)]
+[('ELP5', False, True)]
+[('GRWD1', False, True)]
+[('ESF1', False, True)]
+[('DDX54', False, True)]
+[('VEZT', False, True)]
+[('AARS2', False, True)]
+[('TIMM9', False, True)]
+[('PRODH', False, False)]
+[('U2AF2', False, True)]
+[('HSD17B10', True, True)]
+[('DCAF6', False, True)]
+[('RGP1', False, True)]
+[('RPL7L1', False, True)]
+[('CCT3', False, True)]
+[('GRSF1', False, True)]
+[('TUT1', False, True)]
+[('TTC1', False, True)]
+[('WDHD1', False, True)]
+[('SF3B1', False, True)]
+[('ZNF207', True, True)]
+[('EIF2B1', False, True)]
+[('STRAP', False, True)]
+[('PPP1CB', False, True)]
+[('INTS6', False, True)]
+[('ZNF718', False, False)]
+[('CDC6', False, True)]
+[('KRTAP4-7', False, False)]
+[('NEDD8', False, True)]
+[('RSRC2', False, True)]
+[('CRLS1', False, True)]
+[('SMARCB1', False, True)]
+[('ORC3', False, True)]
+[('KCMF1', False, True)]
+[('MIOS', True, True)]
+[('DHPS', False, True)]
+[('VMP1', False, True)]
+[('LCE1E', False, False)]
+[('INTS9', False, True)]
+[('CSE1L', False, True)]
+[('FAU', False, True)]
+[('PWP1', False, True)]
+[('RIOK2', False, True)]
+[('FAM229A', False, False)]
+[('POLR2B', False, True)]
+[('TUBD1', False, True)]
+[('SNF8', False, True)]
+[('GOLT1B', False, True)]
+[('DPH2', False, True)]
+[('LTB4R2', False, False)]
+[('ALG2', False, True)]
+[('NDUFB8', False, True)]
+[('CHCHD1', False, True)]
+[('TREX2', False, False)]
+[('PKM', False, True)]
+[('GPS1', False, True)]
+[('NOP10', False, True)]
+[('NUMA1', False, True)]
+[('COX7B', False, True)]
+[('DPM2', False, True)]
+[('PSMA3', False, True)]
+[('MRPL45', False, True)]
+[('H2AFZ', False, True)]
+[('SOD1', True, True)]
+[('ELP3', False, True)]
+[('DDX10', False, True)]
+[('DYNLRB1', False, True)]
+[('RCC1', False, True)]
+[('KLC2', False, True)]
+[('TMEM258', False, True)]
+[('METTL17', False, True)]
+[('GAK', False, True)]
+[('RPUSD3', False, True)]
+[('RBM14', False, True)]
+[('RAC1', True, True)]
+[('YJEFN3', False, False)]
+[('KRT8', False, True)]
+[('CEBPZ', True, True)]
+[('IGBP1', True, True)]
+[('COQ4', False, True)]
+[('INO80B', False, True)]
+[('HAUS8', False, True)]
+[('GTF2H1', False, True)]
+[('TAF1C', False, True)]
+[('HIST1H2BB', False, False)]
+[('PUF60', False, True)]
+[('LSM4', False, True)]
+[('GARS', False, True)]
+[('POP7', False, True)]
+[('SF3A1', False, True)]
+[('ADAT3', False, False)]
+[('ABCE1', False, True)]
+[('AFG3L2', False, True)]
+[('ZNF253', False, False)]
+[('VPS13D', False, True)]
+[('PSMC6', False, True)]
+[('USP5', False, True)]
+[('ATP6V1B2', False, True)]
+[('NFRKB', False, True)]
+[('CHMP7', True, True)]
+[('POLR2E', False, True)]
+[('SNAPC1', False, True)]
+[('MYCBP', False, True)]
+[('KXD1', False, True)]
+[('ZNF658', False, False)]
+[('ACTR1B', False, True)]
+[('ZNF335', False, True)]
+[('MAX', True, True)]
+[('SEM1', False, True)]
+[('CYS1', False, False)]
+[('GINS1', False, True)]
+[('PCID2', False, True)]
+[('CCDC174', False, True)]
+[('CWC25', False, True)]
+[('KLF7', False, False)]
+[('BTF3', False, True)]
+[('DDN', False, False)]
+[('SACM1L', False, True)]
+[('GAB2', True, True)]
+[('SNRNP35', False, True)]
+[('YARS', False, True)]
+[('POLR1C', False, True)]
+[('ICE1', False, True)]
+[('UBA2', False, True)]
+[('PSME2', False, True)]
+[('VARS', False, True)]
+[('NUP107', False, True)]
+[('STIL', False, True)]
+[('HBS1L', False, True)]
+[('NCAPH2', False, True)]
+[('MANF', False, True)]
+[('ANAPC2', False, False)]
+[('SCAP', False, True)]
+[('GUCD1', False, True)]
+[('SMN2', False, False)]
+[('CSH2', False, False)]
+[('SNRPD1', False, True)]
+[('HSPA14', False, False)]
+[('RRP1', False, True)]
+[('POLR2C', False, True)]
+[('ZW10', False, True)]
+[('DYNC1H1', False, True)]
+[('COPS8', False, True)]
+[('TOP3A', False, True)]
+[('SDE2', False, True)]
+[('METTL16', False, True)]
+[('UTP6', False, True)]
+[('NAA20', False, True)]
+[('NCOA4', True, True)]
+[('DOHH', False, True)]
+[('UROD', False, True)]
+[('PSMA4', False, True)]
+[('MAD2L2', False, True)]
+[('CSNK2B', False, True)]
+[('NVL', False, True)]
+[('MSTO1', False, True)]
+[('COPA', False, True)]
+[('FAF2', False, True)]
+[('POLR3C', False, True)]
+[('EIF1', False, True)]
+[('SRBD1', False, True)]
+[('TARDBP', False, True)]
+[('HNRNPM', False, True)]
+[('DERL2', False, True)]
+[('RHPN1', False, False)]
+[('ELP2', False, True)]
+[('OR1D2', False, False)]
+[('TRAPPC3', False, True)]
+[('HAPLN2', False, False)]
+[('HMGCS1', False, True)]
+[('LAS1L', False, True)]
+[('DDX55', False, True)]
+[('RPL13A', False, True)]
+[('NOMO3', False, False)]
+[('SOD2', False, True)]
+[('CPAMD8', False, False)]
+[('RNASEH2C', False, True)]
+[('SRF', True, True)]
+[('PSMD12', False, True)]
+[('SNRPB', False, True)]
+[('C1D', False, True)]
+[('CCT2', False, True)]
+[('INO80', False, True)]
+[('OSTC', False, True)]
+[('WNK1', True, True)]
+[('IFITM2', False, True)]
+[('CFDP1', False, True)]
+[('TIMM8A', False, True)]
+[('NBPF12', False, False)]
+[('PNKP', False, True)]
+[('MRPS12', False, True)]
+[('PDCD6IP', False, True)]
+[('TSR1', False, True)]
+[('GLI4', False, True)]
+[('USP9X', False, True)]
+[('EARS2', False, True)]
+[('RPL35', False, True)]
+[('C9orf16', False, True)]
+[('MRPS25', False, True)]
+[('SART3', False, True)]
+[('CCT7', False, True)]
+[('EIF1AX', False, True)]
+[('MSRB1', False, True)]
+[('EIF3CL', False, False)]
+[('NISCH', False, True)]
+[('SRSF10', False, True)]
+[('RPLP1', False, True)]
+[('DRAP1', False, True)]
+[('MAD2L1', False, True)]
+[('NDUFB3', False, True)]
+[('GOLGA6L1', False, False)]
+[('EIF3D', False, True)]
+[('POTEI', False, False)]
+[('ACTR2', False, True)]
+[('SRSF6', False, True)]
+[('DDX59', False, True)]
+[('BUD13', False, True)]
+[('RBM42', False, True)]
+[('MIS18BP1', False, True)]
+[('LIMS1', False, True)]
+[('RPS2', False, True)]
+[('DOLK', False, True)]
+[('SNAPC3', False, True)]
+[('IPO13', False, True)]
+[('ZBTB11', True, True)]
+[('UTP20', False, True)]
+[('OR2T5', False, False)]
+[('FAM50A', False, True)]
+[('MRPL20', False, True)]
+[('RPP30', False, True)]
+[('C1QTNF4', False, False)]
+[('RGPD6', False, False)]
+[('TM7SF2', False, True)]
+[('WDR54', False, True)]
+[('TCERG1', False, True)]
+[('ZNRD1', False, True)]
+[('UBA52', False, True)]
+[('NAA25', False, True)]
+[('ORC4', False, True)]
+[('DDX41', False, True)]
+[('LONP1', False, True)]
+[('COPG1', False, True)]
+[('RRM1', False, True)]
+[('POLD1', False, True)]
+[('DRG1', False, True)]
+[('MKRN1', False, True)]
+[('CTNNBL1', False, True)]
+[('DDX19B', False, True)]
+[('HS6ST1', False, False)]
+[('CHCHD2', False, True)]
+[('MZF1', False, True)]
+[('MCM3', False, True)]
+[('PSMD4', False, True)]
+[('DPAGT1', False, True)]
+[('PRMT5', False, True)]
+[('GMPPB', False, True)]
+[('UBQLN4', False, True)]
+[('PPIA', False, True)]
+[('MRPS18B', False, True)]
+[('ELP6', False, True)]
+[('TUBE1', False, True)]
+[('MED10', False, True)]
+[('ZNF687', False, False)]
+[('DNLZ', False, False)]
+[('GTF3C6', False, True)]
+[('CSNK1A1', False, True)]
+[('PPA1', False, True)]
+[('PPME1', False, True)]
+[('VPS41', False, True)]
+[('TRMT5', False, True)]
+[('PLA2G10', False, False)]
+[('MBTPS2', False, True)]
+[('DDX52', False, True)]
+[('PXN', True, True)]
+[('C19orf25', False, True)]
+[('PDCD6', False, True)]
+[('RNF113A', False, True)]
+[('UBA1', True, True)]
+[('MMS19', False, True)]
+[('C1orf109', False, True)]
+[('TTC4', False, True)]
+[('RNF14', False, True)]
+[('TRAPPC8', False, True)]
+[('SARS2', False, True)]
+[('NDUFA6', False, True)]
+[('PC', False, False)]
+[('TBL3', False, True)]
+[('RPUSD4', False, True)]
+[('ACTR3', False, True)]
+[('RAD51D', False, True)]
+[('COPS4', False, True)]
+[('HDAC7', False, True)]
+[('PIGH', False, True)]
+[('BANP', False, True)]
+[('MFN2', True, True)]
+[('PPIL2', False, True)]
+[('CIAPIN1', False, True)]
+[('SLC35G6', False, False)]
+[('CCNL1', False, True)]
+[('COG4', False, True)]
+Save subset of Replogle22...
+Creating new .pert file...
+Splitting sinks from GRN...
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Parameter and Intial Condition files generated for KeggoRo
+Generating parameters for sinks...
+['Data/SimulResults_Racipe/KeggoRo/001/']
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0528 02:07:47.145145   10567 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0528 03:25:31.510532   10478 slow_operation_alarm.cc:140] The operation took 1h19m44.365667328s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [5:34:19<50:08:53, 20059.26s/it] 20%|██        | 2/10 [5:39:41<18:46:33, 8449.21s/it]  30%|███       | 3/10 [5:45:04<9:12:49, 4738.46s/it]  40%|████      | 4/10 [5:50:26<4:59:31, 2995.18s/it] 50%|█████     | 5/10 [5:55:49<2:49:17, 2031.56s/it] 60%|██████    | 6/10 [6:01:11<1:36:40, 1450.25s/it] 70%|███████   | 7/10 [6:06:33<54:04, 1081.46s/it]   80%|████████  | 8/10 [6:11:56<27:59, 839.85s/it]  90%|█████████ | 9/10 [6:17:18<11:18, 678.06s/it]100%|██████████| 10/10 [6:22:40<00:00, 568.25s/it]100%|██████████| 10/10 [6:22:40<00:00, 2296.10s/it]
+Time taken for replicate 001: 22983.70076060295
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating sinks for replicate 001...
+  0%|          | 0/10 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 10%|█         | 1/10 [03:23<30:34, 203.78s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 20%|██        | 2/10 [06:47<27:07, 203.45s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 30%|███       | 3/10 [10:10<23:45, 203.69s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 40%|████      | 4/10 [13:33<20:19, 203.17s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 50%|█████     | 5/10 [16:55<16:54, 202.87s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 60%|██████    | 6/10 [20:18<13:30, 202.73s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 70%|███████   | 7/10 [23:49<10:16, 205.57s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 80%|████████  | 8/10 [27:11<06:49, 204.55s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 90%|█████████ | 9/10 [30:34<03:24, 204.00s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+100%|██████████| 10/10 [33:57<00:00, 203.61s/it]100%|██████████| 10/10 [33:57<00:00, 203.74s/it]
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries), 7 genes with more than 1% of entries being negative (0.13% of all genes), and 7 genes with more than 1% of entries being NaN (0.13% of all genes).
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 10 PCs
+Clustering
+33 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 90 clusters
+Calculating MSES for 10 clusters
+1764/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Perturbation effect file generated for KeggoRo
+['Data/SimulResults_Racipe/KeggoRo/001/']
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 75000
+Running steady state simulations for replicate: 001
+  0%|          | 0/8 [00:00<?, ?it/s] 12%|█▎        | 1/8 [5:30:54<38:36:21, 19854.51s/it] 25%|██▌       | 2/8 [5:36:16<13:56:30, 8365.02s/it]  38%|███▊      | 3/8 [5:41:39<6:31:02, 4692.50s/it]  50%|█████     | 4/8 [5:47:01<3:17:48, 2967.10s/it] 62%|██████▎   | 5/8 [5:52:23<1:40:39, 2013.29s/it] 75%|███████▌  | 6/8 [5:57:45<47:56, 1438.28s/it]   88%|████████▊ | 7/8 [6:03:07<17:53, 1073.39s/it]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+********** D1: Get best control cells: **********
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+['Data/SimulResults_Racipe/KeggoRo/001/']
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 75000
+Running steady state simulations for replicate: 001
+  0%|          | 0/8 [00:00<?, ?it/s]E0528 22:00:54.140954   21232 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0528 23:17:36.163740   21136 slow_operation_alarm.cc:140] The operation took 1h18m42.023073316s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 12%|█▎        | 1/8 [5:23:35<37:45:06, 19415.27s/it] 25%|██▌       | 2/8 [5:28:58<13:38:27, 8184.52s/it]  38%|███▊      | 3/8 [5:34:21<6:22:53, 4594.69s/it]  50%|█████     | 4/8 [5:39:43<3:13:52, 2908.16s/it] 62%|██████▎   | 5/8 [5:45:06<1:38:47, 1975.85s/it] 75%|███████▌  | 6/8 [5:50:29<47:07, 1413.78s/it]   88%|████████▊ | 7/8 [5:55:51<17:37, 1057.08s/it]100%|██████████| 8/8 [11:42:04<00:00, 7333.41s/it]100%|██████████| 8/8 [11:42:04<00:00, 5265.51s/it]
+Time taken for replicate 001: 42168.443489551544
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating sinks for replicate 001...
+  0%|          | 0/8 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 12%|█▎        | 1/8 [03:54<27:23, 234.74s/it]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+********** D1: Get best control cells: **********
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Simulating sinks for replicate 001...
+  0%|          | 0/8 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 12%|█▎        | 1/8 [03:28<24:18, 208.40s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 25%|██▌       | 2/8 [06:57<20:51, 208.60s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 38%|███▊      | 3/8 [10:25<17:22, 208.58s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 50%|█████     | 4/8 [13:54<13:54, 208.54s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 62%|██████▎   | 5/8 [17:22<10:25, 208.36s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 75%|███████▌  | 6/8 [20:50<06:56, 208.28s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 88%|████████▊ | 7/8 [24:18<03:28, 208.24s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+100%|██████████| 8/8 [26:05<00:00, 175.91s/it]100%|██████████| 8/8 [26:05<00:00, 195.65s/it]
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+Loading perturbed data...
+There are 8958029 zero entries (2.169% of all entries), 7 genes with more than 1% of entries being negative (0.13% of all genes), and 7 genes with more than 1% of entries being NaN (0.13% of all genes).
+Create AnnData object...
+Generate missing indices...
+  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:03<04:51,  3.89s/it]  3%|▎         | 2/76 [00:06<04:05,  3.32s/it]  4%|▍         | 3/76 [00:09<03:42,  3.04s/it]  5%|▌         | 4/76 [00:12<03:30,  2.92s/it]  7%|▋         | 5/76 [00:14<03:22,  2.85s/it]  8%|▊         | 6/76 [00:17<03:16,  2.81s/it]  9%|▉         | 7/76 [00:20<03:12,  2.78s/it] 11%|█         | 8/76 [00:23<03:08,  2.77s/it] 12%|█▏        | 9/76 [00:25<03:05,  2.76s/it] 13%|█▎        | 10/76 [00:28<03:01,  2.75s/it] 14%|█▍        | 11/76 [00:31<02:58,  2.75s/it] 16%|█▌        | 12/76 [00:34<02:55,  2.74s/it] 17%|█▋        | 13/76 [00:36<02:52,  2.74s/it] 18%|█▊        | 14/76 [00:39<02:49,  2.74s/it] 20%|█▉        | 15/76 [00:42<02:47,  2.74s/it] 21%|██        | 16/76 [00:45<02:44,  2.74s/it] 22%|██▏       | 17/76 [00:47<02:42,  2.75s/it] 24%|██▎       | 18/76 [00:50<02:38,  2.74s/it] 25%|██▌       | 19/76 [00:53<02:35,  2.74s/it] 26%|██▋       | 20/76 [00:56<02:33,  2.74s/it] 28%|██▊       | 21/76 [00:58<02:30,  2.74s/it] 29%|██▉       | 22/76 [01:01<02:27,  2.74s/it] 30%|███       | 23/76 [01:04<02:24,  2.73s/it] 32%|███▏      | 24/76 [01:06<02:22,  2.74s/it] 33%|███▎      | 25/76 [01:09<02:20,  2.75s/it] 34%|███▍      | 26/76 [01:12<02:16,  2.74s/it] 36%|███▌      | 27/76 [01:15<02:14,  2.74s/it] 37%|███▋      | 28/76 [01:17<02:11,  2.74s/it] 38%|███▊      | 29/76 [01:20<02:08,  2.74s/it] 39%|███▉      | 30/76 [01:23<02:06,  2.75s/it] 41%|████      | 31/76 [01:26<02:03,  2.74s/it] 42%|████▏     | 32/76 [01:28<02:00,  2.74s/it] 43%|████▎     | 33/76 [01:31<01:58,  2.75s/it] 45%|████▍     | 34/76 [01:34<01:55,  2.74s/it] 46%|████▌     | 35/76 [01:37<01:52,  2.74s/it] 47%|████▋     | 36/76 [01:39<01:49,  2.74s/it] 49%|████▊     | 37/76 [01:42<01:46,  2.74s/it] 50%|█████     | 38/76 [01:45<01:44,  2.74s/it] 51%|█████▏    | 39/76 [01:48<01:41,  2.74s/it] 53%|█████▎    | 40/76 [01:50<01:38,  2.74s/it] 54%|█████▍    | 41/76 [01:53<01:35,  2.74s/it] 55%|█████▌    | 42/76 [01:56<01:33,  2.74s/it] 57%|█████▋    | 43/76 [01:59<01:30,  2.74s/it] 58%|█████▊    | 44/76 [02:01<01:27,  2.74s/it] 59%|█████▉    | 45/76 [02:04<01:25,  2.75s/it] 61%|██████    | 46/76 [02:07<01:22,  2.74s/it] 62%|██████▏   | 47/76 [02:10<01:19,  2.74s/it] 63%|██████▎   | 48/76 [02:12<01:16,  2.74s/it] 64%|██████▍   | 49/76 [02:15<01:13,  2.74s/it] 66%|██████▌   | 50/76 [02:18<01:11,  2.74s/it] 67%|██████▋   | 51/76 [02:20<01:08,  2.74s/it] 68%|██████▊   | 52/76 [02:23<01:05,  2.74s/it] 70%|██████▉   | 53/76 [02:26<01:02,  2.74s/it] 71%|███████   | 54/76 [02:29<01:00,  2.74s/it] 72%|███████▏  | 55/76 [02:31<00:57,  2.74s/it] 74%|███████▎  | 56/76 [02:34<00:54,  2.74s/it] 75%|███████▌  | 57/76 [02:37<00:52,  2.74s/it] 76%|███████▋  | 58/76 [02:40<00:49,  2.74s/it] 78%|███████▊  | 59/76 [02:42<00:46,  2.74s/it] 79%|███████▉  | 60/76 [02:45<00:43,  2.74s/it] 80%|████████  | 61/76 [02:48<00:41,  2.74s/it] 82%|████████▏ | 62/76 [02:51<00:38,  2.74s/it] 83%|████████▎ | 63/76 [02:53<00:35,  2.75s/it] 84%|████████▍ | 64/76 [02:56<00:32,  2.75s/it] 86%|████████▌ | 65/76 [02:59<00:30,  2.75s/it] 87%|████████▋ | 66/76 [03:02<00:27,  2.75s/it] 88%|████████▊ | 67/76 [03:04<00:24,  2.75s/it] 89%|████████▉ | 68/76 [03:07<00:21,  2.75s/it] 91%|█████████ | 69/76 [03:10<00:19,  2.75s/it] 92%|█████████▏| 70/76 [03:13<00:16,  2.75s/it] 93%|█████████▎| 71/76 [03:15<00:13,  2.74s/it] 95%|█████████▍| 72/76 [03:18<00:10,  2.74s/it] 96%|█████████▌| 73/76 [03:21<00:08,  2.74s/it] 97%|█████████▋| 74/76 [03:24<00:05,  2.74s/it] 99%|█████████▊| 75/76 [03:26<00:02,  2.74s/it]100%|██████████| 76/76 [03:29<00:00,  2.74s/it]100%|██████████| 76/76 [03:29<00:00,  2.76s/it]
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_pert.h5ad...
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 2 PCs
+Running UMAP using 2 PCs
+Clustering
+59 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 93 clusters
+Calculating MSES for 10 clusters
+1014/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 5 PCs
+Running UMAP using 5 PCs
+Clustering
+41 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 63 clusters
+Calculating MSES for 10 clusters
+1257/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+********** C2: Create perturbed adata object: **********
+Done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Done!
+All done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 10 PCs
+Clustering
+33 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 90 clusters
+Calculating MSES for 10 clusters
+1764/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 2048 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Done!
+All done!

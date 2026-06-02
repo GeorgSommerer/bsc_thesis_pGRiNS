@@ -1,0 +1,1084 @@
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+.topo files ['dorothea_abcd'] are turned into doro_abcd_0106
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Normalizing file:  Norman19
+Total measured cells: 111445
+Total measured genes: 33694
+Percent of control cells: 10.637534209699853 %
+Unique perturbations: 236
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 103
+Hemoglobin genes: 12
+Done calculating qc metrics
+Total number of cells: 111445
+outlier
+False    110762
+True        683
+Name: count, dtype: int64
+mt_outlier
+False    97622
+True     13823
+Name: count, dtype: int64
+Number of dropout genes: 25882
+Total number of cells after filtering of low quality cells: 97120
+Median counts: 14263.0
+Done!
+Saving file
+Normalizing file:  Replogle22
+Total measured cells: 310385
+Total measured genes: 8563
+Unique genes in the df (w/o ctrl): batch                          48
+gene                         2057
+gene_id                      2057
+transcript                     57
+gene_transcript              2176
+guide_id                     2176
+percent_mito               288746
+UMI_count                   28790
+z_gemgroup_UMI             245702
+core_scale_factor              48
+core_adjusted_UMI_count    244091
+disease                         1
+cancer                          1
+cell_line                       1
+sex                             1
+age                             1
+perturbation                 2057
+organism                        1
+perturbation_type               1
+tissue_type                     1
+ncounts                     28562
+ngenes                       5034
+nperts                          1
+percent_ribo               288989
+cell_type                       1
+condition                    2057
+condition_name               2057
+dtype: int64
+Percent of control cells: 3.4444319152020877 %
+Unique perturbations: 2057
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 89
+Hemoglobin genes: 7
+Done calculating qc metrics
+Total number of cells: 310385
+outlier
+False    309250
+True       1135
+Name: count, dtype: int64
+mt_outlier
+True     270798
+False     39587
+Name: count, dtype: int64
+Number of dropout genes: 41
+Total number of cells after filtering of low quality cells: 39438
+Median counts: 13679.0
+Done!
+Saving file
+Created subset adata files...
+Save subset of Norman19...
+Save subset of Replogle22...
+Reading .pert file...
+Splitting sinks from GRN...
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Parameter and Intial Condition files generated for doro_abcd_0106
+Generating parameters for sinks...
+['Data/SimulResults_Racipe/doro_abcd_0106/001/']
+Loading ODE system from: Data/SimulResults_Racipe/doro_abcd_0106
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+['Data/SimulResults_Racipe/doro_abcd_0106/001/']
+Loading ODE system from: Data/SimulResults_Racipe/doro_abcd_0106
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]E0601 10:59:59.069817   82632 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0601 11:02:52.403773   82539 slow_operation_alarm.cc:140] The operation took 4m53.334159099s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 10%|█         | 1/10 [22:30<3:22:31, 1350.13s/it] 20%|██        | 2/10 [27:13<1:36:23, 722.88s/it]  30%|███       | 3/10 [31:57<1:00:57, 522.45s/it] 40%|████      | 4/10 [36:41<42:49, 428.30s/it]   50%|█████     | 5/10 [41:25<31:21, 376.26s/it] 60%|██████    | 6/10 [46:09<22:59, 344.80s/it] 70%|███████   | 7/10 [50:53<16:14, 324.85s/it] 80%|████████  | 8/10 [55:37<10:23, 311.81s/it] 90%|█████████ | 9/10 [1:00:20<05:03, 303.04s/it]100%|██████████| 10/10 [1:05:04<00:00, 297.10s/it]100%|██████████| 10/10 [1:05:04<00:00, 390.48s/it]
+Time taken for replicate 001: 3906.958956718445
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating sinks for replicate 001...
+  0%|          | 0/10 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 10%|█         | 1/10 [03:49<34:27, 229.70s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 20%|██        | 2/10 [07:40<30:43, 230.47s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 30%|███       | 3/10 [11:29<26:47, 229.61s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 40%|████      | 4/10 [15:20<23:00, 230.06s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 50%|█████     | 5/10 [19:08<19:07, 229.58s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 60%|██████    | 6/10 [22:59<15:19, 229.96s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 70%|███████   | 7/10 [26:47<11:28, 229.46s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 80%|████████  | 8/10 [30:38<07:39, 229.71s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 90%|█████████ | 9/10 [34:26<03:49, 229.34s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+100%|██████████| 10/10 [38:16<00:00, 229.63s/it]100%|██████████| 10/10 [38:16<00:00, 229.69s/it]
+Done!
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/doro_abcd_0106/001/doro_abcd_0106_steadystate_solutions_001...
+There are 2712732 zero entries (0.65% of all entries).
+Out of 4172 genes, there are 1 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 19 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/doro_abcd_0106/001/perturb_norm_ctrl.h5ad...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/doro_abcd_0106/001/doro_abcd_0106_steadystate_solutions_001...
+There are 2712732 zero entries (0.65% of all entries).
+Out of 4172 genes, there are 1 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 19 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_main.py", line 151, in <module>
+    pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_prepare_output.py", line 367, in main
+    adata_list[i].write_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}_{suffix}.h5ad")
+                                ^^^^^^^^^
+NameError: name 'pseq_path' is not defined. Did you mean: 'pseq_paths'?
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/doro_abcd_0106/001/doro_abcd_0106_steadystate_solutions_001...
+There are 2712732 zero entries (0.65% of all entries).
+Out of 4172 genes, there are 1 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 19 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_main.py", line 151, in <module>
+    pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_prepare_output.py", line 367, in main
+    adata_list[i].write_h5ad(f"{pseq_paths[i]}/perturb_norm_subset_{grn_file}_{suffix}.h5ad")
+                                ^^^^^^^^^
+NameError: name 'pseq_path' is not defined. Did you mean: 'pseq_paths'?
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/doro_abcd_0106/001/doro_abcd_0106_steadystate_solutions_001...
+There are 2712732 zero entries (0.65% of all entries).
+Out of 4172 genes, there are 1 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 19 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/doro_abcd_0106/001/perturb_norm_ctrl.h5ad...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 19 PCs
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:324: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+Clustering
+21 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 149 clusters
+Calculating MSES for 10 clusters
+9259/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 23 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Perturbation effect file generated for doro_abcd_0106
+['Data/SimulResults_Racipe/doro_abcd_0106/001/']
+Loading ODE system from: Data/SimulResults_Racipe/doro_abcd_0106
+Number of combinations to simulate: 23000
+Running steady state simulations for replicate: 001
+  0%|          | 0/3 [00:00<?, ?it/s]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 17 PCs
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:324: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+Clustering
+9 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 527 clusters
+Calculating MSES for 9 clusters
+1238/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Done!
+All done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+.topo files ['dorothea_abcd'] are turned into KeggoRo
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Normalizing file:  Norman19
+Total measured cells: 111445
+Total measured genes: 33694
+Percent of control cells: 10.637534209699853 %
+Unique perturbations: 236
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 103
+Hemoglobin genes: 12
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+.topo files ['dorothea_abcd', 'kegg'] are turned into KeggoRo
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Normalizing file:  Norman19
+Total measured cells: 111445
+Total measured genes: 33694
+Percent of control cells: 10.637534209699853 %
+Unique perturbations: 236
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 103
+Hemoglobin genes: 12
+Done calculating qc metrics
+Total number of cells: 111445
+outlier
+False    110762
+True        683
+Name: count, dtype: int64
+mt_outlier
+False    97622
+True     13823
+Name: count, dtype: int64
+Number of dropout genes: 25882
+Total number of cells after filtering of low quality cells: 97120
+Median counts: 14263.0
+Done!
+Saving file
+Normalizing file:  Replogle22
+Total measured cells: 310385
+Total measured genes: 8563
+Unique genes in the df (w/o ctrl): batch                          48
+gene                         2057
+gene_id                      2057
+transcript                     57
+gene_transcript              2176
+guide_id                     2176
+percent_mito               288746
+UMI_count                   28790
+z_gemgroup_UMI             245702
+core_scale_factor              48
+core_adjusted_UMI_count    244091
+disease                         1
+cancer                          1
+cell_line                       1
+sex                             1
+age                             1
+perturbation                 2057
+organism                        1
+perturbation_type               1
+tissue_type                     1
+ncounts                     28562
+ngenes                       5034
+nperts                          1
+percent_ribo               288989
+cell_type                       1
+condition                    2057
+condition_name               2057
+dtype: int64
+Percent of control cells: 3.4444319152020877 %
+Unique perturbations: 2057
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 89
+Hemoglobin genes: 7
+Done calculating qc metrics
+Total number of cells: 310385
+outlier
+False    309250
+True       1135
+Name: count, dtype: int64
+mt_outlier
+True     270798
+False     39587
+Name: count, dtype: int64
+Number of dropout genes: 41
+Total number of cells after filtering of low quality cells: 39438
+Median counts: 13679.0
+Done!
+Saving file
+Created subset adata files...
+Save subset of Norman19...
+Save subset of Replogle22...
+Reading .pert file...
+Splitting sinks from GRN...
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 10 PCs
+Clustering
+33 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 90 clusters
+Calculating MSES for 10 clusters
+2281/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Done!
+All done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 10 PCs
+Clustering
+36 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 93 clusters
+Calculating MSES for 10 clusters
+2047/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Done!
+All done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+Loading perturbed data...
+There are 8954474 zero entries (2.161% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 80 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:04<05:10,  4.14s/it]  3%|▎         | 2/76 [00:06<04:05,  3.32s/it]  4%|▍         | 3/76 [00:09<03:43,  3.06s/it]  5%|▌         | 4/76 [00:12<03:31,  2.94s/it]  7%|▋         | 5/76 [00:15<03:23,  2.87s/it]  8%|▊         | 6/76 [00:17<03:17,  2.82s/it]  9%|▉         | 7/76 [00:20<03:12,  2.79s/it] 11%|█         | 8/76 [00:23<03:09,  2.79s/it] 12%|█▏        | 9/76 [00:26<03:06,  2.78s/it] 13%|█▎        | 10/76 [00:28<03:02,  2.76s/it] 14%|█▍        | 11/76 [00:31<02:59,  2.76s/it] 16%|█▌        | 12/76 [00:34<02:56,  2.76s/it] 17%|█▋        | 13/76 [00:37<02:53,  2.75s/it] 18%|█▊        | 14/76 [00:39<02:50,  2.75s/it] 20%|█▉        | 15/76 [00:42<02:47,  2.74s/it] 21%|██        | 16/76 [00:45<02:44,  2.74s/it] 22%|██▏       | 17/76 [00:48<02:41,  2.73s/it] 24%|██▎       | 18/76 [00:50<02:38,  2.74s/it] 25%|██▌       | 19/76 [00:53<02:35,  2.73s/it] 26%|██▋       | 20/76 [00:56<02:33,  2.74s/it] 28%|██▊       | 21/76 [00:58<02:30,  2.73s/it] 29%|██▉       | 22/76 [01:01<02:27,  2.73s/it] 30%|███       | 23/76 [01:04<02:25,  2.75s/it] 32%|███▏      | 24/76 [01:07<02:22,  2.74s/it] 33%|███▎      | 25/76 [01:09<02:19,  2.74s/it] 34%|███▍      | 26/76 [01:12<02:16,  2.74s/it] 36%|███▌      | 27/76 [01:15<02:14,  2.74s/it] 37%|███▋      | 28/76 [01:18<02:11,  2.74s/it] 38%|███▊      | 29/76 [01:20<02:08,  2.73s/it] 39%|███▉      | 30/76 [01:23<02:05,  2.73s/it] 41%|████      | 31/76 [01:26<02:02,  2.72s/it] 42%|████▏     | 32/76 [01:29<01:59,  2.72s/it] 43%|████▎     | 33/76 [01:31<01:57,  2.72s/it] 45%|████▍     | 34/76 [01:34<01:54,  2.73s/it] 46%|████▌     | 35/76 [01:37<01:51,  2.72s/it] 47%|████▋     | 36/76 [01:39<01:49,  2.73s/it] 49%|████▊     | 37/76 [01:42<01:46,  2.73s/it] 50%|█████     | 38/76 [01:45<01:43,  2.73s/it] 51%|█████▏    | 39/76 [01:48<01:41,  2.73s/it] 53%|█████▎    | 40/76 [01:50<01:38,  2.73s/it] 54%|█████▍    | 41/76 [01:53<01:35,  2.74s/it] 55%|█████▌    | 42/76 [01:56<01:33,  2.74s/it] 57%|█████▋    | 43/76 [01:59<01:30,  2.74s/it] 58%|█████▊    | 44/76 [02:01<01:27,  2.74s/it] 59%|█████▉    | 45/76 [02:04<01:24,  2.74s/it] 61%|██████    | 46/76 [02:07<01:22,  2.74s/it] 62%|██████▏   | 47/76 [02:10<01:19,  2.75s/it] 63%|██████▎   | 48/76 [02:12<01:16,  2.74s/it] 64%|██████▍   | 49/76 [02:15<01:14,  2.75s/it] 66%|██████▌   | 50/76 [02:18<01:11,  2.75s/it] 67%|██████▋   | 51/76 [02:21<01:08,  2.75s/it] 68%|██████▊   | 52/76 [02:23<01:05,  2.75s/it] 70%|██████▉   | 53/76 [02:26<01:03,  2.74s/it] 71%|███████   | 54/76 [02:29<01:00,  2.74s/it] 72%|███████▏  | 55/76 [02:32<00:57,  2.75s/it] 74%|███████▎  | 56/76 [02:34<00:54,  2.74s/it] 75%|███████▌  | 57/76 [02:37<00:52,  2.75s/it] 76%|███████▋  | 58/76 [02:40<00:49,  2.74s/it] 78%|███████▊  | 59/76 [02:42<00:46,  2.74s/it] 79%|███████▉  | 60/76 [02:45<00:43,  2.73s/it] 80%|████████  | 61/76 [02:48<00:40,  2.73s/it] 82%|████████▏ | 62/76 [02:51<00:38,  2.73s/it] 83%|████████▎ | 63/76 [02:53<00:35,  2.73s/it] 84%|████████▍ | 64/76 [02:56<00:32,  2.73s/it] 86%|████████▌ | 65/76 [02:59<00:30,  2.74s/it] 87%|████████▋ | 66/76 [03:02<00:27,  2.74s/it] 88%|████████▊ | 67/76 [03:04<00:24,  2.74s/it] 89%|████████▉ | 68/76 [03:07<00:21,  2.73s/it] 91%|█████████ | 69/76 [03:10<00:19,  2.73s/it] 92%|█████████▏| 70/76 [03:13<00:16,  2.73s/it] 93%|█████████▎| 71/76 [03:15<00:13,  2.74s/it] 95%|█████████▍| 72/76 [03:18<00:10,  2.74s/it] 96%|█████████▌| 73/76 [03:21<00:08,  2.74s/it] 97%|█████████▋| 74/76 [03:24<00:05,  2.74s/it] 99%|█████████▊| 75/76 [03:26<00:02,  2.74s/it]100%|██████████| 76/76 [03:29<00:00,  2.74s/it]100%|██████████| 76/76 [03:29<00:00,  2.76s/it]
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_pert.h5ad...
+All done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+(100000, 5379)
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 19 PCs
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:324: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:449: UserWarning: Exited at iteration 29 with accuracies 
+[1.20776672e-06 1.31640494e-06 2.95942265e-06 4.81360859e-05]
+not reaching the requested tolerance 4.038214683532715e-06.
+Use iteration 29 instead with accuracy 
+1.340492006179305e-05.
+
+  _, diffusion_map = lobpcg(
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:449: UserWarning: Exited postprocessing with accuracies 
+[1.20777500e-06 1.31640057e-06 2.95942127e-06 4.81360859e-05]
+not reaching the requested tolerance 4.038214683532715e-06.
+  _, diffusion_map = lobpcg(
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+(100000, 5379)
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 10 PCs
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+(100000, 5379)
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 10 PCs
+Clustering
+37 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 85 clusters
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+(100000, 5379)
+nohup: Eingabe wird ignoriert
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 17 PCs
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:324: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+Clustering
+10 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 520 clusters
+Calculating MSES for 10 clusters
+1152/100000 cells retained
+Saving final file
+(100000, 4260)
+Traceback (most recent call last):
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/utils.py", line 246, in func_wrapper
+    return func(*args, **kwargs)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/registry.py", line 311, in write_elem
+    return write_func(store, k, elem, dataset_kwargs=dataset_kwargs)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/registry.py", line 52, in wrapper
+    result = func(g, k, *args, **kwargs)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/methods.py", line 447, in write_sparse_compressed
+    g.create_dataset("indices", data=value.indices, **dataset_kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/group.py", line 186, in create_dataset
+    dsid = dataset.make_new_dset(group, shape, dtype, data, name, **kwds)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/dataset.py", line 178, in make_new_dset
+    dset_id.write(h5s.ALL, h5s.ALL, data)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 56, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 57, in h5py._objects.with_phil.wrapper
+  File "h5py/h5d.pyx", line 307, in h5py.h5d.DatasetID.write
+  File "h5py/_proxy.pyx", line 121, in h5py._proxy.dset_rw
+OSError: [Errno 122] Can't synchronously write data (file write failed: time = Mon Jun  1 16:54:38 2026
+, filename = 'Data/Projects/KeggoRo/001/perturb_norm_ctrl_clustered.h5ad', file descriptor = 106, errno = 122, error message = 'Disk quota exceeded', buf = 0x3bc258b8, total write size = 103496, bytes this sub-write = 103496, offset = 7276104816)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/h5ad.py", line 98, in write_h5ad
+    write_elem(f, "layers", dict(adata.layers), dataset_kwargs=dataset_kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/registry.py", line 353, in write_elem
+    Writer(_REGISTRY).write_elem(store, k, elem, dataset_kwargs=dataset_kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/utils.py", line 248, in func_wrapper
+    re_raise_error(e, elem, key)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/utils.py", line 246, in func_wrapper
+    return func(*args, **kwargs)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/registry.py", line 311, in write_elem
+    return write_func(store, k, elem, dataset_kwargs=dataset_kwargs)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/registry.py", line 52, in wrapper
+    result = func(g, k, *args, **kwargs)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/specs/methods.py", line 281, in write_mapping
+    _writer.write_elem(g, sub_k, sub_v, dataset_kwargs=dataset_kwargs)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/utils.py", line 248, in func_wrapper
+    re_raise_error(e, elem, key)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/utils.py", line 229, in re_raise_error
+    raise type(e)(
+    ...<3 lines>...
+    ) from e
+OSError: [Errno 122] Can't synchronously write data (file write failed: time = Mon Jun  1 16:54:38 2026
+, filename = 'Data/Projects/KeggoRo/001/perturb_norm_ctrl_clustered.h5ad', file descriptor = 106, errno = 122, error message = 'Disk quota exceeded', buf = 0x3bc258b8, total write size = 103496, bytes this sub-write = 103496, offset = 7276104816)
+
+Above error raised while writing key 'missing_matrix' of <class 'h5py._hl.group.Group'> to /
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_main.py", line 156, in <module>
+    pgrins_cluster.main(grn_file=project_name, experimental=experimental, **kwargs_d)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_cluster.py", line 187, in main
+    print(grins_data_clustered.shape)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    grins_data_clustered.write_h5ad(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"
+    
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py", line 1959, in write_h5ad
+    _write_h5ad(
+    ~~~~~~~~~~~^
+        Path(filename),
+        ^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        as_dense=as_dense,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/h5ad.py", line 67, in write_h5ad
+    with h5py.File(filepath, mode) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 56, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 57, in h5py._objects.with_phil.wrapper
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/files.py", line 648, in __exit__
+    self.close()
+    ~~~~~~~~~~^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/files.py", line 630, in close
+    self.id._close_open_objects(h5f.OBJ_LOCAL | h5f.OBJ_FILE)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 56, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 57, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 355, in h5py.h5f.FileID._close_open_objects
+RuntimeError: Can't decrement id ref count (unable to close file, errno = 122, error message = 'Disk quota exceeded')
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_main.py", line 156, in <module>
+    pgrins_cluster.main(grn_file=project_name, experimental=experimental, **kwargs_d)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_cluster.py", line 170, in main
+    adata_list = [sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}_ctrl.h5ad") for pseq_path in glob(f"Data/Experimental/*")]
+                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/h5ad.py", line 219, in read_h5ad
+    with h5py.File(filename, "r") as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/files.py", line 564, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, fcpl, swmr=swmr)
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/files.py", line 238, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+  File "h5py/_objects.pyx", line 56, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 57, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 102, in h5py.h5f.open
+FileNotFoundError: [Errno 2] Unable to synchronously open file (unable to open file: name = 'Data/Experimental/Norman19/perturb_norm_subset_KeggoRo_ctrl.h5ad', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+(4260, 2)
+Running PCA, keeping at least 10 PCs
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+There are 12603294 zero entries (2.343% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 94 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_ctrl.h5ad...
+(100000, 5379)
+********** D1: Get best control cells: **********
+Calculating adata mean
+(4260, 2)
+Running PCA, keeping at least 10 PCs
+Running UMAP using 17 PCs
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:449: UserWarning: Exited at iteration 2000 with accuracies 
+[6.99647280e-15 1.57758561e-06 8.61164755e-07 9.47931675e-06]
+not reaching the requested tolerance 2.428889274597168e-06.
+Use iteration 1940 instead with accuracy 
+9.91533811681945e-07.
+
+  _, diffusion_map = lobpcg(
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:449: UserWarning: Exited postprocessing with accuracies 
+[3.69765043e-15 8.93207733e-07 5.67243874e-07 2.51953746e-06]
+not reaching the requested tolerance 2.428889274597168e-06.
+  _, diffusion_map = lobpcg(
+Clustering
+8 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 539 clusters
+Calculating MSES for 8 clusters
+2639/100000 cells retained
+Saving final file
+(100000, 4260)
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_main.py", line 156, in <module>
+    pgrins_cluster.main(grn_file=project_name, experimental=experimental, **kwargs_d)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_cluster.py", line 188, in main
+        f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+    with open(f'Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle', 'wb') as f:
+    ^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py", line 1959, in write_h5ad
+    _write_h5ad(
+    ~~~~~~~~~~~^
+        Path(filename),
+        ^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        as_dense=as_dense,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_io/h5ad.py", line 67, in write_h5ad
+    with h5py.File(filepath, mode) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 56, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 57, in h5py._objects.with_phil.wrapper
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/files.py", line 648, in __exit__
+    self.close()
+    ~~~~~~~~~~^^
+  File "/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/h5py/_hl/files.py", line 630, in close
+    self.id._close_open_objects(h5f.OBJ_LOCAL | h5f.OBJ_FILE)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 56, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 57, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 355, in h5py.h5f.FileID._close_open_objects
+RuntimeError: Can't decrement id ref count (file write failed: time = Mon Jun  1 17:22:00 2026
+, filename = 'Data/Projects/KeggoRo/001/perturb_norm_ctrl_clustered.h5ad', file descriptor = 106, errno = 122, error message = 'Disk quota exceeded', buf = 0x3ae27258, total write size = 40, bytes this sub-write = 40, offset = 2496782312)
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Calculating adata mean
+Running PCA, keeping at least 10 PCs
+Running UMAP using 17 PCs
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:449: UserWarning: Exited at iteration 2000 with accuracies 
+[6.99647280e-15 1.57758561e-06 8.61164755e-07 9.47931675e-06]
+not reaching the requested tolerance 2.428889274597168e-06.
+Use iteration 1940 instead with accuracy 
+9.91533811681945e-07.
+
+  _, diffusion_map = lobpcg(
+/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/sklearn/manifold/_spectral_embedding.py:449: UserWarning: Exited postprocessing with accuracies 
+[3.69765043e-15 8.93207733e-07 5.67243874e-07 2.51953746e-06]
+not reaching the requested tolerance 2.428889274597168e-06.
+  _, diffusion_map = lobpcg(
+Clustering
+8 clusters definable with >1.0% of cells (at most, 10 are needed).
+Calculating Silhouette score for 539 clusters
+Calculating MSES for 8 clusters
+2639/100000 cells retained
+Saving final file
+(100000, 4260)
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+Loading perturbed data...
+There are 8954424 zero entries (2.144% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 79 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:04<06:11,  4.96s/it]  3%|▎         | 2/76 [00:07<04:30,  3.66s/it]  4%|▍         | 3/76 [00:10<03:57,  3.25s/it]  5%|▌         | 4/76 [00:13<03:39,  3.05s/it]  7%|▋         | 5/76 [00:16<03:29,  2.96s/it]  8%|▊         | 6/76 [00:18<03:22,  2.89s/it]  9%|▉         | 7/76 [00:21<03:16,  2.85s/it] 11%|█         | 8/76 [00:24<03:11,  2.81s/it] 12%|█▏        | 9/76 [00:27<03:07,  2.79s/it] 13%|█▎        | 10/76 [00:29<03:03,  2.78s/it]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 50), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Perturbation effect file generated for KeggoRo
+['Data/SimulResults_Racipe/KeggoRo/001/']
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 75000
+Running steady state simulations for replicate: 001
+  0%|          | 0/8 [00:00<?, ?it/s]E0601 21:41:51.398447   87738 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0601 22:58:19.431160   87645 slow_operation_alarm.cc:140] The operation took 1h18m28.032848154s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 12%|█▎        | 1/8 [5:39:35<39:37:06, 20375.20s/it] 25%|██▌       | 2/8 [6:05:41<15:31:05, 9310.98s/it]  38%|███▊      | 3/8 [6:31:46<8:01:09, 5773.93s/it]  50%|█████     | 4/8 [6:57:51<4:34:09, 4112.36s/it] 62%|██████▎   | 5/8 [7:23:55<2:39:40, 3193.66s/it] 75%|███████▌  | 6/8 [7:50:00<1:27:59, 2639.76s/it] 88%|████████▊ | 7/8 [8:16:05<38:08, 2288.24s/it]  100%|██████████| 8/8 [14:14:50<00:00, 8412.41s/it]100%|██████████| 8/8 [14:14:50<00:00, 6411.30s/it]
+Time taken for replicate 001: 51356.95150089264
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating sinks for replicate 001...
+  0%|          | 0/8 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 12%|█▎        | 1/8 [03:47<26:32, 227.44s/it]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 50), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Simulating sinks for replicate 001...
+  0%|          | 0/8 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 12%|█▎        | 1/8 [03:16<22:52, 196.08s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 25%|██▌       | 2/8 [06:32<19:38, 196.36s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 38%|███▊      | 3/8 [09:48<16:21, 196.35s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 50%|█████     | 4/8 [13:05<13:04, 196.23s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 62%|██████▎   | 5/8 [16:21<09:48, 196.15s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 75%|███████▌  | 6/8 [19:37<06:32, 196.13s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+ 88%|████████▊ | 7/8 [22:53<03:16, 196.10s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+100%|██████████| 8/8 [24:33<00:00, 165.72s/it]100%|██████████| 8/8 [24:33<00:00, 184.23s/it]
+Done!
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo/001/KeggoRo_steadystate_solutions_001...
+Loading perturbed data...
+There are 9444616 zero entries (2.262% of all entries).
+Out of 5379 genes, there are 7 genes with more than 1.0% of entries being negative, and 7 genes with more than 1.0% of entries being NaN.
+There are also 87 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:04<06:07,  4.90s/it]  3%|▎         | 2/76 [00:07<04:28,  3.63s/it]  4%|▍         | 3/76 [00:10<03:55,  3.23s/it]  5%|▌         | 4/76 [00:13<03:38,  3.04s/it]  7%|▋         | 5/76 [00:15<03:27,  2.93s/it]  8%|▊         | 6/76 [00:18<03:20,  2.86s/it]  9%|▉         | 7/76 [00:21<03:15,  2.84s/it] 11%|█         | 8/76 [00:24<03:10,  2.80s/it] 12%|█▏        | 9/76 [00:26<03:06,  2.78s/it] 13%|█▎        | 10/76 [00:29<03:02,  2.76s/it] 14%|█▍        | 11/76 [00:32<02:59,  2.76s/it] 16%|█▌        | 12/76 [00:35<02:56,  2.76s/it] 17%|█▋        | 13/76 [00:37<02:53,  2.75s/it] 18%|█▊        | 14/76 [00:40<02:50,  2.75s/it] 20%|█▉        | 15/76 [00:43<02:47,  2.75s/it] 21%|██        | 16/76 [00:46<02:44,  2.75s/it] 22%|██▏       | 17/76 [00:48<02:41,  2.74s/it] 24%|██▎       | 18/76 [00:51<02:38,  2.74s/it] 25%|██▌       | 19/76 [00:54<02:35,  2.73s/it] 26%|██▋       | 20/76 [00:56<02:32,  2.73s/it] 28%|██▊       | 21/76 [00:59<02:29,  2.72s/it] 29%|██▉       | 22/76 [01:02<02:27,  2.73s/it] 30%|███       | 23/76 [01:05<02:24,  2.73s/it] 32%|███▏      | 24/76 [01:07<02:21,  2.73s/it] 33%|███▎      | 25/76 [01:10<02:18,  2.72s/it] 34%|███▍      | 26/76 [01:13<02:16,  2.72s/it] 36%|███▌      | 27/76 [01:15<02:13,  2.72s/it] 37%|███▋      | 28/76 [01:18<02:10,  2.73s/it] 38%|███▊      | 29/76 [01:21<02:08,  2.73s/it] 39%|███▉      | 30/76 [01:24<02:05,  2.72s/it] 41%|████      | 31/76 [01:26<02:02,  2.72s/it] 42%|████▏     | 32/76 [01:29<01:59,  2.73s/it] 43%|████▎     | 33/76 [01:32<01:57,  2.73s/it] 45%|████▍     | 34/76 [01:35<01:54,  2.73s/it] 46%|████▌     | 35/76 [01:37<01:52,  2.73s/it] 47%|████▋     | 36/76 [01:40<01:49,  2.74s/it] 49%|████▊     | 37/76 [01:43<01:46,  2.74s/it] 50%|█████     | 38/76 [01:46<01:44,  2.75s/it] 51%|█████▏    | 39/76 [01:48<01:41,  2.74s/it] 53%|█████▎    | 40/76 [01:51<01:38,  2.74s/it] 54%|█████▍    | 41/76 [01:54<01:35,  2.74s/it] 55%|█████▌    | 42/76 [01:57<01:33,  2.74s/it] 57%|█████▋    | 43/76 [01:59<01:30,  2.74s/it] 58%|█████▊    | 44/76 [02:02<01:27,  2.73s/it] 59%|█████▉    | 45/76 [02:05<01:24,  2.74s/it] 61%|██████    | 46/76 [02:07<01:22,  2.74s/it] 62%|██████▏   | 47/76 [02:10<01:19,  2.74s/it] 63%|██████▎   | 48/76 [02:13<01:16,  2.73s/it] 64%|██████▍   | 49/76 [02:16<01:13,  2.74s/it] 66%|██████▌   | 50/76 [02:18<01:11,  2.74s/it] 67%|██████▋   | 51/76 [02:21<01:08,  2.74s/it] 68%|██████▊   | 52/76 [02:24<01:05,  2.74s/it] 70%|██████▉   | 53/76 [02:27<01:03,  2.75s/it] 71%|███████   | 54/76 [02:29<01:00,  2.74s/it] 72%|███████▏  | 55/76 [02:32<00:57,  2.74s/it] 74%|███████▎  | 56/76 [02:35<00:54,  2.74s/it] 75%|███████▌  | 57/76 [02:38<00:51,  2.73s/it] 76%|███████▋  | 58/76 [02:40<00:49,  2.74s/it] 78%|███████▊  | 59/76 [02:43<00:46,  2.74s/it] 79%|███████▉  | 60/76 [02:46<00:43,  2.74s/it] 80%|████████  | 61/76 [02:49<00:41,  2.74s/it] 82%|████████▏ | 62/76 [02:51<00:38,  2.73s/it] 83%|████████▎ | 63/76 [02:54<00:35,  2.73s/it] 84%|████████▍ | 64/76 [02:57<00:32,  2.74s/it] 86%|████████▌ | 65/76 [03:00<00:30,  2.74s/it] 87%|████████▋ | 66/76 [03:02<00:27,  2.74s/it] 88%|████████▊ | 67/76 [03:05<00:24,  2.75s/it] 89%|████████▉ | 68/76 [03:08<00:21,  2.74s/it] 91%|█████████ | 69/76 [03:10<00:19,  2.74s/it] 92%|█████████▏| 70/76 [03:13<00:16,  2.74s/it] 93%|█████████▎| 71/76 [03:16<00:13,  2.74s/it] 95%|█████████▍| 72/76 [03:19<00:10,  2.74s/it] 96%|█████████▌| 73/76 [03:21<00:08,  2.74s/it] 97%|█████████▋| 74/76 [03:24<00:05,  2.73s/it] 99%|█████████▊| 75/76 [03:27<00:02,  2.74s/it]100%|██████████| 76/76 [03:30<00:00,  2.74s/it]100%|██████████| 76/76 [03:30<00:00,  2.77s/it]
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo/001/perturb_norm_pert.h5ad...
+All done!
