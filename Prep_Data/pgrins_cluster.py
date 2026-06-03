@@ -67,6 +67,7 @@ def get_adata_ctrl_mean(adata_list : ad.AnnData) -> np.array:
             mean_vals = np.append(mean_vals, comb_mean)
     # Sort values so that the corresponding genes are in alphabetical order again:
     mean_df = pd.DataFrame({"Gene":mean_genenames,"Val":mean_vals}).sort_values(by="Gene")
+    mean_df = mean_df[~mean_df["Gene"].str.contains(r"\-|\.",regex=True)]
     return mean_df["Gene"].values, mean_df["Val"].values
 
 
@@ -95,7 +96,6 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
         The original grins_data, but with additional columns and data indicating which cluster is the best.
     
     """
-    
     print(f"Running PCA, keeping at least {min_num_pcs} PCs")
     sc.pp.pca(grins_data, svd_solver="arpack",layer="log1p")
 
@@ -129,16 +129,25 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
         best_clusters = np.array(list(cluster_counts.keys()))
 
     best_clusters = clusters[np.argsort([np.mean(sample_silhouette_values[cluster_labels==c]) for c in best_clusters])[::-1][:max_num_clusters]] # max_num_clusters clusters with highest silhouette score
-
     if adata_mean is not None:
-        print(f"Calculating MSES for {len(best_clusters)} clusters")
-        # Get the MSEs between the adata control mean and each cluster mean:
-        mse_results = [
-            spearmanr(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze())
-            for cluster in best_clusters
-        ]
-        # Get the cells in GRiNS in the cluster with the lowest MSE:
-        best_cluster_overall = best_clusters[np.argmax(mse_results)]
+        metric = "MSE" # Change this if wanted
+        if metric == "MSE":
+            print(f"Calculating MSE for {len(best_clusters)} clusters")
+            # Get the MSEs between the adata control mean and each cluster mean:
+            metric_results = [
+                mean_squared_error(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze())
+                for cluster in best_clusters
+            ]
+            print(best_clusters,[grins_data[cluster_labels==cluster].shape[0] for cluster in best_clusters], metric_results)
+            best_cluster_overall = best_clusters[np.argmin(metric_results)]
+        elif metric == "Spearman":
+            print(f"Calculating Spearman correlation for {len(best_clusters)} clusters")
+            # Get the values between the adata control mean and each cluster mean:
+            metric_results = [
+                spearmanr(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze()).correlation
+                for cluster in best_clusters
+            ]
+            best_cluster_overall = best_clusters[np.argmax(metric_results)]
     else: # ctrl case without experimental data: take the cluster with the highest silhouette score
         best_cluster_overall = best_clusters[0]
 
@@ -151,7 +160,8 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     grins_data.uns["clustering_results"] = {}
     grins_data.uns["clustering_results"]["best_clusters"]=best_clusters
     if adata_mean is not None:
-        grins_data.uns["clustering_results"]["scores"]=mse_results
+        grins_data.uns["clustering_results"]["metric"]=metric
+        grins_data.uns["clustering_results"]["scores"]=metric_results
 
     
     return list(grins_data.obs["best_cells"]), grins_data
@@ -169,7 +179,7 @@ def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : f
                 adata_list = [sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}.h5ad") for pseq_path in glob(f"Data/Experimental/*")]
                 adata_list = [adata[adata.obs["perturbation"]=="ctrl"] for adata in adata_list]
                 adata_genes, adata_mean = get_adata_ctrl_mean(adata_list)
-                grins_data = grins_data[:,adata_genes] # Remove source genes not in adata from grins_data
+                grins_data = grins_data[:,list(set(grins_data.var_names) & set(adata_genes))] # Remove source genes not in adata from grins_data
                 del adata_list
             else:
                 adata_mean = None      

@@ -68,6 +68,14 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
         sink_params = sol_df.merge(sink_params_full,on="ParamNum")[sink_params_full.columns]
         split_cols = [col.split("_") for col in list(sink_params.columns)]
         split_cols.remove(["ParamNum"])
+        # Remove all gene names that have for some reason forbidden symbols in them, meaning that they contain more "_" than allowed
+        split_cols_filtered = []
+        for i in range(len(split_cols)):
+            if split_cols[i][0] in ["Prod","Deg"] and len(split_cols[i]) == 2:
+                split_cols_filtered.append(split_cols[i])
+            elif split_cols[i][0] in ["Hill","Thr","ActFld","InhFld"] and len(split_cols[i]) == 3:
+                split_cols_filtered.append(split_cols[i])
+        split_cols = split_cols_filtered
         # Sort the parameter columns by the gene whose equation they belong to (last part of the colname) and group the colnames by them:
         split_cols.sort(key=itemgetter(-1)) 
         node_groups = groupby(split_cols,itemgetter(-1))
@@ -257,7 +265,7 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             )
         
     # If split_sinks is true, calculate non-sinks steady states; in any case, save as filename_expr.parquet for consistency
-    if split_sinks and not False in [os.path.exists(f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_steadystate_solutions_{rep:03}_sinks_{suffix}.parquet") for rep in range(1,num_replicates+1)]:
+    if split_sinks and False in [os.path.exists(f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_steadystate_solutions_{rep:03}_sinks_{suffix}.parquet") for rep in range(1,num_replicates+1)]:
         for replicate in range(1,num_replicates+1):
             sol_df = pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
             sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes

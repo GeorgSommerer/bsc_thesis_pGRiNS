@@ -148,8 +148,8 @@ get_conf_matrix <- function(exp_ds,pgrins_ds){
 
 
 # 3) On the adjacency matrix: use CoDiNA to compare networks
-get_diff_net <- function(exp_ds,grins_ds){
-  diff_net <- MakeDiffNet(Data = list(exp_ds, grins_ds),Code = c("experimental", "pGRINS"))
+get_diff_net <- function(exp_ds,grins_ds, grn_ds){
+  diff_net <- MakeDiffNet(Data = list(exp_ds$network_df, grins_ds$network_df,grn_ds$network_df),Code = c("experimental", "pGRINS","GRN"))
   # Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
   # beta edges have different signs, and gamma edges belong to only 1 network
   diff_net <- subset(diff_net, diff_net$Score_Phi_tilde/diff_net$Score_internal > 1)
@@ -204,10 +204,31 @@ for (name in names){
   #get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
 }
 
+
+nonsink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo.topo", delim=" ")
+sink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo_sinks.topo", delim=" ")
+grn <- bind_rows(nonsink_df,sink_df) %>% filter("Source","Target") %>% mutate("wTO"=1)
 for (name in names){
-  # Function to turn GRN into adjacency matrices
+  dataset_lists[[name]][["GRN"]] = list()
+  dataset_lists[[name]][["GRN"]][["network_df"]] = grn #filter
+  dataset_lists[[name]][["GRN"]][["adjMatrix"]] = grn # turn into adj matrix
+  
+  dataset_lists[[name]][["GRN"]] <- get_modules(dataset_lists[[name]][["GRN"]])
+  
+  dataset_lists[[name]][["GRN"]][["GO_results"]] = list()
+  for (module in unique(dataset_lists[[name]][["GRN"]]$modules)){
+    dataset_lists[[name]][["GRN"]][["GO_results"]][[module]] = list()
+    onts <- c("MF","BP","CC")
+    for (ont in onts){
+      print(paste("********************","GRN",module,ont,"********************"))
+      dataset_lists[[name]][["GRN"]] <- GO_enrichment(dataset_lists[[name]][["GRN"]],module,ont)
+    }
+  }
+  
+  
   # get_modules -> topGO analysis
 }
+
 
 for (name in names){
   dataset_lists[[name]][["GO_conf_matrix"]] <- get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
@@ -218,10 +239,7 @@ for (name in names){
   # DiffNet on all 3 networks at once???
   dataset_lists[[name]][["DiffNodes_pGRiNS"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,dataset_lists[[name]][["pGRiNS"]]$network_df)
   
-  nonsink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo.topo", delim=" ")
-  sink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo_sinks.topo", delim=" ")
-  grn <- bind_rows(nonsink_df,sink_df) %>% filter("Source","Target") %>% mutate("wTO"=1)
-  dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,grn)
+  dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]],dataset_lists[[name]][["GRN"]])
 }
 
 

@@ -200,6 +200,10 @@ def gen_topo_param_files(
 
     else:
         # Generate which genes will be affected by which perturbations
+        if split_sinks:
+            gen_diffrax_odesys(topo_nonsink_df, topo_name, sim_dir,pert_list,suffix)
+        else:
+            gen_diffrax_odesys(topo_df, topo_name, sim_dir,pert_list,suffix)
         pert_df = gen_pert_genes(pert_list,pert_factor)
         pert_df = pert_df.assign(PertNum=pert_df.index)
         for rep in range(1,num_replicates+1):
@@ -741,8 +745,8 @@ def run_all_replicates(
     for replicate_dir in replicate_folders:
         # Getting the base name of the replicate directory
         replicate_base = os.path.basename(replicate_dir.rstrip("/"))
-        print(f"Replicate {replicate_base}/{len(replicate_folder):03}")
-        if os.path.exists(f"{save_dir}/{grn_file}/{replicate_base}/{grn_file}_steadystate_solutions_{replicate_base}_{suffix}.parquet"):
+        print(f"Replicate {replicate_base}/{len(replicate_folders):03}")
+        if os.path.exists(f"{save_dir}/{topo_name}/{replicate_base}/{topo_name}_steadystate_solutions_{replicate_base}_{suffix}.parquet"):
             continue
         # Read the initial conditions and parameters dataframes
         init_conds = pd.read_parquet(f"{replicate_dir}/{topo_name}_init_conds_{replicate_base}.parquet")

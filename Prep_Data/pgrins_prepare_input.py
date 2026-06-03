@@ -216,6 +216,8 @@ def main(project_name : str, experimental : bool, pert_file : str = None, split_
         topo_dfs = [pd.read_csv(f"Data/Topos/{topo_file}.topo",sep=" ") for topo_file in topo_files]
         grn_df = pd.concat(topo_dfs,axis=0).drop_duplicates(subset=["Source","Target"]).sort_values(by=["Source","Target"])
 
+        # symbols that cannot be part of gene names because pGRiNS turns the gene names into python variable names must be removed
+        grn_df = grn_df[(~grn_df["Source"].str.contains(r"\-|\.",regex=True)) & (~grn_df["Target"].str.contains(r"\-|\.",regex=True))]
         # -e: Get experimental perturb seq datasets and normalize them
         if experimental:
             pseqs = sorted([pseq_path.split("/")[-1] for pseq_path in glob(f"Data/Experimental/*")])
