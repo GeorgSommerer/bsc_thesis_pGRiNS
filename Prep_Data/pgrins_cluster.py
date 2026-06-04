@@ -114,21 +114,20 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     sc.tl.leiden(grins_data, flavor="igraph",resolution=1)
     cluster_labels = grins_data.obs["leiden"]
     cluster_counts = cluster_labels.value_counts()
-    large_clusters = len(list(cluster_counts[cluster_counts>grins_data.shape[0]*min_cluster_size_pct].keys()))
-    print(f"{large_clusters} clusters definable with >{100*min_cluster_size_pct}% of cells (at most, {max_num_clusters} are needed).")
-
     clusters = np.array(list(cluster_counts.keys()))
+
+    best_clusters = np.array(list(cluster_counts[cluster_counts>grins_data.shape[0]*min_cluster_size_pct].keys())) # At least min_cluster_size_pct of total cells in cluster
+    if max_num_clusters == 0:
+        max_num_clusters = len(best_clusters)
+    print(f"{len(best_clusters)} clusters definable with >{100*min_cluster_size_pct}% of cells (at most, {max_num_clusters} are needed).")
+
+    # Get large, homogenous clusters
     print(f"Calculating Silhouette score for {len(clusters)} clusters")
     sample_silhouette_values = silhouette_samples(grins_data.obsm["X_umap"], cluster_labels)
     grins_data.obs["silhouette_samples"] = sample_silhouette_values
 
-    # Get large, homogenous clusters
-    if large_clusters > 0:
-        best_clusters = np.array(list(cluster_counts[cluster_counts>grins_data.shape[0]*min_cluster_size_pct].keys())) # At least min_cluster_size_pct of total cells in cluster
-    else:
-        best_clusters = np.array(list(cluster_counts.keys()))
-
     best_clusters = clusters[np.argsort([np.mean(sample_silhouette_values[cluster_labels==c]) for c in best_clusters])[::-1][:max_num_clusters]] # max_num_clusters clusters with highest silhouette score
+    
     if adata_mean is not None:
         metric = "MSE" # Change this if wanted
         if metric == "MSE":

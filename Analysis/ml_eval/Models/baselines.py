@@ -100,18 +100,16 @@ def get_linear_GWb(norm_data : AnnData, train_perts : list[str], K : int = 10, l
     l : float
         The ridge penalty.
     """
-    single_train_perts = [t for t in train_perts if "_" not in t]
+    train_single_perts = [t for t in train_perts if "_" not in t]
+    
+    Y = np.vstack([np.mean(norm_data[norm_data.obs["perturbation"]==p].layers["log1p"],axis=0) for p in train_single_perts]).T # Shape g x p
+    b = np.mean(Y,axis=1) # Shape g x 1
+    G = sc.pp.pca(Y,n_comps=K,return_info=False) # Shape g x K
+    P = G[np.argwhere(norm_data.var_names.isin(train_single_perts)).squeeze()] # Shape p x K
 
-    Y = scipy.sparse.csr_matrix.transpose(norm_data[norm_data.obs["perturbation"].isin(train_perts)].layers["log1p"])
-    b = np.mean(Y,axis=1)
-    G = sc.pp.pca(Y,n_comps=K,return_info=False).todense()
-    P = G[np.argwhere(norm_data.var_names.isin(single_train_perts))]
+    W = np.linalg.inv(G.T @ G+l*np.eye(G.shape[1])) @ G.T @ (Y-b) @ P @ np.linalg.inv(P.T @ P + l*np.eye(P.shape[1])) # Shape K x K
 
-    print("Shape of data:",norm_data.shape,"Shape of Y:",Y.shape,"Shape of b:",b.shape,"Shape of G:",G.shape,"Shape of P:",P.shape)
-
-    W = np.linalg.inv(G.T @ G+l*np.eye(G.shape[0])) @ G.T @ (Y-b) @ P @ np.linalg.inv(P.T @ P + l*np.eye(P.shape[0]))
-
-    print("Shape of data:",norm_data.shape,"Shape of Y:",Y.shape,"Shape of b:",b.shape,"Shape of G:",G.shape,"Shape of P:",P.shape,"Shape of W:",W.shape)
+    #print("Shape of data:",norm_data.shape,"Shape of Y:",Y.shape,"Shape of b:",b.shape,"Shape of G:",G.shape,"Shape of P:",P.shape,"Shape of W:",W.shape)
 
     return(G,W,b)
 
@@ -126,26 +124,27 @@ def informed_model(norm_data : ad.AnnData, train_perts : list[str], test_perts :
         ! This assumes that for every double perturbation, the single perturbations are also part of the dataset. !
 
     """
-    test_single_perts = [t for t in train_perts if "_" not in t]
-    test_double_perts = [t for t in train_perts if "_" in t]
+    test_single_perts = [t for t in test_perts if "_" not in t]
+    test_double_perts = [t for t in test_perts if "_" in t]
 
     informed_dict = {}
     
     # Linear baseline:
     #single_test_perts_ordered = list(norm_data.var_names[norm_data.var_names.isin(single_test_perts)])
     #P = G[np.argwhere(norm_data.var_names.isin(single_test_perts_ordered))]
-    G,W,b = *get_linear_GWb(norm_data,train_perts,K,l)
+    G,W,b = get_linear_GWb(norm_data,train_perts,K,l)
     for pert in test_single_perts:
-        P = G[np.argwhere(norm_data.var_names.isin(test_single_perts))]
-        Y_pred = (G @ W @ P.T + b).T
-        informed_dict[pert] = np.mean(Y_pred,axis=0) # Mean over all created cells
+        P_tilde = G[np.argwhere(norm_data.var_names.isin(test_single_perts)).squeeze()]
+
+        Y_pred = (G @ W @ P_tilde.T + b).T
+        informed_dict[pert] = np.asarray(np.mean(Y_pred,axis=0)).squeeze() # Mean over all created cells
 
     # Additive baseline:
     for pert in test_double_perts:   
         pert_genes = pert.split("_")
         pert_gene_means = [np.asarray(np.mean(norm_data[pert_i_dict[single_gene]].layers["log1p"],axis=0)).squeeze() for single_gene in pert_genes] # What if single pert is not in dataset?? -> For KeggoRo_0206 not a problem
         informed_dict[pert] = np.sum(pert_gene_means) - (len(pert_genes)-1)*control_baseline
-
+    
     return informed_dict
 
 

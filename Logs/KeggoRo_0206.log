@@ -1331,3 +1331,237 @@ Done!
 ********** D1: Get best control cells: **********
 Calculating adata mean
 Running PCA, keeping at least 10 PCs
+Running UMAP using 16 PCs
+Clustering
+18 clusters definable with >1.0% of cells (at most, 1000 are needed).
+Calculating Silhouette score for 170 clusters
+Calculating MSE for 18 clusters
+['164' '2' '102' '6' '4' '3' '16' '1' '46' '125' '5' '11' '41' '22' '0'
+ '155' '33' '24'] [1420, 6011, 1196, 2132, 16790, 11678, 1163, 15869, 1480, 3005, 1287, 1029, 2437, 1105, 2326, 2433, 1488, 2581] [0.5164747004438153, 0.5163999625841023, 0.5190522620375939, 0.5169712489025443, 0.5182456845252643, 0.5283505091317798, 0.5314897618117123, 0.5214974402100441, 0.5256179612474136, 0.5224189229925388, 0.5208044474635427, 0.4457813655952227, 0.5178087824515569, 0.4536065804782614, 0.5139188545105241, 0.5206179647083672, 0.45916084892570097, 0.5190394085830431]
+1029/100000 cells retained
+Saving final file
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Perturbation effect file generated for KeggoRo_0206
+['Data/SimulResults_Racipe/KeggoRo_0206/001/']
+Replicate 001/001
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo_0206
+Number of combinations to simulate: 75000
+Running steady state simulations for replicate: 001
+  0%|          | 0/8 [00:00<?, ?it/s]E0603 16:06:34.952031  178975 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0603 17:24:07.086322  178874 slow_operation_alarm.cc:140] The operation took 1h19m32.134448426s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 12%|█▎        | 1/8 [5:41:57<39:53:43, 20517.66s/it] 25%|██▌       | 2/8 [6:07:59<15:36:43, 9367.24s/it]  38%|███▊      | 3/8 [6:34:01<8:03:35, 5803.16s/it]  50%|█████     | 4/8 [7:00:03<4:35:15, 4128.82s/it] 62%|██████▎   | 5/8 [7:26:05<2:40:09, 3203.05s/it] 75%|███████▌  | 6/8 [7:52:06<1:28:09, 2644.73s/it] 88%|████████▊ | 7/8 [8:18:07<38:10, 2290.68s/it]  100%|██████████| 8/8 [14:15:17<00:00, 8383.48s/it]100%|██████████| 8/8 [14:15:17<00:00, 6414.63s/it]
+Time taken for replicate 001: 51384.06868362427
+Normalising the solutions
+Simulation completed for replicate: 001
+
+Simulating sinks for replicate 001...
+  0%|          | 0/8 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 12%|█▎        | 1/8 [03:33<24:51, 213.14s/it]nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Simulating sinks for replicate 001...
+  0%|          | 0/8 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 12%|█▎        | 1/8 [03:09<22:06, 189.45s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 25%|██▌       | 2/8 [06:19<18:57, 189.56s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 38%|███▊      | 3/8 [09:28<15:47, 189.50s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 50%|█████     | 4/8 [12:38<12:38, 189.55s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 62%|██████▎   | 5/8 [15:47<09:28, 189.43s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 75%|███████▌  | 6/8 [18:56<06:18, 189.30s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+ 88%|████████▊ | 7/8 [22:05<03:09, 189.15s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
+  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
+/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
+  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
+100%|██████████| 8/8 [23:42<00:00, 159.85s/it]100%|██████████| 8/8 [23:42<00:00, 177.79s/it]
+Done!
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo_0206/001/KeggoRo_0206_steadystate_solutions_001...
+Loading perturbed data...
+There are 2514717 zero entries (0.615% of all entries).
+Out of 5379 genes, there are 11 genes with more than 1.0% of entries being negative, and 5 genes with more than 1.0% of entries being NaN.
+There are also 65 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:02<03:28,  2.78s/it]  3%|▎         | 2/76 [00:05<03:23,  2.75s/it]  4%|▍         | 3/76 [00:08<03:19,  2.73s/it]  5%|▌         | 4/76 [00:10<03:16,  2.73s/it]  7%|▋         | 5/76 [00:13<03:13,  2.73s/it]  8%|▊         | 6/76 [00:16<03:10,  2.72s/it]  9%|▉         | 7/76 [00:19<03:07,  2.71s/it] 11%|█         | 8/76 [00:21<03:04,  2.72s/it] 12%|█▏        | 9/76 [00:24<03:02,  2.72s/it] 13%|█▎        | 10/76 [00:27<02:59,  2.72s/it] 14%|█▍        | 11/76 [00:29<02:57,  2.72s/it] 16%|█▌        | 12/76 [00:32<02:54,  2.72s/it] 17%|█▋        | 13/76 [00:35<02:51,  2.72s/it] 18%|█▊        | 14/76 [00:38<02:48,  2.72s/it] 20%|█▉        | 15/76 [00:40<02:45,  2.71s/it] 21%|██        | 16/76 [00:43<02:43,  2.72s/it] 22%|██▏       | 17/76 [00:46<02:40,  2.72s/it] 24%|██▎       | 18/76 [00:49<02:37,  2.72s/it] 25%|██▌       | 19/76 [00:51<02:35,  2.72s/it] 26%|██▋       | 20/76 [00:54<02:32,  2.72s/it] 28%|██▊       | 21/76 [00:57<02:29,  2.72s/it] 29%|██▉       | 22/76 [00:59<02:26,  2.72s/it] 30%|███       | 23/76 [01:02<02:24,  2.72s/it] 32%|███▏      | 24/76 [01:05<02:20,  2.71s/it] 33%|███▎      | 25/76 [01:08<02:18,  2.71s/it] 34%|███▍      | 26/76 [01:10<02:15,  2.71s/it] 36%|███▌      | 27/76 [01:13<02:13,  2.72s/it] 37%|███▋      | 28/76 [01:16<02:10,  2.73s/it] 38%|███▊      | 29/76 [01:18<02:07,  2.72s/it] 39%|███▉      | 30/76 [01:21<02:05,  2.72s/it] 41%|████      | 31/76 [01:24<02:02,  2.73s/it] 42%|████▏     | 32/76 [01:27<01:59,  2.72s/it] 43%|████▎     | 33/76 [01:29<01:56,  2.72s/it] 45%|████▍     | 34/76 [01:32<01:53,  2.71s/it] 46%|████▌     | 35/76 [01:35<01:51,  2.71s/it] 47%|████▋     | 36/76 [01:37<01:48,  2.72s/it] 49%|████▊     | 37/76 [01:40<01:46,  2.72s/it] 50%|█████     | 38/76 [01:43<01:43,  2.73s/it] 51%|█████▏    | 39/76 [01:46<01:40,  2.72s/it] 53%|█████▎    | 40/76 [01:48<01:38,  2.72s/it] 54%|█████▍    | 41/76 [02:02<03:28,  5.95s/it] 55%|█████▌    | 42/76 [02:05<02:49,  4.98s/it] 57%|█████▋    | 43/76 [02:07<02:21,  4.30s/it] 58%|█████▊    | 44/76 [02:10<02:02,  3.83s/it] 59%|█████▉    | 45/76 [02:13<01:48,  3.49s/it] 61%|██████    | 46/76 [02:15<01:38,  3.27s/it] 62%|██████▏   | 47/76 [02:18<01:30,  3.11s/it] 63%|██████▎   | 48/76 [02:21<01:23,  2.99s/it] 64%|██████▍   | 49/76 [02:24<01:18,  2.91s/it] 66%|██████▌   | 50/76 [02:26<01:14,  2.85s/it] 67%|██████▋   | 51/76 [02:29<01:10,  2.81s/it] 68%|██████▊   | 52/76 [02:32<01:06,  2.78s/it] 70%|██████▉   | 53/76 [02:34<01:03,  2.76s/it] 71%|███████   | 54/76 [02:37<01:00,  2.75s/it] 72%|███████▏  | 55/76 [02:40<00:57,  2.74s/it] 74%|███████▎  | 56/76 [02:43<00:54,  2.73s/it] 75%|███████▌  | 57/76 [02:45<00:51,  2.73s/it] 76%|███████▋  | 58/76 [02:48<00:48,  2.72s/it] 78%|███████▊  | 59/76 [02:51<00:46,  2.72s/it] 79%|███████▉  | 60/76 [02:53<00:43,  2.72s/it] 80%|████████  | 61/76 [02:56<00:40,  2.72s/it] 82%|████████▏ | 62/76 [02:59<00:38,  2.72s/it] 83%|████████▎ | 63/76 [03:02<00:35,  2.72s/it] 84%|████████▍ | 64/76 [03:04<00:32,  2.72s/it] 86%|████████▌ | 65/76 [03:07<00:29,  2.72s/it] 87%|████████▋ | 66/76 [03:10<00:27,  2.72s/it] 88%|████████▊ | 67/76 [03:13<00:24,  2.72s/it] 89%|████████▉ | 68/76 [03:15<00:21,  2.72s/it] 91%|█████████ | 69/76 [03:18<00:19,  2.72s/it] 92%|█████████▏| 70/76 [03:21<00:16,  2.71s/it] 93%|█████████▎| 71/76 [03:23<00:13,  2.71s/it] 95%|█████████▍| 72/76 [03:26<00:10,  2.70s/it] 96%|█████████▌| 73/76 [03:29<00:08,  2.71s/it] 97%|█████████▋| 74/76 [03:31<00:05,  2.72s/it] 99%|█████████▊| 75/76 [03:34<00:02,  2.71s/it]100%|██████████| 76/76 [03:37<00:00,  2.71s/it]100%|██████████| 76/76 [03:37<00:00,  2.86s/it]
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo_0206/001/perturb_norm_pert.h5ad...
+All done!
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo_0206/001/KeggoRo_0206_steadystate_solutions_001...
+Loading perturbed data...
+There are 2514717 zero entries (0.615% of all entries).
+Out of 5379 genes, there are 11 genes with more than 1.0% of entries being negative, and 5 genes with more than 1.0% of entries being NaN.
+There are also 65 genes that have a mean expression of >10000.
+Create AnnData object...
+Traceback (most recent call last):
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/pgrins_main.py", line 173, in <module>
+    pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_prepare_output.py", line 339, in main
+    grins_data, adata_list = grins_racipe_to_adata(grn_file,path_to_data,adata_list=None,split_sinks=split_sinks,replicate=replicate,pert_list=pert_list,outlier_cutoff_min_pct=outlier_cutoff_min_pct, outlier_cutoff_max=outlier_cutoff_max, remove_outliers=remove_outliers)
+                             ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mi/sommereg03/bsc_thesis_pGRiNS/Prep_Data/pgrins_prepare_output.py", line 109, in grins_racipe_to_adata
+    normalize.process_GEARS(grins_data)
+    ^^^^^^^^^
+NameError: name 'normalize' is not defined
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C2: Create perturbed adata object: **********
+Read Data/SimulResults_Racipe/KeggoRo_0206/001/KeggoRo_0206_steadystate_solutions_001...
+Loading perturbed data...
+There are 2514717 zero entries (0.615% of all entries).
+Out of 5379 genes, there are 11 genes with more than 1.0% of entries being negative, and 5 genes with more than 1.0% of entries being NaN.
+There are also 65 genes that have a mean expression of >10000.
+Create AnnData object...
+Generate missing indices...
+  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:02<03:31,  2.83s/it]  3%|▎         | 2/76 [00:05<03:27,  2.80s/it]  4%|▍         | 3/76 [00:08<03:23,  2.79s/it]  5%|▌         | 4/76 [00:11<03:21,  2.79s/it]  7%|▋         | 5/76 [00:13<03:17,  2.78s/it]  8%|▊         | 6/76 [00:16<03:14,  2.78s/it]  9%|▉         | 7/76 [00:19<03:11,  2.78s/it] 11%|█         | 8/76 [00:22<03:09,  2.78s/it] 12%|█▏        | 9/76 [00:25<03:06,  2.79s/it] 13%|█▎        | 10/76 [00:27<03:03,  2.78s/it] 14%|█▍        | 11/76 [00:30<03:00,  2.78s/it] 16%|█▌        | 12/76 [00:33<02:57,  2.77s/it] 17%|█▋        | 13/76 [00:36<02:54,  2.77s/it] 18%|█▊        | 14/76 [00:38<02:51,  2.77s/it] 20%|█▉        | 15/76 [00:41<02:49,  2.77s/it] 21%|██        | 16/76 [00:44<02:46,  2.77s/it] 22%|██▏       | 17/76 [00:47<02:43,  2.77s/it] 24%|██▎       | 18/76 [00:50<02:40,  2.77s/it] 25%|██▌       | 19/76 [00:52<02:38,  2.78s/it] 26%|██▋       | 20/76 [00:55<02:35,  2.78s/it] 28%|██▊       | 21/76 [00:58<02:32,  2.77s/it] 29%|██▉       | 22/76 [01:01<02:30,  2.78s/it] 30%|███       | 23/76 [01:03<02:27,  2.78s/it] 32%|███▏      | 24/76 [01:06<02:24,  2.78s/it] 33%|███▎      | 25/76 [01:09<02:22,  2.79s/it] 34%|███▍      | 26/76 [01:12<02:19,  2.78s/it] 36%|███▌      | 27/76 [01:15<02:16,  2.79s/it] 37%|███▋      | 28/76 [01:17<02:13,  2.79s/it] 38%|███▊      | 29/76 [01:20<02:10,  2.79s/it] 39%|███▉      | 30/76 [01:23<02:08,  2.78s/it] 41%|████      | 31/76 [01:26<02:05,  2.78s/it] 42%|████▏     | 32/76 [01:28<02:02,  2.78s/it] 43%|████▎     | 33/76 [01:31<01:59,  2.78s/it] 45%|████▍     | 34/76 [01:34<01:56,  2.78s/it] 46%|████▌     | 35/76 [01:37<01:53,  2.77s/it] 47%|████▋     | 36/76 [01:40<01:50,  2.77s/it] 49%|████▊     | 37/76 [01:42<01:48,  2.78s/it] 50%|█████     | 38/76 [01:45<01:45,  2.77s/it] 51%|█████▏    | 39/76 [01:48<01:42,  2.77s/it] 53%|█████▎    | 40/76 [01:51<01:39,  2.77s/it] 54%|█████▍    | 41/76 [01:53<01:37,  2.77s/it] 55%|█████▌    | 42/76 [01:56<01:34,  2.78s/it] 57%|█████▋    | 43/76 [01:59<01:31,  2.78s/it] 58%|█████▊    | 44/76 [02:02<01:28,  2.78s/it] 59%|█████▉    | 45/76 [02:05<01:26,  2.78s/it] 61%|██████    | 46/76 [02:07<01:23,  2.78s/it] 62%|██████▏   | 47/76 [02:10<01:20,  2.78s/it] 63%|██████▎   | 48/76 [02:13<01:17,  2.77s/it] 64%|██████▍   | 49/76 [02:16<01:14,  2.77s/it] 66%|██████▌   | 50/76 [02:18<01:12,  2.77s/it] 67%|██████▋   | 51/76 [02:21<01:09,  2.78s/it] 68%|██████▊   | 52/76 [02:24<01:06,  2.78s/it] 70%|██████▉   | 53/76 [02:27<01:03,  2.78s/it] 71%|███████   | 54/76 [02:30<01:01,  2.78s/it] 72%|███████▏  | 55/76 [02:32<00:58,  2.78s/it] 74%|███████▎  | 56/76 [02:35<00:55,  2.78s/it] 75%|███████▌  | 57/76 [02:38<00:52,  2.79s/it] 76%|███████▋  | 58/76 [02:41<00:50,  2.79s/it] 78%|███████▊  | 59/76 [02:43<00:47,  2.78s/it] 79%|███████▉  | 60/76 [02:46<00:44,  2.77s/it] 80%|████████  | 61/76 [02:49<00:41,  2.77s/it] 82%|████████▏ | 62/76 [02:52<00:38,  2.77s/it] 83%|████████▎ | 63/76 [02:55<00:36,  2.78s/it] 84%|████████▍ | 64/76 [02:57<00:33,  2.77s/it] 86%|████████▌ | 65/76 [03:00<00:30,  2.78s/it] 87%|████████▋ | 66/76 [03:03<00:27,  2.78s/it] 88%|████████▊ | 67/76 [03:06<00:24,  2.78s/it] 89%|████████▉ | 68/76 [03:08<00:22,  2.78s/it] 91%|█████████ | 69/76 [03:11<00:19,  2.78s/it] 92%|█████████▏| 70/76 [03:14<00:16,  2.78s/it] 93%|█████████▎| 71/76 [03:17<00:13,  2.78s/it] 95%|█████████▍| 72/76 [03:20<00:11,  2.78s/it] 96%|█████████▌| 73/76 [03:22<00:08,  2.78s/it] 97%|█████████▋| 74/76 [03:25<00:05,  2.77s/it] 99%|█████████▊| 75/76 [03:28<00:02,  2.77s/it]100%|██████████| 76/76 [03:31<00:00,  2.77s/it]100%|██████████| 76/76 [03:31<00:00,  2.78s/it]
+Calculate QC metrics...
+Normalize Data...
+Save the AnnData object to Data/Projects/KeggoRo_0206/001/perturb_norm_pert.h5ad...
+All done!

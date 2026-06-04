@@ -16,9 +16,9 @@ from glob import glob
 import pickle
 
 try:
-    import pgrins_prepare_input
+    import pgrins_prepare_input, normalize
 except:
-    from Prep_Data import pgrins_prepare_input
+    from Prep_Data import pgrins_prepare_input, normalize
 
 def grins_racipe_to_adata(grn_file, path_to_data : str, adata_list : list = None, split_sinks : bool = False, replicate : int = 1, pert_list : list = [], outlier_cutoff_min_pct : float = 0.01, outlier_cutoff_max : float = 10000, remove_outliers = False) -> ad.AnnData:
     """
@@ -105,6 +105,8 @@ def grins_racipe_to_adata(grn_file, path_to_data : str, adata_list : list = None
     
     # Add perturbation column
     grins_data.obs["perturbation"] = np.array(["_".join(sorted(list(pert_list[int(i)].keys()))) if i != -1 else "ctrl" for i in grins_data.obs["PertNum"].values])
+    grins_data.obs["cell_line"] = "syn"
+    normalize.process_GEARS(grins_data)
 
     grins_data.obs_names = [f"{int(info_df.loc[i,"PertNum"])}_{int(info_df.loc[i,"InitCondNum"])}_{int(info_df.loc[i,"ParamNum"])}_{i}" for i in range(info_df.shape[0])]
     grins_data.var_names = list(sol_df.columns)

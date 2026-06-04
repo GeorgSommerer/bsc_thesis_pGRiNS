@@ -60,6 +60,9 @@ if __name__ == '__main__':
     """
     Each available GPU is used to train a GEARS model on one iteration of the train/val/test splits from cross validation.
     See train_gears.ipynb for more comments.
+
+    3.6.
+    nohup python3 -u train_gears_parallel.py Norman19 experimental KeggoRo_0206 5 >> ../../Logs/GEARS_Norman19_KeggoRo_0206_out.log 2>&1 &
     """
     replicate = 1
     filename = sys.argv[1]
@@ -74,7 +77,7 @@ if __name__ == '__main__':
         if modelname == "experimental":
             norm_data = sc.read_h5ad(f"../../Data/Experimental/{filename}/perturb_norm_subset_{grn_file}.h5ad")
         elif modelname == "pGRiNS":
-            norm_data = sc.read_h5ad(f"../../Data/Projects/{filename}/{replicate:03}/perturb_norm_pert.h5ad")
+            norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_pert.h5ad")
         norm_data.X = norm_data.layers["log1p"].copy()
         """
         In line 242 of gears/pertdata.py, the following line exists:

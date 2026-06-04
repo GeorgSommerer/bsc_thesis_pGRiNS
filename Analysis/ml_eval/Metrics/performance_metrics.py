@@ -199,7 +199,7 @@ def compute_metrics_pert(avg_expr_GT_pert : np.ndarray,
     """
     
     if (avg_expr_GT_pert.shape != mean_unperturbed.shape) or (avg_expr_pred.shape != mean_unperturbed.shape):
-        raise ValueError("The shapes of the input vectors do not match.")
+        raise ValueError(f"The shapes of the input vectors do not match ({avg_expr_GT_pert.shape} != {mean_unperturbed.shape}) or ({avg_expr_pred.shape} != {mean_unperturbed.shape}).")
     
     metric_dict = get_metrics(weights)
 

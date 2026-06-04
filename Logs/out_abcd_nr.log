@@ -1,5 +1,0 @@
-nohup: Eingabe wird ignoriert
-********** A: Prepare data: **********
-.topo files ['dorothea_abcd'] are turned into doro_abcd_only_noremove
-Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
-Reading file:  Data/Experimental/Norman19/perturb_norm.h5ad

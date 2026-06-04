@@ -97,7 +97,7 @@ def cross_validate_split_random(norm_data: ad.AnnData, pert_i_dict: Dict[str, li
         
         
 # Perform cross-validation by splitting the perturbations into fix blocks.
-def cross_validate_split_blockwise(norm_data: ad.AnnData, pert_i_dict: Dict[str, list[str]], filename : str, modelname : str,no_iterations: int = 5, need_val: bool = False) -> list[tuple[list[str],list[str],list[str]]]:
+def cross_validate_split_blockwise(norm_data: ad.AnnData, pert_i_dict: Dict[str, list[str]], filename : str,no_iterations: int = 5, need_val: bool = False) -> list[tuple[list[str],list[str],list[str]]]:
     """
     Split all perturbations into no_iterations blocks.
     For cross validation, all but one block will consolidate the train dataset.
@@ -148,11 +148,11 @@ def cross_validate_split_blockwise(norm_data: ad.AnnData, pert_i_dict: Dict[str,
         splits.append((train_perts, val_perts, test_perts))
 
         # Create and pickle the splits in the format used for GEARS
-        os.makedirs(f"Models/Splits/{filename}/{modelname}",exist_ok=True)
-        with open(f'Models/Splits/{filename}/{modelname}/split_{it}.pickle','wb') as handle:
-            train_perts = [p.rename("_","+") if "_" in p or "+" in p else p+"+ctrl" for p in train_perts]
-            val_perts = [p.rename("_","+") if "_" in p or "+" in p else p+"+ctrl" for p in val_perts]
-            test_perts = [p.rename("_","+") if "_" in p or "+" in p else p+"+ctrl" for p in test_perts]
+        os.makedirs(f"../../Data/Experimental/{filename}/Splits",exist_ok=True)
+        with open(f'../../Data/Experimental/{filename}/Splits/split_{it}.pickle','wb') as handle:
+            train_perts = [p.replace("_","+") if "_" in p or "+" in p else p+"+ctrl" for p in train_perts]
+            val_perts = [p.replace("_","+") if "_" in p or "+" in p else p+"+ctrl" for p in val_perts]
+            test_perts = [p.replace("_","+") if "_" in p or "+" in p else p+"+ctrl" for p in test_perts]
             
             pickle.dump({'train':train_perts,'val':val_perts,'test':test_perts}, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return splits
@@ -163,7 +163,7 @@ def hvg_subsets(norm_data : ad.AnnData, filename : str, no_iterations : int):
     for i in range(no_iterations):
         print(f"{i+1}/{no_iterations}")
 
-        splits = pickle.load(open(f"Models/Splits{filename}/split_{i}.pickle",'rb'))
+        splits = pickle.load(open(f"../../Data/Experimental/{filename}/Splits/split_{i}.pickle",'rb'))
         train_perts = list([p[:-5] for p in splits["train"]])
         dataset = norm_data[norm_data.obs["perturbation"].isin(train_perts)]
         sc.pp.highly_variable_genes(dataset,n_top_genes=5000, subset=True,layer="log1p")

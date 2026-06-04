@@ -10,7 +10,7 @@ library(reshape2)
 setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
 
 # 1) Get adjacency matrix:
-get_adj_matrix <- function(ds_list){
+get_adj_matrix <- function(ds_list,grn_file){
   pert_mean_matrix <- read_delim(paste("../Data/Experimental/",ds_list$name,"/",ds_list$name,"-",ds_list$model,"_pert_mean.csv",sep=""),delim=" ")
   
   ds_list$pert_mean_matrix <- pert_mean_matrix
@@ -26,13 +26,13 @@ get_adj_matrix <- function(ds_list){
   sft = pickSoftThreshold(pert_mean_matrix, powerVector = powers, verbose = 5)
   
   # Plot R^2 by power
-  png(file=paste("Plots/KeggoRo/001/scale_independence_",ds_list$name,"_",ds_list$model,".png",sep=""),width=600, height=350)
+  png(file=paste("Plots/",grn_file,"/001/scale_independence_",ds_list$name,"_",ds_list$model,".png",sep=""),width=600, height=350)
   plot(sft$fitIndices[,1], sft$fitIndices[,2], xlab="Soft Threshold power)", ylab=paste("Scale Free Topology Model Fit,signed R^2"), type="n", main = paste("Scale independence for",ds_list$name,"and",ds_list$model));
   text(sft$fitIndices[,1], sft$fitIndices[,2], labels=powers,col="red");
   abline(h=0.85, col="red")
   dev.off()
   # Plot mean connectivity by power (should not be too low, otherwise clustering does not work well)
-  png(file=paste("Plots/KeggoRo/001/mean_connectivity_",ds_list$name,"_",ds_list$model,".png",sep=""),width=600, height=350)
+  png(file=paste("Plots/",grn_file,"/001/mean_connectivity_",ds_list$name,"_",ds_list$model,".png",sep=""),width=600, height=350)
   plot(sft$fitIndices[,1], sft$fitIndices[,5], xlab="Soft Threshold (power)", ylab=paste("Mean Connectivity"), type="n", main = paste("Mean connectivity for",ds_list$name,"and",ds_list$model))
   text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers,col="red")
   dev.off()
@@ -60,7 +60,7 @@ get_adj_matrix <- function(ds_list){
 
 
 # 2) Get clusters/modules and use topGO to find pathways associated with modules
-get_modules <- function(ds_list){
+get_modules <- function(ds_list,grn_file){
   # TOM is a measure in [0,1] between each pair of genes that is closer to 1 if the gene with fewer connections and most of its neighbors are all connected to the other gene
   TOM.w <- array(0, dim=c(0, ncol(ds_list$adjMatrix), ncol(ds_list$adjMatrix)))
   TOM.w <- TOMsimilarity(ds_list$adjMatrix)
@@ -78,7 +78,7 @@ get_modules <- function(ds_list){
   
   new.colors <- labels2colors(merged.cluster.w$colors)
   newME.w <- merged.cluster.w$newMEs
-  png(file=paste("Plots/KeggoRo/001/dendrogram_",ds_list$name,"_",ds_list$model,".png",sep=""),width=900, height=525)
+  png(file=paste("Plots/",grn_file,"/001/dendrogram_",ds_list$name,"_",ds_list$model,".png",sep=""),width=900, height=525)
   plotDendroAndColors(wTree, cbind(w.colors, new.colors), c("Unmerged", "Merged"), main=paste("Cluster Dendrogram for",ds_list$name,"and",ds_list$model), dendroLabels = FALSE, hang = 0.03, addGuide = TRUE, guideHang = 0.05)
   dev.off()
   ds_list$modules <- new.colors
@@ -148,7 +148,7 @@ get_conf_matrix <- function(exp_ds,pgrins_ds){
 
 
 # 3) On the adjacency matrix: use CoDiNA to compare networks
-get_diff_net <- function(exp_ds,grins_ds, grn_ds){
+get_diff_net <- function(exp_ds,grins_ds, grn_ds, grn_file){
   diff_net <- MakeDiffNet(Data = list(exp_ds$network_df, grins_ds$network_df,grn_ds$network_df),Code = c("experimental", "pGRINS","GRN"))
   # Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
   # beta edges have different signs, and gamma edges belong to only 1 network
@@ -160,7 +160,7 @@ get_diff_net <- function(exp_ds,grins_ds, grn_ds){
   res_df <- tibble(Count,"Group"=names(as.list(Count)))
   write_delim(res_df,paste("diffnet_",exp_ds$name,".csv",sep=""),delim=" ")
   ggplot(res_df,aes(x=Group,y=Count))+geom_bar(stat="identity")+ggtitle(paste("Number of genes associated with each dataset after filtering in",exp_ds$name))
-  ggsave(paste("Plots/KeggoRo/001/codina_",exp_ds$name,".png",sep=""))
+  ggsave(paste("Plots/",grn_file,"/001/codina_",exp_ds$name,".png",sep=""))
   
   return(DiffNodes)
 }
@@ -169,19 +169,21 @@ get_diff_net <- function(exp_ds,grins_ds, grn_ds){
 ######################################################################
 # Main:
 graphics.off()
+grn_file = "KeggoRo_0206"
 names = c("Norman19","Replogle22")
 models = c("experimental","pGRiNS")
-
-#dataset_lists = list()
+if (!exists("dataset_lists")){
+  dataset_lists = list()
+}
 for (name in names){
   print(paste("********************",name,"********************"))
   for (model in models){
     print(paste("********************",model,"********************"))
     dataset_lists[[name]][[model]] <- list(name=name,model=model)
     
-    dataset_lists[[name]][[model]] <- get_adj_matrix(dataset_lists[[name]][[model]])
+    dataset_lists[[name]][[model]] <- get_adj_matrix(dataset_lists[[name]][[model]],grn_file)
     
-    dataset_lists[[name]][[model]] <- get_modules(dataset_lists[[name]][[model]])
+    dataset_lists[[name]][[model]] <- get_modules(dataset_lists[[name]][[model]],grn_file)
   }
   if (!file.exists(paste("../Data/Experimental/",name,"/coexpr_Genes2Go.txt",sep=""))){ # Get Genes2GO list if not already saved
     mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl",verbose=TRUE))
@@ -205,8 +207,8 @@ for (name in names){
 }
 
 
-nonsink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo.topo", delim=" ")
-sink_df = read_delim("../Data/Projects/KeggoRo/KeggoRo_sinks.topo", delim=" ")
+nonsink_df = read_delim(paste("../Data/Projects/",grn_file,"/",grn_file,".topo",sep=""), delim=" ")
+sink_df = read_delim(paste("../Data/Projects/",grn_file,"/",grn_file,"_sinks.topo",sep=""), delim=" ")
 grn <- bind_rows(nonsink_df,sink_df) %>% filter("Source","Target") %>% mutate("wTO"=1)
 for (name in names){
   dataset_lists[[name]][["GRN"]] = list()
@@ -237,9 +239,9 @@ for (name in names){
 
 for (name in names){
   # DiffNet on all 3 networks at once???
-  dataset_lists[[name]][["DiffNodes_pGRiNS"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,dataset_lists[[name]][["pGRiNS"]]$network_df)
+  dataset_lists[[name]][["DiffNodes_pGRiNS"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,dataset_lists[[name]][["pGRiNS"]]$network_df,grn_file)
   
-  dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]],dataset_lists[[name]][["GRN"]])
+  dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]],dataset_lists[[name]][["GRN"]],grn_file)
 }
 
 

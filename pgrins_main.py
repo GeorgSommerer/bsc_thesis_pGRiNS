@@ -20,6 +20,9 @@ nohup python3 -u pgrins_main.py KeggoRo -eps --num_params 1000 --num_init_conds 
 2.6.
 nohup python3 -u pgrins_main.py KeggoRo_0206 -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 >> Logs/KeggoRo_0206.log 2>&1 &
 
+4.6.
+nohup python3 -u pgrins_main.py doro_abcd_only -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 --pert_ratio 0.005 --max_num_clusters 0 > Logs/out_abcd.log 2>&1 &
+
 """
 ########################################################
 parser = argparse.ArgumentParser()
@@ -57,7 +60,7 @@ parser.add_argument("--remove_outliers",action="store_true",help="If True, outli
 # D:
 parser.add_argument("--min_num_pcs", type=int,help="The minimal number of principal components to use for UMAP. Defaults to 10.")
 parser.add_argument("--min_cluster_size_pct", type=float,help="The minimal size a cluster must have relative to all cells in grins_data to be considered for the best cluster. Defaults to 0.01.")
-parser.add_argument("--max_num_clusters", type=int,help="The maximal number of clusters considered as best cluster. Defaults to 10.")
+parser.add_argument("--max_num_clusters", type=int,help="The maximal number of clusters considered as best cluster. Defaults to 10. If 0, all clusters with >min_cluster_size_pct of cells are considered.")
 
 args = parser.parse_args()
 
