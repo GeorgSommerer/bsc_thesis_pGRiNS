@@ -105,12 +105,13 @@ def grins_racipe_to_adata(grn_file, path_to_data : str, adata_list : list = None
     
     # Add perturbation column
     grins_data.obs["perturbation"] = np.array(["_".join(sorted(list(pert_list[int(i)].keys()))) if i != -1 else "ctrl" for i in grins_data.obs["PertNum"].values])
-    grins_data.obs["cell_line"] = "syn"
-    normalize.process_GEARS(grins_data)
 
     grins_data.obs_names = [f"{int(info_df.loc[i,"PertNum"])}_{int(info_df.loc[i,"InitCondNum"])}_{int(info_df.loc[i,"ParamNum"])}_{i}" for i in range(info_df.shape[0])]
     grins_data.var_names = list(sol_df.columns)
     
+    if pert_list != []:
+        grins_data.obs["cell_line"] = "syn"
+        normalize.process_GEARS(grins_data)
 
     return grins_data, adata_list
 

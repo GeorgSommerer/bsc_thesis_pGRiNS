@@ -29,7 +29,7 @@ def train_gears_parallel(proc_data : PertData, current_split : int, i : int, loc
     """
     device = f"cuda:{i}"
     torch.cuda.set_device(i) # For each thread, occupy a GPU
-    proc_data.prepare_split(split="custom",split_dict_path=f"Models/Splits/{filename}/split_{current_split}.pickle")
+    proc_data.prepare_split(split="custom",split_dict_path=f"../../Data/Experimental/{filename}/Splits/split_{i}.pickle")
     proc_data.get_dataloader(batch_size = 32, test_batch_size = 128)
     with lock:
         print(f"Getting GEARS model for split {current_split}...")
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         if modelname == "experimental":
             norm_data = sc.read_h5ad(f"../../Data/Experimental/{filename}/perturb_norm_subset_{grn_file}.h5ad")
         elif modelname == "pGRiNS":
-            norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_pert.h5ad")
+            norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_subset_{filename}.h5ad")
         norm_data.X = norm_data.layers["log1p"].copy()
         """
         In line 242 of gears/pertdata.py, the following line exists:
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         for i in range(splits_iter):
             # Start a number of threads equal to the number of GPUs available
             current_split = splits_left-i-1
-            if not os.path.exists(f"Models/GEARS/{filename}/{modelname}/cv_{current_split}"):
+            if not os.path.exists(f"../../Data/Experimental/{filename}/{modelname}/Models/GEARS/cv_{current_split}"):
                 print(f"Split {current_split}:")
                 p = mp.Process(target=train_gears_parallel,args=(proc_data,current_split,i,lock,filename,modelname))
                 p.start()

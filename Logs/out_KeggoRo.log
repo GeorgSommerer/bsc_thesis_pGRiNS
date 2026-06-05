@@ -1,0 +1,12 @@
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 10000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+['Data/SimulResults_Racipe/KeggoRo/001/']
+Replicate 001/001
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/10 [00:00<?, ?it/s]

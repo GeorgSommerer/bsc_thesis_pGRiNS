@@ -1,3 +1,7 @@
+setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
+#load("./.RData")
+#save("./.RData")
+
 library(tidyverse)
 # 1+2)
 library(WGCNA)
@@ -7,7 +11,6 @@ library(topGO)
 # 4)
 library(CoDiNA)
 library(reshape2)
-setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
 
 # 1) Get adjacency matrix:
 get_adj_matrix <- function(ds_list,grn_file){
@@ -71,17 +74,24 @@ get_modules <- function(ds_list,grn_file){
   w.colors = labels2colors(w.clusters)
   
   #plotDendroAndColors(wTree, w.colors, "Dynamic Tree Cut", dendroLabels = FALSE, main=paste("Cluster Dendrogram for",ds_list$name,"and",ds_list$model),hang = 0.03, addGuide = TRUE, guideHang = 0.05)
-  
-  # Calculate Eigengenes (1st principal component of each module as defined by w.colors) and merge modules with close Eigengenes
-  ME.w<-moduleEigengenes(ds_list$pert_mean_matrix, color=w.colors)
-  merged.cluster.w<-mergeCloseModules(ds_list$pert_mean_matrix, w.colors, MEs = ME.w$eigengenes)
-  
-  new.colors <- labels2colors(merged.cluster.w$colors)
-  newME.w <- merged.cluster.w$newMEs
-  png(file=paste("Plots/",grn_file,"/001/dendrogram_",ds_list$name,"_",ds_list$model,".png",sep=""),width=900, height=525)
-  plotDendroAndColors(wTree, cbind(w.colors, new.colors), c("Unmerged", "Merged"), main=paste("Cluster Dendrogram for",ds_list$name,"and",ds_list$model), dendroLabels = FALSE, hang = 0.03, addGuide = TRUE, guideHang = 0.05)
-  dev.off()
-  ds_list$modules <- new.colors
+  if (exists("ds_list$pert_mean_matrix")){
+    # Calculate Eigengenes (1st principal component of each module as defined by w.colors) and merge modules with close Eigengenes
+    ME.w<-moduleEigengenes(ds_list$pert_mean_matrix, color=w.colors)
+    merged.cluster.w<-mergeCloseModules(ds_list$pert_mean_matrix, w.colors, MEs = ME.w$eigengenes)
+    
+    new.colors <- labels2colors(merged.cluster.w$colors)
+    newME.w <- merged.cluster.w$newMEs
+    png(file=paste("Plots/",grn_file,"/001/dendrogram_",ds_list$name,"_",ds_list$model,".png",sep=""),width=900, height=525)
+    plotDendroAndColors(wTree, cbind(w.colors, new.colors), c("Unmerged", "Merged"), main=paste("Cluster Dendrogram for",ds_list$name,"and",ds_list$model), dendroLabels = FALSE, hang = 0.03, addGuide = TRUE, guideHang = 0.05)
+    dev.off()
+    ds_list$modules <- new.colors
+  }
+  else{
+    png(file=paste("Plots/",grn_file,"/001/dendrogram_",ds_list$name,"_",ds_list$model,".png",sep=""),width=900, height=525)
+    plotDendroAndColors(wTree, w.colors, "Unmerged", main=paste("Cluster Dendrogram for",ds_list$name,"and",ds_list$model), dendroLabels = FALSE, hang = 0.03, addGuide = TRUE, guideHang = 0.05)
+    dev.off()
+    ds_list$modules <- w.colors
+  }
   return(ds_list)
 }
 
@@ -169,8 +179,8 @@ get_diff_net <- function(exp_ds,grins_ds, grn_ds, grn_file){
 ######################################################################
 # Main:
 graphics.off()
-grn_file = "KeggoRo_0206"
-names = c("Norman19","Replogle22")
+grn_file = "doro_abcd_only"
+names = c("Norman19")#,"Replogle22")
 models = c("experimental","pGRiNS")
 if (!exists("dataset_lists")){
   dataset_lists = list()
@@ -191,7 +201,9 @@ for (name in names){
   }
   for (model in models){ 
     dataset_lists[[name]][[model]][["GO_results"]] = list()
-    for (module in unique(dataset_lists[[name]][[model]]$modules)){
+    modules <- unique(dataset_lists[[name]][[model]]$modules)
+    print(paste(length(modules),"modules found"))
+    for (module in modules){
       dataset_lists[[name]][[model]][["GO_results"]][[module]] = list()
       onts <- c("MF","BP","CC")
       for (ont in onts){
@@ -207,15 +219,20 @@ for (name in names){
 }
 
 
-nonsink_df = read_delim(paste("../Data/Projects/",grn_file,"/",grn_file,".topo",sep=""), delim=" ")
-sink_df = read_delim(paste("../Data/Projects/",grn_file,"/",grn_file,"_sinks.topo",sep=""), delim=" ")
-grn <- bind_rows(nonsink_df,sink_df) %>% filter("Source","Target") %>% mutate("wTO"=1)
 for (name in names){
   dataset_lists[[name]][["GRN"]] = list()
-  dataset_lists[[name]][["GRN"]][["network_df"]] = grn #filter
-  dataset_lists[[name]][["GRN"]][["adjMatrix"]] = grn # turn into adj matrix
+  dataset_lists[[name]][["GRN"]]$name = name
+  dataset_lists[[name]][["GRN"]]$model = "GRN"
+  dataset_lists[[name]][["GRN"]][["network_df"]] = read_delim(paste("../Data/Projects/",grn_file,"/","wTO_",name,".csv",sep=""))
+  adjMat_df = read_delim(paste("../Data/Projects/",grn_file,"/","adj_",name,".csv",sep=""))
+  adjMat = as.matrix(adjMat_df)
+  mode(adjMat)="numeric"
+  rownames(adjMat) = colnames(adjMat_df)
+  colnames(adjMat) = colnames(adjMat_df)
+  dataset_lists[[name]][["GRN"]]$uniqGenesymbols = colnames(adjMat_df)
+  dataset_lists[[name]][["GRN"]][["adjMatrix"]] = adjMat
   
-  dataset_lists[[name]][["GRN"]] <- get_modules(dataset_lists[[name]][["GRN"]])
+  dataset_lists[[name]][["GRN"]] <- get_modules(dataset_lists[[name]][["GRN"]],grn_file)
   
   dataset_lists[[name]][["GRN"]][["GO_results"]] = list()
   for (module in unique(dataset_lists[[name]][["GRN"]]$modules)){
@@ -243,7 +260,3 @@ for (name in names){
   
   dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]],dataset_lists[[name]][["GRN"]],grn_file)
 }
-
-
-
-load("./.RData")

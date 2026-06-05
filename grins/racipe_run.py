@@ -740,7 +740,6 @@ def run_all_replicates(
             if os.path.basename(folder.rstrip("/")).isdigit()
         ],
     )
-    print(replicate_folders)
     # Loop through the replicate folders and run the simulation for each replicate
     for replicate_dir in replicate_folders:
         # Getting the base name of the replicate directory
