@@ -59,7 +59,7 @@ def set_mpl_attributes():
 
 
 
-def plot_pca_results(grn_file,grins_data_clustered):
+def plot_pca_results(grn_file,grins_data_clustered,replicate):
     prop_cycle = set_mpl_attributes()
 
     fig,axs=plt.subplots(1,2,figsize=(15,7))
@@ -72,14 +72,14 @@ def plot_pca_results(grn_file,grins_data_clustered):
     #axs[1].set_yscale("log")
     axs[1].set_title("Variance Ratio of the PCA")
     sc.pl.pca(grins_data_clustered,color="n_genes_by_counts",layer="log1p",ax=axs[0],title="PCA colored by number of expressed genes per cell")
-    os.makedirs(f"Prep_Data/Plots/{grn_file}",exist_ok=True)
-    plt.savefig(f"Prep_Data/Plots/{grn_file}/pca.png")
+    os.makedirs(f"Prep_Data/Plots/{grn_file}/{replicate:03}",exist_ok=True)
+    plt.savefig(f"Prep_Data/Plots/{grn_file}/{replicate:03}/pca.png")
 
     plt.show()
 
 
 
-def plot_umap_results(grn_file,grins_data_clustered):
+def plot_umap_results(grn_file,grins_data_clustered,replicate):
     prop_cycle = set_mpl_attributes()
 
     cluster_labels = grins_data_clustered.obs["leiden"]
@@ -177,6 +177,6 @@ def plot_umap_results(grn_file,grins_data_clustered):
     )
     sc.pl.umap(grins_data_clustered,s=10,color="n_genes_by_counts",ax=ax3,title="UMAP colored by number of expressed genes per cell")
     plt.tight_layout()
-    os.makedirs(f"Prep_Data/Plots/{grn_file}",exist_ok=True)
-    plt.savefig(f"Prep_Data/Plots/{grn_file}/umap.png")
+    os.makedirs(f"Prep_Data/Plots/{grn_file}/{replicate:03}",exist_ok=True)
+    plt.savefig(f"Prep_Data/Plots/{grn_file}/{replicate:03}/umap.png")
     plt.show()

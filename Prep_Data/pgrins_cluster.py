@@ -72,7 +72,7 @@ def get_adata_ctrl_mean(adata_list : ad.AnnData) -> np.array:
 
 
 
-def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10) -> ad.AnnData:
+def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10,eval_metric : str = "MSE") -> ad.AnnData:
     """
     Clusters the data by performing PCA -> UMAP -> Leiden, then getting large clusters with high silhouette scores and (if adata is provided) finding the one closest to adata.
     For the control cells, this is done by calculating the MSE between the mean expression of each clusters and the experimental control mean (if provided, otherwise biggest cluster)
@@ -129,17 +129,15 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     best_clusters = clusters[np.argsort([np.mean(sample_silhouette_values[cluster_labels==c]) for c in best_clusters])[::-1][:max_num_clusters]] # max_num_clusters clusters with highest silhouette score
     
     if adata_mean is not None:
-        metric = "MSE" # Change this if wanted
-        if metric == "MSE":
+        if eval_metric.lower() == "mse":
             print(f"Calculating MSE for {len(best_clusters)} clusters")
             # Get the MSEs between the adata control mean and each cluster mean:
             metric_results = [
                 mean_squared_error(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze())
                 for cluster in best_clusters
             ]
-            print(best_clusters,[grins_data[cluster_labels==cluster].shape[0] for cluster in best_clusters], metric_results)
             best_cluster_overall = best_clusters[np.argmin(metric_results)]
-        elif metric == "Spearman":
+        elif eval_metric.lower() == "spearman":
             print(f"Calculating Spearman correlation for {len(best_clusters)} clusters")
             # Get the values between the adata control mean and each cluster mean:
             metric_results = [
@@ -147,6 +145,10 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
                 for cluster in best_clusters
             ]
             best_cluster_overall = best_clusters[np.argmax(metric_results)]
+        else:
+            raise ValueError("eval_metric must be MSE or Spearman.")
+        for i in range(len(best_clusters)):
+            print(f"Cluster {best_clusters[i]} ({grins_data[cluster_labels==best_clusters[i]].shape[0]} cells): {eval_metric} = {metric_results[i]}")
     else: # ctrl case without experimental data: take the cluster with the highest silhouette score
         best_cluster_overall = best_clusters[0]
 
@@ -159,7 +161,7 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     grins_data.uns["clustering_results"] = {}
     grins_data.uns["clustering_results"]["best_clusters"]=best_clusters
     if adata_mean is not None:
-        grins_data.uns["clustering_results"]["metric"]=metric
+        grins_data.uns["clustering_results"]["metric"]=eval_metric
         grins_data.uns["clustering_results"]["scores"]=metric_results
 
     
@@ -167,9 +169,9 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
 
 
 
-def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10,num_replicates:int=1):
+def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10,num_replicates:int=1, eval_metric : str = "MSE"):
     for replicate in range(1,num_replicates+1):
-        if not os.path.exists(f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"):
+        if not os.path.exists(f"Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle"):
 
             grins_data = sc.read_h5ad(f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl.h5ad")
 
@@ -184,17 +186,19 @@ def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : f
                 adata_mean = None      
 
             # Collect the chosen cells, then subset the whole adata object by them
-            best_cells, grins_data_clustered = calc_clusters(grins_data,adata_mean=adata_mean,min_num_pcs=min_num_pcs,min_cluster_size_pct=min_cluster_size_pct, max_num_clusters=max_num_clusters)     
+            best_cells, grins_data_clustered = calc_clusters(grins_data,adata_mean=adata_mean,min_num_pcs=min_num_pcs,min_cluster_size_pct=min_cluster_size_pct, max_num_clusters=max_num_clusters,eval_metric=eval_metric)     
             grins_data = grins_data[best_cells]
             best_cell_index = list(grins_data.obs.index)
 
             print("Saving final file")
-            plotting_funs.plot_pca_results(grn_file,grins_data_clustered)
-            plotting_funs.plot_umap_results(grn_file,grins_data_clustered)
+            plotting_funs.plot_pca_results(grn_file,grins_data_clustered,replicate)
+            plotting_funs.plot_umap_results(grn_file,grins_data_clustered,replicate)
+            """
             # File containing all cells and information about the clustering process (for plotting):
             grins_data_clustered.write_h5ad(
                 f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl_clustered.h5ad"
             ) 
+            """
             with open(f'Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle', 'wb') as f:
                 pickle.dump(best_cell_index, f, pickle.HIGHEST_PROTOCOL)
         else:
@@ -211,6 +215,7 @@ if __name__ == "__main__":
     parser.add_argument("--min_num_pcs", type=int,help="The minimal number of principal components to use for UMAP. Defaults to 10.")
     parser.add_argument("--min_cluster_size_pct", type=float,help="The minimal size a cluster must have relative to all cells in grins_data to be considered for the best cluster. Defaults to 0.01.")
     parser.add_argument("--max_num_clusters", type=int,help="The maximal number of clusters considered as best cluster. Defaults to 10.")
+    parser.add_argument("--eval_metric",help="If experimental data is used, whether or not the clusters should be evaluated using MSE or Spearman correlation. Defaults to MSE.")
     args = parser.parse_args()
 
     grn_file = args.grn
@@ -229,5 +234,7 @@ if __name__ == "__main__":
         kwargs["max_num_clusters"] = args.max_num_clusters
     if args.num_replicates:
         kwargs["num_replicates"]=args.num_replicates
+    if args.eval_metric:
+        kwargs["eval_metric"]=args.eval_metric
 
     main(grn_file, experimental, **kwargs)

@@ -494,8 +494,8 @@ def normalize_adata_main(pseq_file : str):
         elif "Replogle" in pseq_file:
             data_filtered = filter_Replogle_data(raw_data,verbose=True)
         else:
-            raise ValueError(f"No matching dataset found for filename: {pseq_file}")
-
+            raise ValueError(f"No matching dataset found for filename: {pseq_file}. Create function filter_dataset_data() and add it to another clause in this if-else statement.")
+        
         qc_data = data_qc(data_filtered, top_genes = 20, outlier_mad_threshold = 5,  mt_mad_threshold = 3, mt_cutoff_percent= 8, verbose=True)
         norm_data = data_normalization(qc_data, n_top_genes = 0, verbose = True)
         norm_data = norm_data[:,norm_data.var_names.sort_values()]

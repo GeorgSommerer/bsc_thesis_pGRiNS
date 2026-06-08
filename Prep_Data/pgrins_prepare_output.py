@@ -85,8 +85,8 @@ def grins_racipe_to_adata(grn_file, path_to_data : str, adata_list : list = None
     print(f"Out of {sol_df.shape[1]} genes, there are {len(minus_genes)} genes with more than {100*outlier_cutoff_min_pct}% of entries being negative, and {len(na_genes)} genes with more than {100*outlier_cutoff_min_pct}% of entries being NaN.")
     print(f"There are also {len(outlier_genes)} genes that have a mean expression of >{outlier_cutoff_max}.")
      
-    pgenes = set().union(*[set(list(p.keys())) for p in pert_list])
     if remove_outliers:
+        pgenes = set().union(*[set(list(p.keys())) for p in pert_list])
         remove_genes = (set(minus_genes) | set(na_genes) | set(outlier_genes)) - pgenes # Keep perturbed genes, as well as all genes that are not outliers
         print(len(remove_genes),"genes are dropped.")
         sol_df.drop(list(remove_genes),axis=1,inplace=True)
