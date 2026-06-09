@@ -276,4 +276,40 @@ Replicate 001/001
 Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
 Number of combinations to simulate: 75000
 Running steady state simulations for replicate: 001
-  0%|          | 0/8 [00:00<?, ?it/s]
+  0%|          | 0/8 [00:00<?, ?it/s]E0608 20:48:23.936272  272123 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0608 22:06:20.637389  272023 slow_operation_alarm.cc:140] The operation took 1h19m56.70134061s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+ 12%|█▎        | 1/8 [6:10:34<43:13:59, 22234.27s/it] 25%|██▌       | 2/8 [6:36:28<16:46:55, 10069.26s/it] 38%|███▊      | 3/8 [7:02:21<8:35:04, 6180.84s/it]   50%|█████     | 4/8 [7:28:15<4:50:17, 4354.26s/it] 62%|██████▎   | 5/8 [7:54:09<2:47:12, 3344.22s/it] 75%|███████▌  | 6/8 [8:20:02<1:31:10, 2735.22s/it] 88%|████████▊ | 7/8 [8:45:55<39:08, 2348.72s/it]  nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+Done!
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Done!
+********** C1: Create unperturbed adata object: **********
+Done!
+********** D1: Get best control cells: **********
+Done!
+********** B2: Run perturbed GRiNS: **********
+RACIPE:
+Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Replicate 001/001
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo
+Number of combinations to simulate: 75000
+Running steady state simulations for replicate: 001
+  0%|          | 0/15 [00:00<?, ?it/s]E0609 13:09:59.696919  280586 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0609 14:25:41.804014  280485 slow_operation_alarm.cc:140] The operation took 1h17m42.107630608s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+  7%|▋         | 1/15 [6:00:06<84:01:27, 21606.28s/it] 13%|█▎        | 2/15 [6:20:10<34:41:06, 9605.13s/it]  20%|██        | 3/15 [6:40:14<19:13:50, 5769.17s/it] 27%|██▋       | 4/15 [7:00:19<12:07:16, 3966.91s/it] 33%|███▎      | 5/15 [7:20:24<8:15:09, 2970.94s/it]  40%|████      | 6/15 [7:40:28<5:55:31, 2370.20s/it] 47%|████▋     | 7/15 [8:00:32<4:25:12, 1989.10s/it] 53%|█████▎    | 8/15 [8:20:37<3:22:56, 1739.45s/it] 60%|██████    | 9/15 [8:40:41<2:37:13, 1572.18s/it] 67%|██████▋   | 10/15 [9:00:46<2:01:33, 1458.65s/it] 73%|███████▎  | 11/15 [9:20:51<1:32:03, 1380.98s/it] 80%|████████  | 12/15 [9:40:54<1:06:21, 1327.05s/it] 87%|████████▋ | 13/15 [10:00:58<42:59, 1289.79s/it] 
