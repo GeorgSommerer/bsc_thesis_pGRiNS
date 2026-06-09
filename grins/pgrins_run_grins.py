@@ -28,8 +28,9 @@ except:
     sys.path.append("..")
     sys.path.append("/".join(str(Path.cwd()).split("/")[:-1]))
     from Prep_Data import pgrins_prepare_input
+
     
-def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,batch_size):
+def racipe_simulate_sinks(grn_file : str, save_dir : str, sol_df_full : pd.DataFrame, replicate : int, num_init_conds : int, suffix : str, batch_size : int):
     """
     After the steady states of the non-sink nodes of the GRN have been simulated, all that is left is to determine the steady state concentrations of the sink nodes.
     This can be done algebraically: dC/dt=0=G*Prod(H)-kC <-> C=G*Prod(H)/k
@@ -40,6 +41,8 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
     -----------
     grn_file : str
         The project name.
+    save_dir : str
+        The path where the results will be saved.
     sol_df_full : pd.DataFrame
         The dataframe containing the nonsink solutions.
     replicate : int
@@ -48,26 +51,33 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
         The number of initial condition files to generate. Necessary to know how many times each parameter must be repeated.
     suffix : str
         ctrl or pert.
+    batch_size : int
+        The batch size used for the simulations. Necessary in order to to make sure that everything fits into memory.
 
     Returns:
     --------
     None
     """
     
-    path_to_data = f"Data/SimulResults_Racipe/{grn_file}/{replicate:03}/{grn_file}"
+    path_to_data = f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}"
     
+    # Get sink parameters and genes:
     sink_params_full = pd.read_parquet(f"{path_to_data}_params_{replicate:03}_sinks.parquet")
     sink_genes = [col.split("_")[1] for col in list(sink_params_full.columns) if "Prod_" in col]
+
     sink_matrix = np.zeros((sol_df_full.shape[0],len(sink_genes))) # empty matrix
     sink_dict = {}
     sink_gene_to_id = {sink_genes[i]:i for i in range(len(sink_genes))}
-    #sink_gk_dict = {}
+    
     for batch in tqdm(range(0,sol_df_full.shape[0],batch_size)):
         # Get cells for current batch, and arrange the sink params so that the param numbers match up
         sol_df = sol_df_full.iloc[batch:batch+batch_size]
         sink_params = sol_df.merge(sink_params_full,on="ParamNum")[sink_params_full.columns]
+
+        # Get the individual parts (ParamType, (SourceGene), TargetGene) of each parameter
         split_cols = [col.split("_") for col in list(sink_params.columns)]
         split_cols.remove(["ParamNum"])
+
         # Remove all gene names that have for some reason forbidden symbols in them, meaning that they contain more "_" than allowed
         split_cols_filtered = []
         for i in range(len(split_cols)):
@@ -76,18 +86,19 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
             elif split_cols[i][0] in ["Hill","Thr","ActFld","InhFld"] and len(split_cols[i]) == 3:
                 split_cols_filtered.append(split_cols[i])
         split_cols = split_cols_filtered
+
         # Sort the parameter columns by the gene whose equation they belong to (last part of the colname) and group the colnames by them:
         split_cols.sort(key=itemgetter(-1)) 
         node_groups = groupby(split_cols,itemgetter(-1))
         for sink_gene, node_colnames in node_groups:
-            # Get the G and k parameters, whose colnames have the shape varname_downstream_gene
+            # Get the G and k parameters, whose colnames have the shape varname_downstreamgene
             node_colnames = list(node_colnames)
             G = sink_params.loc[:,f"Prod_{sink_gene}"].to_numpy()
             node_colnames.remove(["Prod",sink_gene])
             k = sink_params.loc[:,f"Deg_{sink_gene}"].to_numpy()
             node_colnames.remove(["Deg",sink_gene])
 
-            # All remaining colnames relate to the shifted Hill terms and have 3 parts: varname_upstream_gene_downstream_gene
+            # All remaining colnames relate to the shifted Hill terms and have 3 parts: varname_upstreamgene_downstreamgene
             # Now, sort and group by the upstream_gene to get all 3 columns relating to the same Hill term
             node_colnames.sort(key=itemgetter(1))
             edge_groups = groupby(node_colnames,itemgetter(1))
@@ -96,15 +107,6 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
             for upstream_gene, edge_colnames in edge_groups:
                 edge_colnames = list(edge_colnames)
                 Node = sol_df.loc[:,upstream_gene].to_numpy()
-                """
-                try:
-                    
-                except KeyError as e:
-                    # Nodes that are sources with edges only going into sinks will not appear in the non-sink df, but appear as upstream nodes in the sink df despite not having been simulated
-                    # However, since they are sources, their equation looks like dC/dt=G-kC, meaning that it decays exponentially and is 0 when the steady state is reached
-                    
-                    Node = np.repeat(0.0,sol_df.shape[0])
-                """
                 # Get the Hill and half-max threshold parameters:
                 Hill = sink_params.loc[:,f"Hill_{upstream_gene}_{sink_gene}"].to_numpy()
                 edge_colnames.remove(["Hill",upstream_gene,sink_gene])
@@ -126,49 +128,46 @@ def racipe_simulate_sinks(grn_file,sol_df_full,replicate,num_init_conds,suffix,b
                     for i in range(len(Node)):
                         thisH.append(reg_funcs.nsH(Node[i],Fold[i],Hill[i],Thr[i]))
 
+                # Multiply all Hill terms together
                 H*=np.array(thisH)
-            # Calculate algebraic solution to dC/dt=0=GH-kC and insert it in the right column
+            # Calculate algebraic solution to dC/dt=0=GH-kC and insert it in the right column and the rows for the current batch
             sink_matrix[batch:batch+sol_df.shape[0],sink_gene_to_id[sink_gene]] = G*H/k
-            #sink_dict[sink_gene] = G*H/k
-            #sink_gk_dict[f"gk_{sink_gene}"] = H # gk normalized means diving C=GH/k by G/k, so only H remains
     print("Done!")
 
     sink_df = pd.DataFrame(sink_matrix,columns=sink_genes,dtype=np.float32)
     sink_df.to_parquet(f"{path_to_data}_steadystate_solutions_{replicate:03}_sinks_{suffix}.parquet",index=False)
-    """
-    #sink_gk_df = pd.DataFrame(sink_gk_dict,dtype=np.float32)
-
-    # Save data: 
-    #nonsink_df = sol_df.loc[:,list([col.replace("gk_", "") for col in sol_df.columns if "gk_" in col])] # Contains expression values
-    info_df = sol_df.loc[:,["PertNum","InitCondNum","ParamNum"]] # Contains combination of ICs and params and perts
-    nonsink_df = sol_df.loc[:,list([col.replace("gk_", "") for col in sol_df.columns if "gk_" in col])]
-    print(nonsink_df.shape)
-    
-    info_df.to_parquet(f"{path_to_data}_steadystate_solutions_{replicate:03}_info_{suffix}.parquet",index=False)
-    del sol_df,info_df
-
-    expr_df = pd.concat([nonsink_df,sink_df],axis=1)
-    del nonsink_df, sink_df
-    expr_df.reindex(sorted(expr_df.columns),axis=1).
-    """
 
 
-def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num_params = 1000, num_init_conds = 100, sampling_method = "Uniform",max_steps = 2048, tmax=200,batch_size = 1000, pert_ratio : float = 0.01,pert_factor : int = 50):
+
+def run_racipe(grn_file : str, sim_it : int, pert_list : list[dict[str,int]], split_sinks : bool = False, num_replicates : int = 1, num_params : int = 1000, num_init_conds : int = 100, sampling_method : str = "Uniform",max_steps : int = 2048, tmax : int = 200,batch_size : int = 1000, pert_ratio : float = 0.01, pert_factor : int = 50):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
     Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
     batch_size should be adjusted depending on the available memory.
 
+    Changes to normal GRiNS:
+        - If split_sinks is True, then the parameter_range.csv file is generated for all parameters at once, but parameters of equations of sink_parameters are split off.
+            Then, the ode.py file is regenerated using only equations of nonsink genes, and the initial conditions of all nonsinks genes are sampled.
+        - For the perturbed run, a new file pert_genes.parquet with the shape no_perturbations x no_pert_genes is generated, where each entry is 1 if the gene is unperturbed, and pert_factor (CRISPRa) or 1/pert_factor (CRISPRi) or 0 (CRISPR KO) otherwise
+            - In _gen_combinations, initial condition/parameter combinations from the unperturbed run that were stored in best_cells_ctrl.pickle are sampled independently for each perturbation and the parameters/initial conditions from the corresponding rows in the .parquet files reused.
+            - Therefore, 3 dataframe are loaded into the JAX ODE solver: parameters (pert_factor*len(pert_list)*num_params x no_kinetic_parameters), initial conditions (pert_factor*len(pert_list)*num_init_conds x no_nonsink_genes), and pert factors (len(pert_list) x no_pert_genes)
+
     Parameters:
     -----------
     grn_file : str
         The project name.
+    sim_it : int
+        The current iteration of the IC narrowing process.
+    pert_list : list[dict[str,int]]
+        A list as generated by extract_pert_info. Empty for the unperturbed run.
     split_sinks : bool, optional
         Whether or not sinks were removed during pgrins_prepare_input; if that is the case, it is necessary to generate parameters for them here.
     max_steps : int, optional
         Maximum number of steps for the simulation. Defaults to 2048.
     batch_size : int, optional
-        Batch size for the simulation. Defaults to 4000.
+        Batch size for the simulation. Defaults to 1000. Should evenly divide the number of cells generated.
+    tmax : int, optional
+        The maximal number of time steps. Defaults to 200.
     num_replicates : int, optional
         The number of replicates to run the simulation for. Defaults to 1.
     num_params : int, optional
@@ -178,17 +177,18 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
     sampling_method : Union[str, dict], optional
         The method to use for sampling the parameter space. Defaults to 'Uniform'. For a finer control over the parameter generation look at the documentation of the gen_param_range_df function and gen_param_df function.
     pert_ratio : float, optional
-        How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 10%.
+        How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 0.01 (1%).
     pert_factor : int, optional
         By what factor the Prod_pert_gene parameters should be scaled up or down. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).
 
     Returns:
     --------
     None
-    Results are saved in save_dir/grn_file/replicate.
+    Results are saved in Data/SimulResults_Racipe_{sim_it}/{grn_file}/{replicate_number}.
     """
+
     grn_path = f"Data/Projects/{grn_file}/{grn_file}"
-    save_dir = f"Data/SimulResults_Racipe"
+    save_dir = f"Data/SimulResults_Racipe_{sim_it}"
 
     if pert_list == []:
         suffix = "ctrl"
@@ -199,14 +199,14 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
         print(f"Running {suffix} with {int(num_params*num_init_conds*pert_ratio)} cells for {len(pert_list)} perturbation sets each (scaling factor of {pert_factor}), a batch size of {batch_size} and {max_steps} steps in the time inveral [0,{tmax}] using {sampling_method} sampling.")
 
 
-
-    # Generate parameters and initial conditions for the GRN:
+    # Check if files have already been generated:
     if pert_list == []:
         gen_paths = [f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_params_{rep:03}.parquet" for rep in range(1,num_replicates+1)]+[f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_init_conds_{rep:03}.parquet" for rep in range(1,num_replicates+1)]
         if split_sinks:
             gen_paths += [f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_params_{rep:03}_sinks.parquet" for rep in range(1,num_replicates+1)]
     else:
         gen_paths = [f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_pert_genes_{rep:03}.parquet" for rep in range(1,num_replicates+1)]
+    # Generate parameters and initial conditions for the GRN:
     if False in [os.path.exists(path) for path in gen_paths]:
         print("Generating parameters...")
         racipe.gen_topo_param_files(
@@ -219,37 +219,8 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             pert_list = pert_list,
             pert_factor = pert_factor,
             split_sinks=split_sinks
-            
         )
-    """
-    # If sink nodes were removed, it is necessary to generate parameters for them here (analogous to code from gen_topo_param_files):
-    if pert_list == [] and split_sinks and not os.path.exists(f"{save_dir}/{grn_file}/{num_replicates:03}/{grn_file}_params_{num_replicates:03}_sinks.parquet"):
-        print("Generating parameters for sinks...")
-        sink_df = pd.read_csv(f"{grn_path}_sinks.topo",sep=" ")
-        main_rng = gen_params._get_rng(None)
-        for replicate in range(1, num_replicates + 1):
-            rep_seed = main_rng.integers(0, 2**32)
-            rep_rng = np.random.default_rng(rep_seed)
 
-            sink_param_range_df = gen_params.gen_param_range_df(
-                sink_df, num_params, sampling_method=sampling_method, rng=rep_rng
-            )
-            # Remove all rows corresponding to parameters from upstream nodes that don't have to be simulated twice:
-            sink_pr_genes = sink_param_range_df["Parameter"].apply(lambda x: x.split("_")[-1])
-            sink_param_range_df = sink_param_range_df[~sink_pr_genes.isin(list(sink_df["Source"]))]
-            
-            sink_param_range_df.to_csv(
-                f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_param_range_{replicate:03}_sinks.csv",
-                index=False,
-                sep="\t",
-            )
-            sink_param_df = gen_params.gen_param_df(sink_param_range_df, num_params, rng=rep_rng)
-            sink_param_df = sink_param_df.assign(ParamNum=sink_param_df.index + 1)
-            sink_param_df.to_parquet(
-                f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_params_{replicate:03}_sinks.parquet", index=False
-            )
-            del sink_param_range_df, sink_param_df
-    """
     # Run Racipe for all replicates:
     if False in [os.path.exists(f"{save_dir}/{grn_file}/{rep:03}/{grn_file}_steadystate_solutions_{rep:03}_{suffix}.parquet") for rep in range(1,num_replicates+1)]:
         #if pert_list is None:
@@ -270,8 +241,9 @@ def run_racipe(grn_file, pert_list, split_sinks = False, num_replicates = 1, num
             sol_df = pd.read_parquet(f"{save_dir}/{grn_file}/{replicate:03}/{grn_file}_steadystate_solutions_{replicate:03}_{suffix}.parquet")
             sol_df.columns = [col.replace("_","-") for col in sol_df.columns]  # GRiNS internally replaces "-" with "_" so that it can name its parameters after the genes
             print(f"Simulating sinks for replicate {replicate:03}...")
-            racipe_simulate_sinks(grn_file, sol_df, replicate, num_init_conds,suffix,batch_size)
+            racipe_simulate_sinks(grn_file, save_dir, sol_df, replicate, num_init_conds,suffix,batch_size)
     print("Done!")
+
 
 
 def ising_cleanup(grn_file : str,replicate : int,mode : str,no_fragments : int, fragment_size : int):
@@ -396,7 +368,7 @@ def run_ising(grn_file : str, mode : str = "async", num_replicates : int = 1, nu
 
 
 
-def main(grn_file : str, is_racipe : bool = True,pert_file : str = None, **kwargs):
+def main(grn_file : str, sim_it : int, is_racipe : bool = True,pert_file : str = None, **kwargs):
     """
     The main file. Assures that computations are performed on the GPU and whether Racipe or Ising is used.
     """
@@ -408,79 +380,7 @@ def main(grn_file : str, is_racipe : bool = True,pert_file : str = None, **kwarg
         
     if is_racipe:
         print("RACIPE:") 
-        run_racipe(grn_file, pert_list, **kwargs)
+        run_racipe(grn_file, sim_it, pert_list, **kwargs)
     else:
         print("Boolean Ising:")
         run_ising(grn_file,**kwargs)
-
-
-
-if __name__ == "__main__":
-    """
-    Example:
-        python3 pgrins_run_grins.py project Racipe -ps
-        python3 pgrins_run_grins.py project Ising --mode sync --batch_size 16
-    """
-
-    kwargs = {}
-    parser = argparse.ArgumentParser()
-    parser.add_argument("grn", help="Name of the GRN used in the project")
-    parser.add_argument("-m","--method", help="Racipe or Ising. Defaults to Racipe.")
-    parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not pertubations should be analyzed. If true, Data/Perts/grn_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
-    parser.add_argument("--pert_file", help="A list of perturbations to process other than grn_perts.pert.")
-    parser.add_argument("-s","--split_sinks", help="Whether or not sinks were removed from the GRN",action="store_true")
-    parser.add_argument("--mode", help="If Ising, sync or async (Default: async)")
-    parser.add_argument("--num_replicates", type=int,help="Number of replicates to be simulated (Default: 1)")
-    parser.add_argument("--num_init_conds",type=int,help="Number of initial conditions (Default: 100 for Racipe, 2**14 for Ising)")
-    parser.add_argument("--num_params",type=int,help="Number of params (Default: 1000 for Racipe)")
-    parser.add_argument("--batch_size", type=int,help="Number of params/conditions to be calculated at the same time (Default: 10 for Racipe, 3 -> 2**3 for Ising)")
-    parser.add_argument("--sampling_method",help="Way of sampling parameters in Racipe (Default: Uniform)")
-    parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished (Default: 2048)")
-    parser.add_argument("--tmax", type=int, help="Maximum time for the simulation (Default: 200)")
-    parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unclustered unperturbed run. Defaults to 1%. Must be smaller than the percentage of cells kept during clustering.")
-    parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_pert_gene parameters should be scaled. Defaults to 50 (*50 million for CRISPRa, /50 for CRISPRi).")
-    
-    args = parser.parse_args()
-
-    grn_file = args.grn
-    if args.method and args.method.lower() == "ising":
-        is_racipe = False
-    else:
-        is_racipe = True
-
-    if args.use_perts:
-        if args.pert_file:
-            pert_file = args.pert_file
-        else:
-            pert_file = f"{grn_file}_perts"
-    else:
-        pert_file = None
-
-    if args.split_sinks:
-        kwargs["split_sinks"]=args.split_sinks
-    if args.mode:
-        kwargs["mode"]=args.mode
-    if args.num_replicates:
-        kwargs["num_replicates"]=args.num_replicates
-    if args.num_init_conds:
-        kwargs["num_init_conds"]=args.num_init_conds
-    if args.num_params:
-        kwargs["num_params"]=args.num_params
-    if args.batch_size:
-        kwargs["batch_size"]=args.batch_size
-    if args.sampling_method:
-        kwargs["sampling_method"]=args.sampling_method
-    if args.max_steps:
-        kwargs["max_steps"]=args.max_steps
-    if args.tmax:
-        kwargs["tmax"]=args.tmax
-    if args.pert_ratio:
-        kwargs["pert_ratio"]=args.pert_ratio
-    if args.pert_factor:
-        kwargs["pert_factor"]=args.pert_factor
-
-    import jax
-
-    jax.config.update("jax_traceback_filtering", "off")
-
-    main(grn_file,is_racipe,pert_file,**kwargs)

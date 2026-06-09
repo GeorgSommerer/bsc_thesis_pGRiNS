@@ -188,8 +188,12 @@ def gen_topo_param_files(
                 )   
 
             # Generate the initial conditions dataframe
+            if os.path.exists(f"{sim_dir}/{rep:03}/{topo_name}_init_cond_range_{rep:03}.csv"):
+                irange_df = pd.read_csv(f"{sim_dir}/{rep:03}/{topo_name}_init_cond_range_{rep:03}.csv",sep="\t")
+            else:
+                irange_df = None
             initcond_df = gen_init_cond(
-                topo_df=topo_nonsink_df, num_init_conds=num_init_conds, rng=rep_rng
+                topo_df=topo_nonsink_df, num_init_conds=num_init_conds, rng=rep_rng, irange_df = irange_df
             )
             initcond_df = initcond_df.assign(InitCondNum=initcond_df.index + 1)
             initcond_df.to_parquet(

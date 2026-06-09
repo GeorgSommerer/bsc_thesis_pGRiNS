@@ -72,8 +72,8 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
             f"Data/Experimental/{pseq}/perturb_norm_subset_{project_name}.h5ad"
         )     
 
-    grn_df = pd.concat([grn_df_adata,grn_df_plus_sources]).drop_duplicates()
-
+    #grn_df = pd.concat([grn_df_adata,grn_df_plus_sources]).drop_duplicates()
+    grn_df = grn_df_adata.drop_duplicates() # Without keeping sources
     return grn_df, adata_dict
 
 

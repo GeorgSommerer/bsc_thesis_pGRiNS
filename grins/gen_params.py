@@ -851,19 +851,15 @@ def gen_init_cond(
     init_conds = _gen_sobol_seq(len(unique_nodes), num_init_conds, rng=rng)
     initcond_df = pd.DataFrame(init_conds, columns=unique_nodes)
 
-    if True:
+    if irange_df == None:
         # Scale initial conditions between 1 and 100
         for col in initcond_df.columns:
             initcond_df[col] = 1 + initcond_df[col]*(100-1)
     else:
         # Scale each IC individually
+        for i, row in irange_df.iterrows():
+            initcond_df[row["Gene"]] = row["Minimum"] + initcond_df[col]*(row["Maximum"]-row["Minimum"])
 
-        for col in initcond_df.columns:
-            row = irange_df[irange_df["InitCond"] == col].iloc[0]
-            initcond_df[col] = row["Minimum"] + initcond_df[col]*(row["Maximum"]-row["Minimum"])
-
-    # A new columns for the intial condition numbers
-    # initcond_df["InitCondNum"] = initcond_df.index + 1
     return initcond_df
 
 

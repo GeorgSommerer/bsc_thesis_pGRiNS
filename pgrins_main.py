@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from Prep_Data import pgrins_prepare_input, pgrins_prepare_output, pgrins_cluster
+from Prep_Data import pgrins_prepare_input, pgrins_prepare_output, pgrins_cluster_red
 from grins import pgrins_run_grins
 
 ########################################################
@@ -135,19 +135,23 @@ print("*"*10,"A: Prepare data:","*"*10)
 pgrins_prepare_input.main(project_name=project_name, experimental=experimental, **kwargs_a)
 
 ########################################################
-# B1: Run unperturbed GRiNS
-print("*"*10,"B1: Run unperturbed GRiNS:","*"*10)
-pgrins_run_grins.main(grn_file=project_name,is_racipe=is_racipe,pert_file=None,**kwargs_b)
+sim_it = 0
+while sim_it <= 1:
+    # B1: Run unperturbed GRiNS
+    print("*"*10,"B1: Run unperturbed GRiNS:","*"*10)
+    pgrins_run_grins.main(grn_file=project_name,sim_it = sim_it, is_racipe=is_racipe,pert_file=None,**kwargs_b)
 
-########################################################
-# C1: Create unperturbed adata object
-print("*"*10,"C1: Create unperturbed adata object:","*"*10)
-pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
+    ########################################################
+    # C1: Create unperturbed adata object
+    print("*"*10,"C1: Create unperturbed adata object:","*"*10)
+    pgrins_prepare_output.main(grn_file=project_name,sim_it = sim_it, experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
 
-########################################################
-# D1: Get best control cells
-print("*"*10,"D1: Get best control cells:","*"*10)
-pgrins_cluster.main(grn_file=project_name, experimental=experimental, **kwargs_d)
+    ########################################################
+    # D1: Get best control cells
+    print("*"*10,"D1: Get best control cells:","*"*10)
+    pgrins_cluster_red.main(grn_file=project_name, sim_it = sim_it, experimental=experimental, **kwargs_d)
+
+    sim_it += 1
 
 ########################################################
 if pert_file is not None:
