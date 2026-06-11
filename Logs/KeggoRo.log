@@ -1,0 +1,104 @@
+nohup: Eingabe wird ignoriert
+********** A: Prepare data: **********
+.topo files ['dorothea_abcd', 'kegg'] are turned into KeggoRo_noG
+Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
+Normalizing file:  Norman19
+Total measured cells: 111445
+Total measured genes: 33694
+Percent of control cells: 10.637534209699853 %
+Unique perturbations: 236
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 103
+Hemoglobin genes: 12
+Done calculating qc metrics
+Total number of cells: 111445
+outlier
+False    110762
+True        683
+Name: count, dtype: int64
+mt_outlier
+False    97622
+True     13823
+Name: count, dtype: int64
+Number of dropout genes: 25882
+Total number of cells after filtering of low quality cells: 97120
+Median counts: 14263.0
+Done!
+Saving file
+Normalizing file:  Replogle22
+Total measured cells: 310385
+Total measured genes: 8563
+Unique genes in the df (w/o ctrl): batch                          48
+gene                         2057
+gene_id                      2057
+transcript                     57
+gene_transcript              2176
+guide_id                     2176
+percent_mito               288746
+UMI_count                   28790
+z_gemgroup_UMI             245702
+core_scale_factor              48
+core_adjusted_UMI_count    244091
+disease                         1
+cancer                          1
+cell_line                       1
+sex                             1
+age                             1
+perturbation                 2057
+organism                        1
+perturbation_type               1
+tissue_type                     1
+ncounts                     28562
+ngenes                       5034
+nperts                          1
+percent_ribo               288989
+cell_type                       1
+condition                    2057
+condition_name               2057
+dtype: int64
+Percent of control cells: 3.4444319152020877 %
+Unique perturbations: 2057
+Done defining qc classes
+Mitochondrial genes: 13
+Ribosomal genes: 89
+Hemoglobin genes: 7
+Done calculating qc metrics
+Total number of cells: 310385
+outlier
+False    309250
+True       1135
+Name: count, dtype: int64
+mt_outlier
+True     270798
+False     39587
+Name: count, dtype: int64
+Number of dropout genes: 41
+Total number of cells after filtering of low quality cells: 39438
+Median counts: 13679.0
+Done!
+Saving file
+Created subset adata files...
+Save subset of Norman19...
+Save subset of Replogle22...
+Creating new .pert file...
+Splitting sinks from GRN...
+********** B1: Run unperturbed GRiNS: **********
+RACIPE:
+Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
+Generating parameters...
+Parameter and Intial Condition files generated for KeggoRo_noG
+Replicate 001/001
+Loading ODE system from: Data/SimulResults_Racipe/KeggoRo_noG
+Number of combinations to simulate: 100000
+Running steady state simulations for replicate: 001
+  0%|          | 0/20 [00:00<?, ?it/s]E0611 14:39:26.500673  303965 slow_operation_alarm.cc:73] 
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+E0611 15:58:51.722940  303867 slow_operation_alarm.cc:140] The operation took 1h21m25.222425356s
+
+********************************
+[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+  5%|▌         | 1/20 [5:53:17<111:52:32, 21197.48s/it] 10%|█         | 2/20 [6:13:24<47:11:34, 9438.60s/it]   15%|█▌        | 3/20 [6:33:34<26:49:37, 5681.05s/it]

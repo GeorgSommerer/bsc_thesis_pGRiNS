@@ -170,6 +170,12 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
 
 
 def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10,num_replicates:int=1, eval_metric : str = "MSE"):
+    """
+    Returns:
+    --------
+    None
+    Results are saved in Projects/{grn_file}/ctrl_best_cells.pickle
+    """
     for replicate in range(1,num_replicates+1):
         if not os.path.exists(f"Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle"):
 
@@ -180,7 +186,7 @@ def main(grn_file,experimental, min_num_pcs : int = 10, min_cluster_size_pct : f
                 adata_list = [sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}.h5ad") for pseq_path in glob(f"Data/Experimental/*")]
                 adata_list = [adata[adata.obs["perturbation"]=="ctrl"] for adata in adata_list]
                 adata_genes, adata_mean = get_adata_ctrl_mean(adata_list)
-                grins_data = grins_data[:,list(set(grins_data.var_names) & set(adata_genes))] # Remove source genes not in adata from grins_data
+                grins_data = grins_data[:,sorted(list(set(grins_data.var_names) & set(adata_genes)))] # Remove source genes not in adata from grins_data
                 del adata_list
             else:
                 adata_mean = None      

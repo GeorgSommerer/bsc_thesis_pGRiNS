@@ -1,7 +1,7 @@
 # bsc_thesis_pGRiNS
 My bachelor's thesis at the DILiS group (FU Berlin): https://www.mi.fu-berlin.de/w/DILIS
 
-# Installation:
+## Installation:
 ```bash
 git clone github.com/GeorgSommerer/bsc_thesis_pGRiNS
 cd bsc_thesis_pGRiNS
@@ -10,7 +10,7 @@ pip install -r requirements.txt
 ```
 `requirements.txt` only works out of the box for Cuda 12.9 GPUs. If you use a different GPU, make sure to have the correct version of jax installed for your GPUs (e.g. `pip install --upgrade "jax[cuda13]"`) and fix other dependency issues accordingly.
 
-# Usage:
+## Usage:
 ```bash
 python3 pgrins_main.py project_name --options
 # Example:
@@ -20,19 +20,19 @@ Before running this, make sure you have set up correct input folder structure (s
 
 Use `python3 pgrins_main.py -h` to display a list of optional commands.
 Commonly used arguments are `-e` (if experimental `.h5ad` files are provided), `-p` (if perturbed data should be generated), and `-s` (if the steady state concentration of sink nodes be algebraically calculated instead of simulated, which reduces memory usage and simulation time significantly).
-## Steps:
+### Steps:
 - `A: pgrins_prepare_input.py`: Prepare the input data by creating the project folder, the `.pert` file, and subsetting any experimental data.
 - `B1: pgrins_run_grins.py`: Uses GRiNS to simulate unperturbed expression data using the project GRN.
 - `C1: pgrins_prepare_output.py`: Turns the simulated unperturbed data into an adata object, adds a missingness filter, and normalizes the data.
 - `D1: pgrins_cluster.py`: Clusters the unperturbed data to find a homogenous cluster which is used as the control cells.
 - `B2: pgrins_run_grins.py`: Uses GRiNS to simulate perturbed expression data using the project GRN.
 - `C2: pgrins_prepare_output.py`: Concatenates the simulated control and perturbed data and turns them into an adata object, adds a missingness filter, and normalizes the data.
-## Known Issues:
+### Known Issues:
 - It is possible that the pipeline crashes at some point due to a lack of available memory. If this happens, simply run the same command again, and the pipeline will restart from the last completed step. If the problem still prevails (especially common for the RACIPE simulation), try lowering `--batch_size`, or even `--num_params` or `--num_init_conds`.
 - It is recommended to set the batch size so that the number of simulated cells (which you can calculate as `num_params*num_init_conds*pert_ratio`) is evenly divisible by it. Otherwise, the last batch of the simulation of perturbed cells can take a very long time.
 
-# Folder Structure:
-## Input:
+## Folder Structure:
+### Input:
 Requires the following `Data` structure:
 ```bash
 .
@@ -76,7 +76,7 @@ Index Gene Type
 ```
 If experimental data is provided, this file is created automatically (unless specified otherwise). Otherwise, it must be specified.
 
-## Output:
+### Output:
 ```bash
 .
 ├── Data
@@ -103,3 +103,7 @@ In short, `perturb_norm_pert.h5ad` is the final output of the pGRiNS pipeline an
 `Prep_Data/Plots/{project_name}/{replicate_number}` will contain graphs showcasing the results of the PCA and UMAP of the clustering step. Depending on the results, changing some parameters (e.g. the number of PCs used for the UMAP) is advised.
 
 The simulation results will be saved in `Data/SimulResults_Racipe/{project_name}` for a RACIPE simulation, or `Data/SimulResults_Ising/{project_name}` for a Boolean Ising simulation.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

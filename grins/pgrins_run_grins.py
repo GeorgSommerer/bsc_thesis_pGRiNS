@@ -1,33 +1,16 @@
-import jax
-import jax.numpy as jnp
-from jax import config
-import pathlib
-
-    
-
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-import sys
-import os
-import argparse
-from tqdm import tqdm
-
-from itertools import product, groupby
+from itertools import groupby
 from operator import itemgetter
 
-try:
-    import racipe_run as racipe
-    import ising_bool, gen_params, reg_funcs
-except:
-    import grins.racipe_run as racipe
-    from grins import ising_bool, gen_params, reg_funcs
-try:
-    from Prep_Data import pgrins_prepare_input
-except:
-    sys.path.append("..")
-    sys.path.append("/".join(str(Path.cwd()).split("/")[:-1]))
-    from Prep_Data import pgrins_prepare_input
+import os
+from tqdm import tqdm
+
+import grins.racipe_run as racipe
+from grins import ising_bool, reg_funcs
+    
+from Prep_Data import pgrins_prepare_input
 
 
     

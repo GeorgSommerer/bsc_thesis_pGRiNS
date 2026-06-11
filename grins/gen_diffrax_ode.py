@@ -1,6 +1,5 @@
 from grins.gen_params import gen_param_names  # noqa: F401
 
-
 # Internal function to generate a hills equation string of the edge
 def _gen_edge_hills(edge):
     """
@@ -43,10 +42,10 @@ def gen_node_ode(target_edges, node_name,pert_genes):
     # Check if the target_edges is empty
     if not target_edges.empty:
         # Apply gen_edge_hills to each row and convert the values to a string joined by *
-        return f"{Pert_Scalar}*(Prod_{node_name}*{'*'.join(target_edges.apply(_gen_edge_hills, axis=1))} - Deg_{node_name}*{node_name})"
+        return f"{Pert_Scalar}*Prod_{node_name}*{'*'.join(target_edges.apply(_gen_edge_hills, axis=1))} - Deg_{node_name}*{node_name}"
     else:
         # Only Production term - degradation term
-        return f"{Pert_Scalar}*(Prod_{node_name} - Deg_{node_name}*{node_name})"
+        return f"{Pert_Scalar}*Prod_{node_name} - Deg_{node_name}*{node_name}"
 
 
 # Function to the generate the ODE file for diffrax from a topo file

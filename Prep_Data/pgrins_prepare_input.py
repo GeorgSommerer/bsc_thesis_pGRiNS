@@ -1,20 +1,14 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from scipy import sparse
 
 import scanpy as sc
 import anndata as ad
 
 import os
-import sys
 from glob import glob
-import argparse
 
-try:
-    import normalize
-except:
-    from Prep_Data import normalize
+from Prep_Data import normalize
+
 
 
 def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], project_name : str, max_missingness : int = 90) -> tuple[pd.DataFrame, dict[str,ad.AnnData]]:
@@ -212,6 +206,7 @@ def main(project_name : str, experimental : bool, make_pert_file : bool = False,
     Returns:
     --------
     None
+    Results are saved in Projects/{project_name}
     """
 
     if not os.path.exists(f"Data/Projects/{project_name}/{project_name}.topo"):

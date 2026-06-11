@@ -78,6 +78,16 @@ if __name__ == '__main__':
             norm_data = sc.read_h5ad(f"../../Data/Experimental/{filename}/perturb_norm_subset_{grn_file}.h5ad")
         elif modelname == "pGRiNS":
             norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_subset_{filename}.h5ad")
+            chosen_cells = []
+            for pert in norm_data.obs["perturbation"].unique():
+                # Downsample to sys.argv[5]% of cells
+                obs_names = norm_data[norm_data.obs["perturbation"]==pert].obs_names
+
+                if pert == "ctrl":
+                    chosen_cells += obs_names
+                else:
+                    chosen_cells += np.random.choice(obs_names,replace=False,size=len(obs_names)*int(sys.argv[5])/100)
+            norm_data = norm_data[chosen_cells]
         norm_data.X = norm_data.layers["log1p"].copy()
         """
         In line 242 of gears/pertdata.py, the following line exists:
