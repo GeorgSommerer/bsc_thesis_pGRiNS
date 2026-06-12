@@ -334,6 +334,7 @@ def main(grn_file : str, experimental : bool, is_racipe : bool = False, split_si
             if is_racipe:
                 grins_data = normalize_grins_adata(grins_data)    
             
+            adata_genes = set()
             if experimental:
                 # Comparing experimental and synthetic data is meaningless if the expression vectors have a similar direction, but different magnitude
                 scale_factor = 0
@@ -342,10 +343,12 @@ def main(grn_file : str, experimental : bool, is_racipe : bool = False, split_si
                     # Get the mean value in the log1p layer for the control cells of each experimental dataset...
                     adata = sc.read_h5ad(f"{pseq_path}/perturb_norm_subset_{grn_file}.h5ad")
                     adata = adata[:,adata.var_names.isin(grins_data.var_names)]
+                    adata_genes = adata_genes.union(set(adata.var_names))
                     scale_factor += np.mean(adata[adata.obs["perturbation"]=="ctrl"].layers["log1p"])
                 # ...then scale the synthetic data by the mean of these means
                 grins_data.layers["log1p"] *= scale_factor/(len(pseq_paths)*np.mean(grins_data[grins_data.obs["perturbation"]=="ctrl"].layers["log1p"]))
-            
+                # Remove all genes not in adata (i.e. some of the source genes)
+                grins_data = grins_data[:,sorted(list(adata_genes))]
             # Save the object:
             print(f"Save the AnnData object to {return_path}...")
             grins_data.write_h5ad(return_path) 

@@ -39,6 +39,7 @@ parser.add_argument("--remove_outliers",action="store_true",help="If True, outli
 
 # D:
 parser.add_argument("--min_num_pcs", type=int,help="The minimal number of principal components to use for UMAP. Defaults to 10.")
+parser.add_argument("--max_num_pcs", type=int,help="The minimal number of principal components to use for UMAP. Defaults to 25.")
 parser.add_argument("--min_cluster_size_pct", type=float,help="The minimal size a cluster must have relative to all cells in grins_data to be considered for the best cluster. Defaults to 0.01.")
 parser.add_argument("--max_num_clusters", type=int,help="The maximal number of clusters considered as best cluster. Defaults to 10. If 0, all clusters with >min_cluster_size_pct of cells are considered.")
 parser.add_argument("--eval_metric",help="If experimental data is used, whether or not the clusters should be evaluated using MSE or Spearman correlation. Defaults to MSE.")
@@ -122,6 +123,8 @@ else:
 
 if args.min_num_pcs:
     kwargs_d["min_num_pcs"] = args.min_num_pcs
+if args.max_num_pcs:
+    kwargs_d["max_num_pcs"] = args.max_num_pcs
 if args.min_cluster_size_pct:
     kwargs_d["min_cluster_size_pct"] = args.min_cluster_size_pct
 if args.max_num_clusters:

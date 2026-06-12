@@ -53,7 +53,7 @@ Requires the following `Data` structure:
 ├── Logs
 └── pgrins_main.py
 ```
-If `-e` is true, the directory `Experimental` must contain subdirectories named after the datasets (`Norman19`, `Replogle22`, etc.), with adata files themselves all named `perturb.h5ad`. A useful database containing many such datasets is `https://zenodo.org/records/7041849`. `Prep_Data/normalize.py` contains code that automatically normalizes the datasets AdamsonWeissman2016_GSM2406681_10X010, NormanWeissman2019_filtered, and ReplogleWeissman2022_K562_essential when `pgrins_main.py` is called, but it needs to be modified if other datasets were used.
+If `-e` is true, the directory `Experimental` must contain subdirectories named after the datasets (`Norman19`, `Replogle22`, etc.), with adata files themselves all named `perturb.h5ad`. A useful database containing many such datasets is `https://zenodo.org/records/7041849`. `Prep_Data/normalize.py` contains code that automatically normalizes the datasets AdamsonWeissman2016_GSM2406681_10X010, NormanWeissman2019_filtered, and ReplogleWeissman2022_K562_essential when `pgrins_main.py` is called, but it needs to be modified if other datasets were used. Realistically, only experimental control data is needed, although perturbed data would be useful for downstream analysis.
 
 The subdirectory `Topos` must contain at least one `.topo` file which lists the directed edges A -> B or A -| C of a directed regulatory network over 3 columns delimited with a single space:
 - The first column must have the name `Source` and contain the gene symbol of the outgoing node (A).
