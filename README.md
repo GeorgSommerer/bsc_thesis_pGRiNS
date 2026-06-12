@@ -1,9 +1,9 @@
 # bsc_thesis_pGRiNS
 My bachelor's thesis at the DILiS group (FU Berlin): https://www.mi.fu-berlin.de/w/DILIS
 # Branch:
-On this branch, I attempted to implement an algorithm that looks at the cells for each gene where the gene's expression value in the synthetic data is close to the experimental nonzero mean, then looks at the InitCondNum of the corresponding cell, creates a histogram of the associated initial condition values of that gene, and tries to find ranges of initial condition values that are overrepresented in the cells where the expression values are close, and turns them into a new file called init\_conds\_range.csv. These are used in main for a new ctrl run iteration; this step can be repeated any amount of times, signified by sim_it, until the original PCA->UMAP clustering algorithm is called  (code in main.py is incomplete).
+On this branch, I attempted to implement an algorithm that looks at the cells for each gene where the gene's expression value in the synthetic data is close to the experimental nonzero mean, then looks at the InitCondNum of the corresponding cell, creates a histogram of the associated initial condition values of that gene, and tries to find ranges of initial condition values that are overrepresented in the cells where the expression values are close, and turns them into a new file called `init\_conds\_range.csv`. These are used in main for a new ctrl run iteration; this step can be repeated any amount of times, signified by `sim_it`, until the original PCA->UMAP clustering algorithm is called  (code in `main.py` is incomplete).
 While this seemed to work initially for a subset of genes from one dataset (meaning that in that dataset, the histogram of ICs for most genes showed a clear peak), trying it out on another dataset resulted in uniformly distributed ICs.
-Maybe I made a mistake during the reimplementation in the main pipeline (pgrins_cluster_red), but I abandoned this approach for now.
+Maybe I made a mistake during the reimplementation in the main pipeline (`pgrins_cluster_red`), but I abandoned this approach for now.
 # Installation:
 ```bash
 git clone github.com/GeorgSommerer/bsc_thesis_pGRiNS
