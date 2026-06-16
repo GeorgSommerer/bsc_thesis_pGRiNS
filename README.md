@@ -24,7 +24,7 @@ Commonly used arguments are `-e` (if experimental `.h5ad` files are provided), `
 - `A: pgrins_prepare_input.py`: Prepare the input data by creating the project folder, the `.pert` file, and subsetting any experimental data.
 - `B1: pgrins_run_grins.py`: Uses GRiNS to simulate unperturbed expression data using the project GRN.
 - `C1: pgrins_prepare_output.py`: Turns the simulated unperturbed data into an adata object, adds a missingness filter, and normalizes the data.
-- `D1: pgrins_cluster.py`: Clusters the unperturbed data to find a homogenous cluster which is used as the control cells.
+- `D: pgrins_cluster.py`: Clusters the unperturbed data to find a homogenous cluster which is used as the control cells.
 - `B2: pgrins_run_grins.py`: Uses GRiNS to simulate perturbed expression data using the project GRN.
 - `C2: pgrins_prepare_output.py`: Concatenates the simulated control and perturbed data and turns them into an adata object, adds a missingness filter, and normalizes the data.
 ### Known Issues:
@@ -53,7 +53,7 @@ Requires the following `Data` structure:
 ├── Logs
 └── pgrins_main.py
 ```
-If `-e` is true, the directory `Experimental` must contain subdirectories named after the datasets (`Norman19`, `Replogle22`, etc.), with adata files themselves all named `perturb.h5ad`. A useful database containing many such datasets is `https://zenodo.org/records/7041849`. `Prep_Data/normalize.py` contains code that automatically normalizes the datasets AdamsonWeissman2016_GSM2406681_10X010, NormanWeissman2019_filtered, and ReplogleWeissman2022_K562_essential when `pgrins_main.py` is called, but it needs to be modified if other datasets were used. Realistically, only experimental control data is needed, although perturbed data would be useful for downstream analysis.
+If `-e` is true, the directory `Experimental` must contain subdirectories named after the datasets (`Norman19`, `Replogle22`, etc.), with adata files themselves all named `perturb.h5ad`. A useful database containing many such datasets is [zenodo.org/records/7041849]https://zenodo.org/records/7041849. `Prep_Data/normalize.py` contains code that automatically normalizes the datasets AdamsonWeissman2016_GSM2406681_10X010, NormanWeissman2019_filtered, and ReplogleWeissman2022_K562_essential when `pgrins_main.py` is called, but it needs to be modified if other datasets were used. Realistically, only experimental control data is needed, although perturbed data would be useful for downstream analysis.
 
 The subdirectory `Topos` must contain at least one `.topo` file which lists the directed edges A -> B or A -| C of a directed regulatory network over 3 columns delimited with a single space:
 - The first column must have the name `Source` and contain the gene symbol of the outgoing node (A).
@@ -85,7 +85,7 @@ If experimental data is provided, this file is created automatically (unless spe
 │   │       ├── {replicate_number}
 │   │       │   ├── ctrl_best_cells.pickle
 │   │       │   ├── perturb_norm_ctrl.h5ad
-│   │       │   └── perturb_norm_pert.h5ad
+│   │       │   └── perturb_norm_full.h5ad
 │   │       ├── {project_name}_full.topo
 │   │       ├── {project_name}.topo
 │   │       └── {project_name}_sinks.topo
@@ -96,9 +96,9 @@ If experimental data is provided, this file is created automatically (unless spe
 The outputs will be saved in a subdirectory of `Data/Projects` with the same name as the input of `{project_name}`.
 This folder will contain a file called `{project_name}.topo` which is a combined version of the files in `Data/Topos` without the edges between nodes not in the datasets in `Data/Experimental`. If `-s` is true, then `{project_name}_full.topo` will contain the same edges as `{project_name}.topo` if `-s` was false, `{project_name}.topo` will only contain the edges not pointing towards sink nodes, and `{project_name}_sinks.topo` will contain all edges pointing towards sink nodes.
 
-For each replicate simulated from this network, a folder `{replicate_number}` will be created that contains `perturb_norm_ctrl.h5ad` with all (non-clustered) cells of the unperturbed run, `ctrl_best_cells.pickle`, which contains the row names of `.obs` of `perturb_norm_ctrl.h5ad` belonging to the chosen cluster, and `perturb_norm_pert.h5ad`, which combines these chosen control cells with the simulated cells for each perturbation.
+For each replicate simulated from this network, a folder `{replicate_number}` will be created that contains `perturb_norm_ctrl.h5ad` with all (non-clustered) cells of the unperturbed run, `ctrl_best_cells.pickle`, which contains the row names of `.obs` of `perturb_norm_ctrl.h5ad` belonging to the chosen cluster, and `perturb_norm_full.h5ad`, which combines these chosen control cells with the simulated cells for each perturbation.
 
-In short, `perturb_norm_pert.h5ad` is the final output of the pGRiNS pipeline and can be used for downstream analysis.
+In short, `perturb_norm_full.h5ad` is the final output of the pGRiNS pipeline and can be used for downstream analysis.
 
 `Prep_Data/Plots/{project_name}/{replicate_number}` will contain graphs showcasing the results of the PCA and UMAP of the clustering step. Depending on the results, changing some parameters (e.g. the number of PCs used for the UMAP) is advised.
 

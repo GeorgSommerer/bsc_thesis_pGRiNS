@@ -647,6 +647,7 @@ def add_thr_rows(
     topo_df: pd.DataFrame,
     num_params: int = 2**10,
     rng: int | np.random.Generator | None = None,
+    no_G_scaling : bool = False
 ) -> pd.DataFrame:
     """
     This function modifies the given parameter range DataFrame (`prange_df`) by adding
@@ -694,11 +695,11 @@ def add_thr_rows(
             prange_df.loc[
                 prange_df["Parameter"].str.contains(f"Thr_{sn}"), "Maximum"
             ] = median_thr_val * 1.98 * amplify_val
-            """
-            prange_df.loc[
-                prange_df["Parameter"] == f"Prod_{sn}", ["Minimum", "Maximum"]
-            ] *= amplify_val
-            """
+            if no_G_scaling is False:
+                prange_df.loc[
+                    prange_df["Parameter"] == f"Prod_{sn}", ["Minimum", "Maximum"]
+                ] *= amplify_val
+            
     return prange_df
 
 
@@ -709,6 +710,7 @@ def gen_param_range_df(
     sampling_method: Union[str, dict] = "Sobol",
     thr_rows: bool = True,
     rng: int | np.random.Generator | None = None,
+    no_G_scaling : bool = False
 ) -> pd.DataFrame:
     """
     Generate a parameter range DataFrame from the topology DataFrame.
@@ -767,7 +769,7 @@ def gen_param_range_df(
             prange_df["StdDev"] = 1.0
     # Fill the threshold rows of the parameter range DataFrame
     if thr_rows:
-        prange_df = add_thr_rows(prange_df, topo_df, num_params, rng=rng)
+        prange_df = add_thr_rows(prange_df, topo_df, num_params, rng=rng,no_G_scaling=no_G_scaling)
             
     return prange_df
 

@@ -123,7 +123,7 @@ def racipe_simulate_sinks(grn_file : str, save_dir : str, sol_df_full : pd.DataF
 
 
 
-def run_racipe(grn_file : str, pert_list : list[dict[str,int]], split_sinks : bool = False, num_replicates : int = 1, num_params : int = 1000, num_init_conds : int = 100, sampling_method : str = "Uniform",max_steps : int = 2048, tmax : int = 200,batch_size : int = 1000, pert_ratio : float = 0.01, pert_factor : int = 50):
+def run_racipe(grn_file : str, pert_list : list[dict[str,int]], split_sinks : bool = False, num_replicates : int = 1, num_params : int = 1000, num_init_conds : int = 100, sampling_method : str = "Uniform",max_steps : int = 2048, tmax : int = 200,batch_size : int = 1000, pert_ratio : float = 0.01, pert_factor : int = 50,no_G_scaling : bool = False):
     """
     Generate parameters and run Racipe simulations for the specified GRN.
     Sobol is recommended as the sampling method, but does not work for larger datasets (>20k parameters) due to constraints within the sampler.
@@ -162,6 +162,8 @@ def run_racipe(grn_file : str, pert_list : list[dict[str,int]], split_sinks : bo
         How many parameter and initial condition sets should be generated for each perturbation compared to the unperturbed run. Defaults to 0.01 (1%).
     pert_factor : int, optional
         By what factor the Prod_pert_gene parameters should be scaled up or down. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).
+    no_G_scaling : bool, optional
+        Whether or not G_max should be scaled in add_thr_rows. If true, then G_max will scale exponentially with the number of incoming edges, which can lead to numeric problems. Defaults to False.
 
     Returns:
     --------
@@ -200,7 +202,8 @@ def run_racipe(grn_file : str, pert_list : list[dict[str,int]], split_sinks : bo
             sampling_method=sampling_method,
             pert_list = pert_list,
             pert_factor = pert_factor,
-            split_sinks=split_sinks
+            split_sinks=split_sinks,
+            no_G_scaling=no_G_scaling
         )
 
     # Run Racipe for all replicates:

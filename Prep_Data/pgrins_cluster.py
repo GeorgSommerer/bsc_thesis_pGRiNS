@@ -19,7 +19,7 @@ from Analysis import plotting_funs
 
 
 
-def get_adata_ctrl_mean(adata_list : list[ad.AnnData]) -> tuple[list[str], list[np.float]]:
+def get_adata_ctrl_mean(adata_list : list[ad.AnnData]) -> tuple[list[str], list[float]]:
     """
     For each gene, calculates the mean across ctrl cells of all datasets that contain the gene.
     For example, for datasets A,B,C, some genes will be in A&B&C, some only in A&B, A&C, or B&C, but some only in A,B, or C.

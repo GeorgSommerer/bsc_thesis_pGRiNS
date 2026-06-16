@@ -290,7 +290,7 @@ def main(grn_file : str, experimental : bool, is_racipe : bool = False, split_si
     Returns:
     --------
     None
-    Results are saved in Projects/{grn_file}/perturb_norm_ctrl.h5ad
+    Results are saved in Projects/{grn_file}/perturb_norm_ctrl.h5ad after the unperturbed run, and Projects/{grn_file}/perturb_norm_full.h5ad after the perturbed run.
     """
 
     assert max_missingness >= 0 and max_missingness <= 100
@@ -299,7 +299,7 @@ def main(grn_file : str, experimental : bool, is_racipe : bool = False, split_si
 
     if pert_file is not None:
         pert_list = pgrins_prepare_input.extract_pert_info(grn_file,pert_file)
-        suffix = "pert"
+        suffix = "full"
     else:
         pert_list = []
         suffix = "ctrl"        

@@ -87,7 +87,8 @@ def gen_topo_param_files(
     rng: int | np.random.Generator | None = None,
     pert_list : list = [],
     pert_factor : int = 50,
-    split_sinks : bool = False
+    split_sinks : bool = False,
+    no_G_scaling : bool = False
 ):
     """
     Generate parameter files for simulation.
@@ -154,7 +155,7 @@ def gen_topo_param_files(
             rep_rng = np.random.default_rng(rep_seed)
             # Generate the parameter range dataframe
             param_range_df = gen_param_range_df(
-                topo_df, num_params, sampling_method=sampling_method, rng=rep_rng
+                topo_df, num_params, sampling_method=sampling_method, rng=rep_rng, no_G_scaling=no_G_scaling
             )
             if split_sinks:
                 # All params whose names end with sink genes belong to the sink genes df

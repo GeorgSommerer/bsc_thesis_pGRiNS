@@ -1,5 +1,4 @@
 import argparse
-import os
 
 from Prep_Data import pgrins_prepare_input, pgrins_prepare_output, pgrins_cluster
 from grins import pgrins_run_grins
@@ -7,7 +6,7 @@ from grins import pgrins_run_grins
 ########################################################
 parser = argparse.ArgumentParser(add_help=True)
 
-# General:
+# A:
 parser.add_argument("project_name", help="Name of the project.")
 parser.add_argument("-m", "--method", help="Whether GRiNS simulations are performed using Racipe or Ising. Defaults to Racipe. Ising is not recommended as it is not adapted to handle the prediction of perturbed data.")
 parser.add_argument("-e","--experimental", action="store_true",help="If experimental data is supplied, the GRN is subset on the genes of these datasets, and their control data is used to find the best cluster of synthetic unperturbed data. Defaults to False.")
@@ -24,10 +23,9 @@ parser.add_argument("--max_steps",type=int,help="Number of steps until the Racip
 parser.add_argument("--tmax", type=int, help="Maximum time for the simulation. Defaults to 200.")
 parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unperturbed run. Defaults to 0.01. Accepts values from [0.01,1]. Should be smaller than the percentage of cells kept during clustering, otherwise technical duplicate cells are created.")
 parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_{pert_gene} parameters should be scaled. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).")
-   
-# B/C/D:
 parser.add_argument("--mode", help="If Ising, whether the updates were done sync or async. Defaults to async.")
 parser.add_argument("--num_replicates", type=int,help="The number of replicates to be simulated. Defaults to 1. Pipeline has not been tested on more than 1 replicate.")
+parser.add_argument("--no_G_scaling",action=store_true,help="Whether or not G_max should be scaled in add_thr_rows. If true, then G_max will scale exponentially with the number of incoming edges, which can lead to numeric problems. Defaults to False.")
 
 # C:
 parser.add_argument("--max_missingness", type=float,help="The maximal percentage of cells per gene that can have missing entries. Defaults to 90. Accepts values from [0,100]")
@@ -98,6 +96,10 @@ if args.max_steps:
     kwargs_b["max_steps"]=args.max_steps
 if args.tmax:
     kwargs_b["tmax"]=args.tmax
+if args.no_G_scaling:
+    kwargs_b["no_G_scaling"]=True
+else:
+    kwargs_b["no_G_scaling"]=False
 if args.pert_ratio:
     kwargs_b["pert_ratio"]=args.pert_ratio
     kwargs_b["pert_ratio"]=args.pert_ratio
@@ -148,8 +150,8 @@ print("*"*10,"C1: Create unperturbed adata object:","*"*10)
 pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=None, **kwargs_c)
 
 ########################################################
-# D1: Get best control cells
-print("*"*10,"D1: Get best control cells:","*"*10)
+# D: Get best control cells
+print("*"*10,"D: Get best control cells:","*"*10)
 pgrins_cluster.main(grn_file=project_name, experimental=experimental, **kwargs_d)
 
 ########################################################
@@ -163,4 +165,4 @@ if pert_file is not None:
     print("*"*10,"C2: Create perturbed adata object:","*"*10)
     pgrins_prepare_output.main(grn_file=project_name,experimental=experimental,is_racipe=is_racipe, pert_file=pert_file, **kwargs_c)
     
-print("All done!")
+print("All done! Exiting...")

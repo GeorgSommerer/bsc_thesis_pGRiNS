@@ -36,16 +36,16 @@ def gen_node_ode(target_edges, node_name,pert_genes):
     """
     # Check if gene will be perturbed
     if node_name in pert_genes:
-        Pert_Scalar = f"Pert_{node_name}"
+        pert_scalar = f"Pert_{node_name}*"
     else:
-        Pert_Scalar = "1"
+        pert_scalar = ""
     # Check if the target_edges is empty
     if not target_edges.empty:
         # Apply gen_edge_hills to each row and convert the values to a string joined by *
-        return f"{Pert_Scalar}*Prod_{node_name}*{'*'.join(target_edges.apply(_gen_edge_hills, axis=1))} - Deg_{node_name}*{node_name}"
+        return f"{pert_scalar}Prod_{node_name}*{'*'.join(target_edges.apply(_gen_edge_hills,axis=1))} - Deg_{node_name}*{node_name}"
     else:
         # Only Production term - degradation term
-        return f"{Pert_Scalar}*Prod_{node_name} - Deg_{node_name}*{node_name}"
+        return f"{pert_scalar}Prod_{node_name} - Deg_{node_name}*{node_name}"
 
 
 # Function to the generate the ODE file for diffrax from a topo file
