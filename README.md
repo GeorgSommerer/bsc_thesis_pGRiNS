@@ -14,7 +14,7 @@ pip install -r requirements.txt
 ```bash
 python3 pgrins_main.py project_name --options
 # Example:
-nohup python3 -u pgrins_main.py KeggoRo -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 --pert_ratio 0.01 --max_num_clusters 0 >> Logs/out_KeggoRo.log 2>&1 &
+nohup python3 -u pgrins_main.py KeggoRo -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 --pert_ratio 0.01 --max_num_clusters 0 --no_G_scaling >> Logs/out_KeggoRo.log 2>&1 &
 ```
 Before running this, make sure you have set up correct input folder structure (see below).
 

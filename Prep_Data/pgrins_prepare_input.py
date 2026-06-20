@@ -59,12 +59,7 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
             if False not in [(p in list(grn_df_adata["Source"])) & (p in adata_genes) for p in pert.split("_")]: # All perturbed genes of a perturbation set must be both among the source nodes of the GRN, and among the genes in adata
                 kept_perts.append(pert)
         adata = adata[adata.obs["perturbation"].isin(kept_perts)]
-        adata_dict[pseq] = adata
-
-        print(f"Save subset of {pseq}...")
-        adata_dict[pseq].write_h5ad(
-            f"Data/Experimental/{pseq}/perturb_norm_subset_{project_name}.h5ad"
-        )     
+        adata_dict[pseq] = adata    
 
     grn_df = pd.concat([grn_df_adata,grn_df_plus_sources]).drop_duplicates()
     #grn_df = grn_df_adata.drop_duplicates() # Without keeping sources
@@ -72,7 +67,7 @@ def subset_from_adata(grn_df : pd.DataFrame, adata_dict : dict[str,ad.AnnData], 
 
 
 
-def extract_pert_info(project_name : str, pert_file : str) -> list[dict[str,int]]:
+def extract_pert_info(project_name : str, pert_file : str,rel_path="") -> list[dict[str,int]]:
     """
     Taking a .pert file as the input, the perturbations in the file are turned into a list of perturbation sets, where
     each set is represented as a dict with the perturbed gene as the key and the perturbation type as the value.
@@ -83,6 +78,8 @@ def extract_pert_info(project_name : str, pert_file : str) -> list[dict[str,int]
         The name of the project.
     pert_file : str, optional
         The name of the .pert file.
+    rel_path : str, optional
+        The relative path to the Data folder.
     
     Returns:
     --------
@@ -90,7 +87,7 @@ def extract_pert_info(project_name : str, pert_file : str) -> list[dict[str,int]
         A list of dicts where each dict contains the genes and perturbation types of a perturbation set.
     """
 
-    perts_df = pd.read_csv(f"Data/Perts/{pert_file}.pert",sep=" ")
+    perts_df = pd.read_csv(f"{rel_path}Data/Perts/{pert_file}.pert",sep=" ")
     pert_list = [{} for i in range(1+max(perts_df["Index"]))]
     for index, row in perts_df.iterrows():
         pert_list[row["Index"]][row["Gene"]]=(row["Type"])
@@ -114,7 +111,8 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
 
     Returns:
     --------
-    None
+    adata_dict : dict[str,ad.AnnData]
+        The input dict, but where the perturbations have received a unique identifier.
     """
 
     if not os.path.exists(f"Data/Perts/{project_name}_perts.pert"): # Generate perturbation .pert file if not specified
@@ -123,10 +121,11 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
         current_index = 0
         gene = []
         types = []
+        cum_pertnum = 0
         for pseq, adata in adata_dict.items():
             pert_sets = sorted([pert.split("_") for pert in set(list(adata.obs["perturbation"]))])
             pert_sets.remove(["ctrl"])
-
+            # Define regulatory type:
             if "Norman" in pseq:
                 typ = 1
             elif "Replogle" in pseq or "Adamson" in pseq:
@@ -134,14 +133,21 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
             else:
                 typ = int(input(f"Input the type of perturbation in the dataset {pseq} (1: CRISPRa, 2: CRISPRi, 3: CRISPR-KO)"))
                 assert typ in [1,2,3]
+            # Append to columns:
             for pert_set in pert_sets:
                 index += [current_index]*len(pert_set)
                 current_index += 1
                 gene += pert_set
                 types += [typ]*len(pert_set)
+            # Insert PertNum (later also in GRiNS data) already into adata as a unique identifier (otherwise, the same perturbated gene in different datasets could not be differentiated)
+            pert_to_pertnum_dict = {"_".join(pert_set) : i for pert_set, i in zip(pert_sets,range(cum_pertnum,cum_pertnum+len(pert_sets)))}
+            pert_to_pertnum_dict["ctrl"] = -1
+            adata_dict[pseq].obs["PertNum"] = [pert_to_pertnum_dict[p] for p in adata_dict[pseq].obs["perturbation"]]
+            cum_pertnum += len(pert_sets)
+        
         pert_df = pd.DataFrame({"Index":index,"Gene":gene,"Type":types}).sort_values(by=["Index","Gene"])
         pert_df.to_csv(f"Data/Perts/{project_name}_perts.pert",index=False,sep=" ")# Takes the first part of the dataset name (before the _) as the identifier
-
+    return adata_dict
 
 
 def split_sinks_from_grn(grn_df : pd.DataFrame, project_name : str) -> pd.DataFrame:
@@ -235,7 +241,13 @@ def main(project_name : str, experimental : bool, make_pert_file : bool = False,
 
         # -p: Get a list of perturbations of genes of interest that are in the GRN
         if make_pert_file:
-            get_perts(grn_df, project_name, adata_dict)
+            adata_dict = get_perts(grn_df, project_name, adata_dict)
+    
+            for pseq in adata_dict.keys():
+                print(f"Save subset of {pseq}...")
+                adata_dict[pseq].write_h5ad(
+                    f"Data/Experimental/{pseq}/perturb_norm_subset_{project_name}.h5ad"
+                ) 
             
         # -s: Split sink nodes into separate .topo file
         if split_sinks:

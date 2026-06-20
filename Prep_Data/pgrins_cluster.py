@@ -66,7 +66,7 @@ def get_adata_ctrl_mean(adata_list : list[ad.AnnData]) -> tuple[list[str], list[
 
 
 
-def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num_pcs : int = 10, max_num_pcs : int = 25, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10, eval_metric : str = "MSE") -> tuple[list[str],ad.AnnData]:
+def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num_pcs : int = 10, max_num_pcs : int = 25, min_cluster_size_pct : float = 0.01, min_cluster_silhouette : float = 0.0, max_num_clusters : int = 10, eval_metric : str = "MSE") -> tuple[list[str],ad.AnnData]:
     """
     Clusters the data by performing PCA -> UMAP -> Leiden.
     Then, large clusters with high silhouette scores are calculated and (if experimental data is provided) the one with the closest mean expression is kept.
@@ -83,6 +83,8 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
         The maximal number of principal components to use for UMAP. Defaults to 25.
     min_cluster_size_pct : float, optional
         The minimal size a cluster must have relative to all cells in grins_data to be considered for the best cluster. Defaults to 0.01.
+    min_cluster_silhouette : float,optional
+        The minimum mean silhouette score a cluster must have to be considered for the best cluster. Defaults to 0.
     max_num_clusters : int, optional
         The maximal number of clusters considered as best cluster. Defaults to 10.
     eval_metric : str, optional
@@ -124,13 +126,12 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     clusters = np.array(list(cluster_counts.keys())) # Unique cluster labels
 
     # Get all clusters that contain at least min_cluster_size_pct% of total cells
-    best_clusters = np.array(list(cluster_counts[cluster_counts>grins_data.shape[0]*min_cluster_size_pct].keys())) 
+    best_clusters = np.array(list(cluster_counts[cluster_counts>grins_data.shape[0]*min_cluster_size_pct].keys()))
 
     # If no maximal number of clusters is specified: all clusters with at least min_cluster_size_pct% of total cells are kept
     if max_num_clusters == 0:
         max_num_clusters = len(best_clusters)
 
-    print(f"{len(best_clusters)} clusters definable with >{100*min_cluster_size_pct}% of cells (at most, {max_num_clusters} are needed).")
 
     # Get large, homogenous clusters (i.E. clusters with a high silhouette score)
     print(f"Calculating Silhouette score for {len(clusters)} clusters")
@@ -138,8 +139,12 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
     grins_data.obs["silhouette_samples"] = sample_silhouette_values
 
     # Keep the max_num_clusters clusters with the highest silhouette score
-    best_clusters = clusters[np.argsort([np.mean(sample_silhouette_values[cluster_labels==c]) for c in best_clusters])[::-1][:max_num_clusters]]
+    sil_scores = np.array([np.mean(sample_silhouette_values[cluster_labels==c]) for c in best_clusters])
+    best_clusters = best_clusters[np.argsort(sil_scores)[::-1][:np.min([max_num_clusters,np.sum(sil_scores>min_cluster_silhouette)])]]
+    best_sil_scores = np.sort(sil_scores)[::-1][:np.min([max_num_clusters,np.sum(sil_scores>min_cluster_silhouette)])]
     
+    print(f"{len(best_clusters)} clusters definable with >{100*min_cluster_size_pct}% of cells and a silhouette score of >={min_cluster_silhouette} (at most, {max_num_clusters} are needed).")
+
     # If experimental data is available, keep the large, homogenous cluster with the lowest MSE/highest spearman correlation compared to experimental mean
     if adata_mean is not None:
         if eval_metric.lower() == "mse":
@@ -149,8 +154,8 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
                 mean_squared_error(np.asarray(np.mean(grins_data[cluster_labels==cluster].layers["log1p"],axis=0)).squeeze(),np.asarray(adata_mean).squeeze())
                 for cluster in best_clusters
             ]
-            # Keep the cluster with the lowest MSE
-            best_cluster_overall = best_clusters[np.argmin(metric_results)]
+            # Keep the cluster with the highest Silhouette_Score-MSE-ratio (silscore high, MSE low)
+            best_cluster_overall = best_clusters[np.argmax(best_sil_scores/metric_results)]
 
         elif eval_metric.lower() == "spearman":
             # Get the spearman correlation between the adata control mean and each cluster mean:
@@ -160,13 +165,13 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
                 for cluster in best_clusters
             ]
             # Keep the cluster with the highest correlation
-            best_cluster_overall = best_clusters[np.argmax(metric_results)]
+            best_cluster_overall = best_clusters[np.argmax(best_sil_scores*metric_results)]
 
         else:
             raise ValueError("eval_metric must be MSE or Spearman.")
 
         for i in range(len(best_clusters)):
-            print(f"Cluster {best_clusters[i]} ({grins_data[cluster_labels==best_clusters[i]].shape[0]} cells): {eval_metric} = {metric_results[i]}")
+            print(f"Cluster {best_clusters[i]} ({grins_data[cluster_labels==best_clusters[i]].shape[0]} cells): Silhouette Score = {best_sil_scores[i]}, {eval_metric} = {metric_results[i]}")
 
     # If no experimental data provided, Keep the cluster with the highest silhouette score
     else: 
@@ -188,7 +193,7 @@ def calc_clusters(grins_data : ad.AnnData, adata_mean : np.array = None, min_num
 
 
 
-def main(grn_file : str, experimental : bool = False, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, max_num_clusters : int = 10, max_num_pcs : int = 25, num_replicates:int=1, eval_metric : str = "MSE"):
+def main(grn_file : str, experimental : bool = False, min_num_pcs : int = 10, min_cluster_size_pct : float = 0.01, min_cluster_silhouette : float = 0.0, max_num_clusters : int = 10, max_num_pcs : int = 25, num_replicates:  int = 1, eval_metric : str = "MSE"):
     """
     Loads the unperturbed synthetic control data, calculates the mean of the experimental control data if provided.
     Then, clusters the synthetic data so that a large, homogenous cluster (with expression levels close to the experimental data) is kept and used as the final control data.
@@ -234,7 +239,7 @@ def main(grn_file : str, experimental : bool = False, min_num_pcs : int = 10, mi
                 adata_mean = None      
 
             # Get the cells of the best cluster, as well as the augmented grins_data
-            best_cells, grins_data_clustered = calc_clusters(grins_data,adata_mean=adata_mean,min_num_pcs=min_num_pcs,min_cluster_size_pct=min_cluster_size_pct, max_num_clusters=max_num_clusters,eval_metric=eval_metric)     
+            best_cells, grins_data_clustered = calc_clusters(grins_data,adata_mean=adata_mean,min_num_pcs=min_num_pcs,min_cluster_size_pct=min_cluster_size_pct, min_cluster_silhouette=min_cluster_silhouette,max_num_clusters=max_num_clusters,eval_metric=eval_metric)     
             #Turn the positions of the best cells into indices (subset of grins_data.obs_names).
             grins_data = grins_data[best_cells]
             best_cell_index = list(grins_data.obs.index)

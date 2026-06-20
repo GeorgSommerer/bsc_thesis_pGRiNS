@@ -44,7 +44,7 @@ def filter_base(
     rawData.obs["perturbation"].notna() &
     (rawData.obs["perturbation"] != "*") &
     (rawData.obs["perturbation"].str.strip() != "")
-    ].copy()
+    ]
 
     if verbose:
         print("Total measured cells:", data_filtered.n_obs)
@@ -329,10 +329,10 @@ def is_outlier(x: ad.AnnData, metric: str, nmads: int) -> pd.Series:
     """
     M = x.obs[metric]
     med = np.median(M)
-    mad = median_abs_deviation(M, scale="normal")
+    mad = median_abs_deviation(M)#, scale="normal")
     return (M < med - nmads * mad) | (M > med + nmads * mad)
 
-def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: int, mt_mad_threshold: int, mt_cutoff_percent: float, verbose: bool = True) -> ad.AnnData:
+def data_qc (qc_data: ad.AnnData, top_genes: int, outlier_mad_threshold: int, mt_mad_threshold: int, mt_cutoff_percent: float, skip_filter_thr : float = 0.75, verbose: bool = True) -> ad.AnnData:
     """
     Perform quality control filtering of single cells using MAD-based outlier detection.
 
@@ -369,7 +369,6 @@ def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: i
         The object includes computed QC metrics and outlier annotations in
         `qc_data.obs`.
     """
-    qc_data = data_filtered.copy()
 
     # Define QC-gen classes 
     qc_data.var["mt"] = qc_data.var_names.str.startswith(("MT-", "mt-"))
@@ -388,7 +387,7 @@ def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: i
         qc_vars=["mt", "ribo", "hb"],
         inplace=True,
         percent_top=[top_genes],
-        log1p=True,
+        log1p=True
     )
     
     # QC-Plots before filtering (optional)
@@ -405,10 +404,15 @@ def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: i
         | is_outlier(qc_data, "log1p_n_genes_by_counts", outlier_mad_threshold)
         | is_outlier(qc_data, "pct_counts_in_top_20_genes", outlier_mad_threshold)
     )
-
+    """
     qc_data.obs["mt_outlier"] = (
         is_outlier(qc_data, "pct_counts_mt", mt_mad_threshold)
         | (qc_data.obs["pct_counts_mt"] > mt_cutoff_percent)
+    )
+    """
+
+    qc_data.obs["mt_outlier"] = (
+        is_outlier(qc_data, "pct_counts_mt", mt_mad_threshold)
     )
     if verbose:
         print(f"Total number of cells: {qc_data.n_obs}")
@@ -417,13 +421,21 @@ def data_qc (data_filtered: ad.AnnData, top_genes: int, outlier_mad_threshold: i
         print(f"Number of dropout genes: {sum(qc_data.var["pct_dropout_by_counts"]>90)}")
 
     # filter cells
-    qc_data = qc_data[(~qc_data.obs["outlier"]) & (~qc_data.obs["mt_outlier"])].copy()
+    cell_count = qc_data.shape[0]
+    if sum(qc_data.obs["outlier"])/cell_count<skip_filter_thr:
+        qc_data = qc_data[~qc_data.obs["outlier"]]
+    else:
+        print("General outlier filtering skipped because too few cells would be left")
+    if sum(qc_data.obs["mt_outlier"])/cell_count<skip_filter_thr:
+        qc_data = qc_data[~qc_data.obs["mt_outlier"]]
+    else:
+        print("Mito outlier filtering skipped because too few cells would be left")
 
     print(f"Total number of cells after filtering of low quality cells: {qc_data.n_obs}")
     
     return qc_data
 
-def data_normalization(qc_data: ad.AnnData, n_top_genes : int = 5000, verbose : bool = False) -> ad.AnnData:
+def data_normalization(norm_data: ad.AnnData, n_top_genes : int = 5000, verbose : bool = False,pert_threshold : int = 10) -> ad.AnnData:
     """
     Perform a log1p-normalization with the median read count per cell as the target sum.
 
@@ -443,23 +455,21 @@ def data_normalization(qc_data: ad.AnnData, n_top_genes : int = 5000, verbose : 
     """
     # Median normalization of the data
     if verbose:
-        cell_sums = np.array((qc_data).X.sum(axis=1)).flatten()
+        cell_sums = np.array((norm_data).X.sum(axis=1)).flatten()
         median_counts = np.median(cell_sums)
         print("Median counts:", median_counts)
         
-    norm_data = qc_data.copy()
     sc.pp.normalize_total(norm_data, target_sum=None) # sc.pp.normalize_total sums to the median by standard
 
     # Log1p transformation: 
-    norm_data.layers["normalized"] = norm_data.X.copy()
-    norm_data.layers["log1p"] = sparse.csc_matrix(norm_data.layers["normalized"].copy())
+    norm_data.layers["log1p"] = sparse.csc_matrix(norm_data.X.copy())
     sc.pp.log1p(norm_data, layer="log1p")
     #if n_top_genes > 0:
     #    print("Finding highly variable genes...")
     #    sc.pp.highly_variable_genes(norm_data,n_top_genes=n_top_genes, subset=True,layer="log1p")
     #print("Generating p values for DEGs, might take a long time...")
         # Remove perts with too few cells
-    frequent_perts = [pert for pert in norm_data.obs["perturbation"].unique() if norm_data.obs["perturbation"].value_counts()[pert]>10]
+    frequent_perts = [pert for pert in norm_data.obs["perturbation"].unique() if norm_data.obs["perturbation"].value_counts()[pert]>pert_threshold]
     norm_data = norm_data[norm_data.obs["perturbation"].isin(frequent_perts)]
     #sc.tl.rank_genes_groups(norm_data, groupby="perturbation",method='t-test_overestim_var',layer="log1p",copy=False)
 
@@ -485,26 +495,26 @@ def normalize_adata_main(pseq_file : str):
     if not os.path.isfile(out_path):
         print("Normalizing file: ", pseq_file)
         # Read raw data:
-        raw_data = sc.read_h5ad(f"Data/Experimental/{pseq_file}/perturb.h5ad")
+        data = sc.read_h5ad(f"Data/Experimental/{pseq_file}/perturb.h5ad")
         
         if "Adamson" in pseq_file:
-            data_filtered = filter_Adamson_data(raw_data, verbose = True)
+            data = filter_Adamson_data(data, verbose = True)
         elif "Norman" in pseq_file:
-            data_filtered = filter_Norman_data(raw_data, verbose = True)
+            data = filter_Norman_data(data, verbose = True)
         elif "Replogle" in pseq_file:
-            data_filtered = filter_Replogle_data(raw_data,verbose=True)
+            data = filter_Replogle_data(data,verbose=True)
         else:
             raise ValueError(f"No matching dataset found for filename: {pseq_file}. Create function filter_dataset_data() and add it to another clause in this if-else statement.")
-        
-        qc_data = data_qc(data_filtered, top_genes = 20, outlier_mad_threshold = 5,  mt_mad_threshold = 3, mt_cutoff_percent= 8, verbose=True)
-        norm_data = data_normalization(qc_data, n_top_genes = 0, verbose = True)
-        norm_data = norm_data[:,norm_data.var_names.sort_values()]
+        data = data_qc(data, top_genes = 20, outlier_mad_threshold = 5,  mt_mad_threshold = 3, mt_cutoff_percent= 8, skip_filter_thr=0.75, verbose=True)
+        data = data_normalization(data, n_top_genes = 0, pert_threshold=100,verbose = True)
+        data = data[:,data.var_names.sort_values()]
         print("Saving file")
-        norm_data.write_h5ad(
+        data.write_h5ad(
             out_path
         )
 
+
     else:
         print("Reading file: ", out_path)
-        norm_data = sc.read_h5ad(out_path)
-    return norm_data
+        data = sc.read_h5ad(out_path)
+    return data

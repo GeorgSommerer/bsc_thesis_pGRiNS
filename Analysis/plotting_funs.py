@@ -58,8 +58,50 @@ def set_mpl_attributes():
     return prop_cycle
 
 
+def set_mpl_attributes_presentation():
+    importlib.reload(mpl)
+    mpl.rcParams.update({
+        'font.family'         : 'serif',       # Computer Modern — the default LaTeX font
+        'font.size'           : 18,            # body text size (most journals use 10 pt)
+        'axes.labelsize'      : 18,            # axis-label size matches body text
+        'xtick.labelsize'     : 13,             # tick labels one point smaller
+        'ytick.labelsize'     : 13,
+        'legend.fontsize'     : 13,             # legend text one point smaller
+        'figure.titlesize'    : 25,
+        
+        #'axes.prop_cycle'     : mpl.cycler('color', [   # Okabe–Ito colorblind-safe palette
+        #    '#0072B2', '#D55E00', '#009E73',
+        #    '#E69F00', '#CC79A7', '#56B4E9',
+        #]),
+        
+        'lines.linewidth'     : 1.5,           # slightly thicker for print clarity
+        'axes.linewidth'      : 0.8,           # thinner axis frame
+        'xtick.direction'     : 'in',          # inward ticks — journal standard
+        'ytick.direction'     : 'in',
+        'xtick.minor.visible' : True,          # show minor ticks
+        'ytick.minor.visible' : True,
+        'xtick.major.size'    : 4,             # longer than the 3.5 default
+        'ytick.major.size'    : 4,
+        'xtick.minor.size'    : 2,             # half of major — proportional
+        'ytick.minor.size'    : 2,
+        'xtick.major.width'   : 0.8,           # match axes.linewidth
+        'ytick.major.width'   : 0.8,
+        'xtick.minor.width'   : 0.6,           # thinner for visual hierarchy
+        'ytick.minor.width'   : 0.6,
+        'lines.markersize'    : 4,             # smaller markers for print scale
+        'errorbar.capsize'    : 3,             # visible end-caps (default is 0)
+        'axes.xmargin'        : 0.02,          # hug the data (default is 0.05)
+        'axes.ymargin'        : 0.02,
+        'legend.frameon'      : False,         # no legend box
+        'savefig.bbox'        : 'tight',       # tight bounding box by default
+        'savefig.dpi'         : 300,           # publication-quality resolution
+    })
 
-def plot_pca_results(grn_file,grins_data_clustered,replicate):
+    prop_cycle = [c["color"] for c in list(mpl.rcParams["axes.prop_cycle"])]
+
+    return prop_cycle
+
+def plot_pca_results(grn_file,grins_data_clustered,replicate,rel_path):
     prop_cycle = set_mpl_attributes()
 
     fig,axs=plt.subplots(1,2,figsize=(15,7))
@@ -72,14 +114,14 @@ def plot_pca_results(grn_file,grins_data_clustered,replicate):
     #axs[1].set_yscale("log")
     axs[1].set_title("Variance Ratio of the PCA")
     sc.pl.pca(grins_data_clustered,color="n_genes_by_counts",layer="log1p",ax=axs[0],title="PCA colored by number of expressed genes per cell")
-    os.makedirs(f"Prep_Data/Plots/{grn_file}/{replicate:03}",exist_ok=True)
-    plt.savefig(f"Prep_Data/Plots/{grn_file}/{replicate:03}/pca.png")
+    os.makedirs(f"{rel_path}Prep_Data/Plots/{grn_file}/{replicate:03}",exist_ok=True)
+    plt.savefig(f"{rel_path}Prep_Data/Plots/{grn_file}/{replicate:03}/pca.png")
 
     plt.show()
 
 
 
-def plot_umap_results(grn_file,grins_data_clustered,replicate):
+def plot_umap_results(grn_file,grins_data_clustered,replicate,rel_path):
     prop_cycle = set_mpl_attributes()
 
     cluster_labels = grins_data_clustered.obs["leiden"]
@@ -114,7 +156,7 @@ def plot_umap_results(grn_file,grins_data_clustered,replicate):
             best_cluster_i += 1
         ith_cluster_silhouette_values = sample_silhouette_values[cluster_labels == clusters[i]]
         sample_silhouette_mean = np.mean(ith_cluster_silhouette_values)
-        
+        print(clusters[i],sample_silhouette_mean)
         ith_cluster_silhouette_values.sort()
         size_cluster_i = ith_cluster_silhouette_values.shape[0]
         y_upper = y_lower + size_cluster_i
@@ -166,7 +208,7 @@ def plot_umap_results(grn_file,grins_data_clustered,replicate):
     lgnd = ax2.legend(handles[::-1], labels[::-1],frameon=True)
     for handle in lgnd.legend_handles:
         handle.set_sizes([50])
-    ax2.set_title("UMAP with 10 best clusters colored")
+    ax2.set_title(f"UMAP with {len(best_clusters)} best clusters colored")
     ax2.set_xticks([])
     ax2.set_yticks([])
     ax2.set_xlabel("UMAP1")
@@ -177,6 +219,6 @@ def plot_umap_results(grn_file,grins_data_clustered,replicate):
     )
     sc.pl.umap(grins_data_clustered,s=10,color="n_genes_by_counts",ax=ax3,title="UMAP colored by number of expressed genes per cell")
     plt.tight_layout()
-    os.makedirs(f"Prep_Data/Plots/{grn_file}/{replicate:03}",exist_ok=True)
-    plt.savefig(f"Prep_Data/Plots/{grn_file}/{replicate:03}/umap.png")
+    os.makedirs(f"{rel_path}Prep_Data/Plots/{grn_file}/{replicate:03}",exist_ok=True)
+    plt.savefig(f"{rel_path}Prep_Data/Plots/{grn_file}/{replicate:03}/umap.png")
     plt.show()

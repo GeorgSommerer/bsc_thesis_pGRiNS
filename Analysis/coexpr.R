@@ -1,8 +1,8 @@
 setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
 #load("./.RData")
-#save("./.RData")
-
+save.image("./.RData")
 library(tidyverse)
+library(ggplot2)
 # 1+2)
 library(WGCNA)
 # 3)
@@ -138,19 +138,35 @@ GO_enrichment <- function(ds_list,module,ont){
 
 # Calculate confusion matrix between experimental and pGRiNS
 get_conf_matrix <- function(exp_ds,pgrins_ds){
-  GO_conf_matrix <- matrix(0L, nrow=length(unique(exp_ds$modules)),ncol=length(unique(pgrins_ds$modules)))
-  dimnames(GO_conf_matrix) <- list(unique(exp_ds$modules),unique(pgrins_ds$modules))
+  GO_conf_matrix <- matrix(0L, nrow=length(unique(exp_ds$modules))+1,ncol=length(unique(pgrins_ds$modules))+1)
+  dimnames(GO_conf_matrix) <- list(c(unique(exp_ds$modules),"total"),c(unique(pgrins_ds$modules),"total"))
   
-  rownames(GO_conf_matrix) <- unique(exp_ds$modules)
-  colnames(GO_conf_matrix) <- unique(pgrins_ds$modules)
+  rownames(GO_conf_matrix) <- c(unique(exp_ds$modules),"total")
+  colnames(GO_conf_matrix) <- c(unique(pgrins_ds$modules),"total")
+  # Fill margins
+  for (n_module in rownames(GO_conf_matrix)){
+    for (ont in onts){
+      GO_conf_matrix[[n_module,"total"]] <-GO_conf_matrix[[n_module,"total"]] + length(exp_ds$GO_results[[n_module]][[ont]]$GO.ID)
+    }
+  } 
+  for (p_module in colnames(GO_conf_matrix)){
+    for (ont in onts){
+      GO_conf_matrix[["total",p_module]] <- GO_conf_matrix[["total",p_module]] + length(pgrins_ds$GO_results[[p_module]][[ont]]$GO.ID)
+    }
+  } 
   for (n_module in rownames(GO_conf_matrix)){
     for (p_module in colnames(GO_conf_matrix)){
       for (ont in onts){
         # Get the number of shared GO IDs between exp and pGRiNS for each ont type and each module
-        GO_conf_matrix[[n_module,p_module]] <- GO_conf_matrix[[n_module,p_module]] + length(intersect(exp_ds$GO_results[[n_module]][[ont]]$GO.ID,pgrins_ds$GO_results[[n_module]][[ont]]$GO.ID))
+        #print(exp_ds$GO_results[[n_module]][[ont]]$GO.ID)#,
+        #print(pgrins_ds$GO_results[[n_module]][[ont]]$GO.ID)
+        GO_conf_matrix[[n_module,p_module]] <- GO_conf_matrix[[n_module,p_module]] + length(intersect(exp_ds$GO_results[[n_module]][[ont]]$GO.ID,pgrins_ds$GO_results[[p_module]][[ont]]$GO.ID))
       }
     }
   }
+  conf_tbl <- as_tibble(GO_conf_matrix,rownames=NA)
+  conf_tbl$rownames <- rownames(conf_tbl)
+  write_delim(conf_tbl,paste("conf_mat",exp_ds$name,"_",pgrins_ds$model,".csv",sep=""),delim=" ")
   return(GO_conf_matrix)
 }
 
@@ -158,19 +174,20 @@ get_conf_matrix <- function(exp_ds,pgrins_ds){
 
 
 # 3) On the adjacency matrix: use CoDiNA to compare networks
-get_diff_net <- function(exp_ds,grins_ds, grn_ds, grn_file){
-  diff_net <- MakeDiffNet(Data = list(exp_ds$network_df, grins_ds$network_df,grn_ds$network_df),Code = c("experimental", "pGRINS","GRN"))
+get_diff_net <- function(exp_ds,grins_ds, grn_file){
+  code = c("experimental","pGRiNS")
+  diff_net <- MakeDiffNet(Data = list(exp_ds[["network_df"]], grins_ds[["network_df"]]),Code = code)
   # Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
   # beta edges have different signs, and gamma edges belong to only 1 network
   diff_net <- subset(diff_net, diff_net$Score_Phi_tilde/diff_net$Score_internal > 1)
   DiffNodes = ClusterNodes(diff_net, cutoff.external = 0, cutoff.internal = 1) # Maybe need to clean by Score_Phi_tilde/Score_internal>1?
   
   # Plot and save distribution of nodes across categories
+  edge_df <- data.frame(diff_net$experimental,diff_net$pGRiNS)
   Count <- table(DiffNodes$Phi_tilde)
-  res_df <- tibble(Count,"Group"=names(as.list(Count)))
-  write_delim(res_df,paste("diffnet_",exp_ds$name,".csv",sep=""),delim=" ")
-  ggplot(res_df,aes(x=Group,y=Count))+geom_bar(stat="identity")+ggtitle(paste("Number of genes associated with each dataset after filtering in",exp_ds$name))
-  ggsave(paste("Plots/",grn_file,"/001/codina_",exp_ds$name,".png",sep=""))
+  gene_df <- tibble("count"=as.numeric(Count),"group"=names(as.list(Count)))
+  write_delim(gene_df,paste("diffnet_genes_",exp_ds$name,".csv",sep=""),delim=" ")
+  write_delim(edge_df,paste("diffnet_edges_",exp_ds$name,".csv",sep=""),delim=" ")
   
   return(DiffNodes)
 }
@@ -179,12 +196,13 @@ get_diff_net <- function(exp_ds,grins_ds, grn_ds, grn_file){
 ######################################################################
 # Main:
 graphics.off()
-grn_file = "doro_abcd_only"
-names = c("Norman19")#,"Replogle22")
+grn_file = "KeggoRo_noG"
+names = c("Norman19","Replogle22")
 models = c("experimental","pGRiNS")
 if (!exists("dataset_lists")){
   dataset_lists = list()
 }
+# Experimental, pGRiNS:
 for (name in names){
   print(paste("********************",name,"********************"))
   for (model in models){
@@ -218,7 +236,7 @@ for (name in names){
   #get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
 }
 
-
+# GRN:
 for (name in names){
   dataset_lists[[name]][["GRN"]] = list()
   dataset_lists[[name]][["GRN"]]$name = name
@@ -248,15 +266,12 @@ for (name in names){
   # get_modules -> topGO analysis
 }
 
-
 for (name in names){
-  dataset_lists[[name]][["GO_conf_matrix"]] <- get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])
-  print(dataset_lists[[name]][["GO_conf_matrix"]])
+  for (test in c("pGRiNS","GRN")){
+    dataset_lists[[name]][[test]][["GO_conf_matrix"]] <- get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][[test]])
+  }
 }
 
 for (name in names){
-  # DiffNet on all 3 networks at once???
-  dataset_lists[[name]][["DiffNodes_pGRiNS"]] <- get_diff_net(dataset_lists[[name]][["experimental"]]$network_df,dataset_lists[[name]][["pGRiNS"]]$network_df,grn_file)
-  
-  dataset_lists[[name]][["DiffNodes_GRN"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]],dataset_lists[[name]][["GRN"]],grn_file)
+  dataset_lists[[name]][["DiffNodes_full"]] <- get_diff_net(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]],grn_file)
 }

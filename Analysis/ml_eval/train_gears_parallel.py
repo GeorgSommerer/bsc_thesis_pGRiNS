@@ -9,7 +9,7 @@ import torch
 import scanpy as sc
 import torch.multiprocessing as mp
 
-def train_gears_parallel(proc_data : PertData, current_split : int, i : int, lock, filename : str, modelname : str):
+def train_gears_parallel(proc_data : PertData, current_split : int, splits_iter : int, i : int, lock, filename : str, modelname : str, model_suf : str):
     """
     Trains multiple iterations of the GEARS model in parallel for different cross validation splits.
     Using pytorch==2.7.1 for cuda==12.9
@@ -30,9 +30,9 @@ def train_gears_parallel(proc_data : PertData, current_split : int, i : int, loc
     device = f"cuda:{i}"
     torch.cuda.set_device(i) # For each thread, occupy a GPU
     proc_data.prepare_split(split="custom",split_dict_path=f"../../Data/Experimental/{filename}/Splits/split_{i}.pickle")
-    proc_data.get_dataloader(batch_size = 32, test_batch_size = 128)
-    with lock:
-        print(f"Getting GEARS model for split {current_split}...")
+    batch_size = int(64/splits_iter)
+    proc_data.get_dataloader(batch_size = batch_size, test_batch_size = 2*batch_size)
+    print(f"Getting GEARS model for split {current_split}; batch size is {batch_size}...")
     """
     At some point, a pd.Series containing boolean values is input into scipy._validate_indices, which throws an AttributeError.
     This is because the original code in venv/lib/python3.12/site-packages/scipy/sparse/_index.py, line 401 is:
@@ -51,8 +51,8 @@ def train_gears_parallel(proc_data : PertData, current_split : int, i : int, loc
     gears_model.train(epochs=20,lr=1e-3)
     with lock: # Lock is necessary so that all files are properly saved
         print(f"Saving {current_split}...")
-        os.makedirs(f"../../Data/Experimental/{filename}/{modelname}/Models/GEARS/cv_{current_split}",exist_ok=True)
-        gears_model.save_model(path=f"../../Data/Experimental/{filename}/{modelname}/Models/GEARS/cv_{current_split}")   
+        os.makedirs(f"../../Data/Experimental/{filename}/{modelname}/Models{model_suf}/GEARS/cv_{current_split}",exist_ok=True)
+        gears_model.save_model(path=f"../../Data/Experimental/{filename}/{modelname}/Models{model_suf}/GEARS/cv_{current_split}")   
 
 
 
@@ -70,58 +70,69 @@ if __name__ == '__main__':
     grn_file = sys.argv[3]
     splits_left = int(sys.argv[4])
 
-    os.makedirs(f"../../Data/Experimental/{filename}/{modelname}/{modelname}",exist_ok=True)
-    proc_data = PertData(f"../../Data/Experimental/{filename}/{modelname}")
-    if not os.path.isfile(f"../../Data/Experimental/{filename}/{modelname}/perturb_processed.h5ad"):
-        print("Processing dataset...")
-        if modelname == "experimental":
-            norm_data = sc.read_h5ad(f"../../Data/Experimental/{filename}/perturb_norm_subset_{grn_file}.h5ad")
-        elif modelname == "pGRiNS":
-            norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_subset_{filename}.h5ad")
-        if len(sys.argv)>5:
-            print("Subsetting")
-            chosen_cells = []
-            for pert in norm_data.obs["perturbation"].unique():
-                # Downsample to sys.argv[5]% of cells
-                obs_names = norm_data[norm_data.obs["perturbation"]==pert].obs_names
-                if pert == "ctrl":
-                    chosen_cells += obs_names
-                else:
-                    chosen_cells += np.random.choice(obs_names,replace=False,size=len(obs_names)*int(sys.argv[5])/100)
-            print(len(chosen_cells))
-            norm_data = norm_data[chosen_cells]
-        norm_data.X = norm_data.layers["log1p"].copy()
-        """
-        In line 242 of gears/pertdata.py, the following line exists:
-            dataset_name = dataset_name.lower()
-        This is commented out in the source code (path for venv: vsp/lib/python3.12/site-packages/gears/pertdata.py) to conform with already existing Data folder file names.
-        Also, this change serves no purpose algorithmically.
-        """
-        ad.settings.allow_write_nullable_strings = True
-        proc_data.new_data_process(dataset_name = "",adata=norm_data)
+    if len(sys.argv)>5:
+        cell_counts = [0.2,0.5,1,2.5,5,7.5,10,25,50] # 1 cell is impossible in GEARS
+        modelname += "_series"
+    else:
+        cell_counts = [1]
 
-    proc_data.load(data_path=f"../../Data/Experimental/{filename}/{modelname}")
+    for cc in cell_counts:
+        if cc == 1:
+            model_suf = ""
+        else:
+            model_suf = f"_{int(cc*10)}"
+        os.makedirs(f"../../Data/Experimental/{filename}/{modelname}/{modelname}",exist_ok=True)
+        proc_data = PertData(f"../../Data/Experimental/{filename}/{modelname}")
+        if cc != 1 or not os.path.isfile(f"../../Data/Experimental/{filename}/{modelname}/perturb_processed.h5ad"):
+            print("Processing dataset...")
+            if modelname == "experimental":
+                norm_data = sc.read_h5ad(f"../../Data/Experimental/{filename}/perturb_norm_subset_{grn_file}.h5ad")
+            else:
+                norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_subset_{filename}.h5ad")
+            if cc!=1:
+                print("Subsetting")
+                chosen_cells = np.empty(0)
+                for pert in norm_data.obs["perturbation"].unique():
+                    # Downsample to sys.argv[5]% of cells
+                    obs_names = norm_data[norm_data.obs["perturbation"]==pert].obs_names
+                    if pert == "ctrl":
+                        chosen_cells = np.append(chosen_cells,np.array(obs_names))
+                    else:
+                        chosen_cells = np.append(chosen_cells,np.random.choice(obs_names,replace=False,size=int(len(obs_names)*cc/100)))
+                norm_data = norm_data[chosen_cells]
+            norm_data.X = norm_data.layers["log1p"].copy()
+            print(norm_data.obs["perturbation"].value_counts())
+            """
+            In line 242 of gears/pertdata.py, the following line exists:
+                dataset_name = dataset_name.lower()
+            This is commented out in the source code (path for venv: vsp/lib/python3.12/site-packages/gears/pertdata.py) to conform with already existing Data folder file names.
+            Also, this change serves no purpose algorithmically.
+            """
+            ad.settings.allow_write_nullable_strings = True
+            proc_data.new_data_process(dataset_name = "",adata=norm_data)
 
-    mp.set_sharing_strategy('file_system')
-    mp.set_start_method("spawn",force=True) # Necessary for multithreading to work with Torch
-    processes = []
-    lock = mp.Lock()
+        proc_data.load(data_path=f"../../Data/Experimental/{filename}/{modelname}")
 
-    # Divide splits into batches so that each batch occupies as many GPUs as are available
-    gpu_count = torch.cuda.device_count()
-    print(f"Devices available: {gpu_count}; CV runs: {splits_left}")
-    while splits_left > 0:
-        splits_iter = splits_left if splits_left < gpu_count else gpu_count
-        print(f"Processing {splits_iter} splits...")
-        for i in range(splits_iter):
-            # Start a number of threads equal to the number of GPUs available
-            current_split = splits_left-i-1
-            if not os.path.exists(f"../../Data/Experimental/{filename}/{modelname}/Models/GEARS/cv_{current_split}"):
-                print(f"Split {current_split}:")
-                p = mp.Process(target=train_gears_parallel,args=(proc_data,current_split,i,lock,filename,modelname))
-                p.start()
-                processes.append(p)
-                # Join the processes to end them
-        for p in processes:
-            p.join()
-        splits_left -= splits_iter
+        mp.set_sharing_strategy('file_system')
+        mp.set_start_method("spawn",force=True) # Necessary for multithreading to work with Torch
+        processes = []
+        lock = mp.Lock()
+
+        # Divide splits into batches so that each batch occupies as many GPUs as are available
+        gpu_count = torch.cuda.device_count()
+        print(f"Devices available: {gpu_count}; CV runs: {splits_left}")
+        while splits_left > 0:
+            splits_iter = splits_left if splits_left < gpu_count else gpu_count
+            print(f"Processing {splits_iter} split(s)...")
+            for i in range(splits_iter):
+                # Start a number of threads equal to the number of GPUs available
+                current_split = splits_left-i-1
+                if not os.path.exists(f"../../Data/Experimental/{filename}/{modelname}/Models{model_suf}/GEARS/cv_{current_split}"):
+                    print(f"Split {current_split}:")
+                    p = mp.Process(target=train_gears_parallel,args=(proc_data,current_split,splits_iter,i,lock,filename,modelname,model_suf))
+                    p.start()
+                    processes.append(p)
+                    # Join the processes to end them
+            for p in processes:
+                p.join()
+            splits_left -= splits_iter

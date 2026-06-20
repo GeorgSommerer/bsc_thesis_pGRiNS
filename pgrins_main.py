@@ -25,12 +25,13 @@ parser.add_argument("--pert_ratio",type=float,help="How many cells should be gen
 parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_{pert_gene} parameters should be scaled. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).")
 parser.add_argument("--mode", help="If Ising, whether the updates were done sync or async. Defaults to async.")
 parser.add_argument("--num_replicates", type=int,help="The number of replicates to be simulated. Defaults to 1. Pipeline has not been tested on more than 1 replicate.")
-parser.add_argument("--no_G_scaling",action=store_true,help="Whether or not G_max should be scaled in add_thr_rows. If true, then G_max will scale exponentially with the number of incoming edges, which can lead to numeric problems. Defaults to False.")
+parser.add_argument("--no_G_scaling",action="store_true",help="Whether or not G_max should be scaled in add_thr_rows. If true, then G_max will scale exponentially with the number of incoming edges, which can lead to numeric problems. Defaults to False.")
 
 # C:
 parser.add_argument("--max_missingness", type=float,help="The maximal percentage of cells per gene that can have missing entries. Defaults to 90. Accepts values from [0,100]")
 parser.add_argument("--expon_scale",type=float,help="Given an experimental dataset, this value can be calculated as the mean of pct_dropout_by_counts from exp_adata.var among the genes with pct_dropout_by_counts<max_missingness. Defaults to 42.2 (taken from Replogle22).")
 parser.add_argument("--full_dropouts",type=float,help="What percentage of genes should have 100 percent of their entries missing. Defaults to 0. Accepts values from [0,100]")        
+parser.add_argument("--zero_dropouts",type=float, help="What percentage of genes should have 0 percent of their entries missing. Defaults to 5. Accepts values from [0,100]")
 parser.add_argument("--outlier_cutoff_min_pct", type=float,help="What percentage of cells of a gene should be negative or missing in order for them to be removed. Defaults to 1 percent. Accepts values from [0,100]")
 parser.add_argument("--outlier_cutoff_max",type=float,help="How high the mean raw counts should be in order to be treated as an outlier. Defaults to 10000. For reference, Norman19 and Replogle22 have few genes with >100 raw counts.")
 parser.add_argument("--remove_outliers",action="store_true",help="If True, outlier genes are removed. Otherwise, negative and NA values are set to zero, and very large entries are kept unchanged. Defaults to False.")
@@ -41,7 +42,8 @@ parser.add_argument("--max_num_pcs", type=int,help="The minimal number of princi
 parser.add_argument("--min_cluster_size_pct", type=float,help="The minimal size a cluster must have relative to all cells in grins_data to be considered for the best cluster. Defaults to 0.01.")
 parser.add_argument("--max_num_clusters", type=int,help="The maximal number of clusters considered as best cluster. Defaults to 10. If 0, all clusters with >min_cluster_size_pct of cells are considered.")
 parser.add_argument("--eval_metric",help="If experimental data is used, whether or not the clusters should be evaluated using MSE or Spearman correlation. Defaults to MSE.")
-    
+parser.add_argument("--min_cluster_silhouette",type=float,help="The minimum mean silhouette score a cluster must have to be considered for the best cluster. Defaults to 0.")    
+
 args = parser.parse_args()
 
 kwargs_a = {}
@@ -114,6 +116,8 @@ if args.expon_scale:
     kwargs_c["expon_scale"] = args.expon_scale
 if args.full_dropouts:
     kwargs_c["full_dropouts"] = args.full_dropouts
+if args.zero_dropouts:
+    kwargs_c["zero_dropouts"] = args.zero_dropouts
 if args.outlier_cutoff_min_pct:
     kwargs_c["outlier_cutoff_min_pct"] = args.outlier_cutoff_min_pct
 if args.outlier_cutoff_max:
@@ -133,6 +137,8 @@ if args.max_num_clusters:
     kwargs_d["max_num_clusters"] = args.max_num_clusters
 if args.eval_metric:
     kwargs_d["eval_metric"]=args.eval_metric
+if args.min_cluster_silhouette:
+    kwargs_d["min_cluster_silhouette"] = args.min_cluster_silhouette
 
 ########################################################
 # A: Prepare data
