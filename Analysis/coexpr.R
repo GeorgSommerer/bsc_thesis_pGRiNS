@@ -1,6 +1,6 @@
 setwd("~/Code/bsc_thesis_pGRiNS/Analysis")
 #load("./.RData")
-save.image("./.RData")
+#save.image("./.RData")
 library(tidyverse)
 library(ggplot2)
 # 1+2)
@@ -179,7 +179,7 @@ get_diff_net <- function(exp_ds,grins_ds, grn_file){
   diff_net <- MakeDiffNet(Data = list(exp_ds[["network_df"]], grins_ds[["network_df"]]),Code = code)
   # Phi=="a" are interesting, because alpha edges are categorized as belonging to both networks
   # beta edges have different signs, and gamma edges belong to only 1 network
-  diff_net <- subset(diff_net, diff_net$Score_Phi_tilde/diff_net$Score_internal > 1)
+  #diff_net <- subset(diff_net, diff_net$Score_Phi_tilde/diff_net$Score_internal > 1)
   DiffNodes = ClusterNodes(diff_net, cutoff.external = 0, cutoff.internal = 1) # Maybe need to clean by Score_Phi_tilde/Score_internal>1?
   
   # Plot and save distribution of nodes across categories
@@ -208,16 +208,16 @@ for (name in names){
   for (model in models){
     print(paste("********************",model,"********************"))
     dataset_lists[[name]][[model]] <- list(name=name,model=model)
-    
+
     dataset_lists[[name]][[model]] <- get_adj_matrix(dataset_lists[[name]][[model]],grn_file)
-    
+
     dataset_lists[[name]][[model]] <- get_modules(dataset_lists[[name]][[model]],grn_file)
   }
   if (!file.exists(paste("../Data/Experimental/",name,"/coexpr_Genes2Go.txt",sep=""))){ # Get Genes2GO list if not already saved
     mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl",verbose=TRUE))
     write_GO_IDs(dataset_lists[[name]][["experimental"]],mart)
   }
-  for (model in models){ 
+  for (model in models){
     dataset_lists[[name]][[model]][["GO_results"]] = list()
     modules <- unique(dataset_lists[[name]][[model]]$modules)
     print(paste(length(modules),"modules found"))
@@ -228,7 +228,7 @@ for (name in names){
         print(paste("********************",model,module,ont,"********************"))
         dataset_lists[[name]][[model]] <- GO_enrichment(dataset_lists[[name]][[model]],module,ont)
       }
-    }
+   }
   }
   
   #dataset_lists[[name]][["GO_conf_matrix"]] <- get_conf_matrix(dataset_lists[[name]][["experimental"]],dataset_lists[[name]][["pGRiNS"]])

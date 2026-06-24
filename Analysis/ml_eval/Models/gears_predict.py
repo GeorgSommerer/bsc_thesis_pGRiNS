@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import anndata as ad
 
-def predict_gears(it : int, test_perts : list, filename : str,modelname : str) -> dict[str,list[float]]:
+def predict_gears(it : int, test_perts : list, filename : str, modelname : str, cc : int = None) -> dict[str,list[float]]:
     """
     Uses the GEARS model for the current split to predict the expression vector across all 5000 tested genes for all test perturbations.
 
@@ -21,7 +21,11 @@ def predict_gears(it : int, test_perts : list, filename : str,modelname : str) -
     gears_preds : dict
         A dictionary with the test_perts as keys and the expression vectors as values.
     """
-    out_path = f"../../Data/Experimental/{filename}/{modelname}/Models/GEARS/GEARS_pred_{it}.pickle"
+    if cc == None:
+        model_append = ""
+    else:
+        model_append = f"_{cc}"
+    out_path = f"../../Data/Experimental/{filename}/{modelname}/Models{model_append}/GEARS/GEARS_pred_{it}.pickle"
     if not os.path.exists(out_path):
         from gears import PertData, GEARS
 
@@ -33,7 +37,7 @@ def predict_gears(it : int, test_perts : list, filename : str,modelname : str) -
                             weight_bias_track = False)
         gears_model.model_initialize(hidden_size = 64)
 
-        gears_model.load_pretrained(path=f"../../Data/Experimental/{filename}/{modelname}/Models/GEARS/cv_{it}")
+        gears_model.load_pretrained(path=f"../../Data/Experimental/{filename}/{modelname}/Models{model_append}/GEARS/cv_{it}")
         gears_preds = gears_model.predict([p.split("_") for p in test_perts])
 
         with open(out_path,'wb') as handle:

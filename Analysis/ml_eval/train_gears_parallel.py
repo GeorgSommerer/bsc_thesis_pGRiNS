@@ -8,6 +8,7 @@ import numpy as np
 import torch
 import scanpy as sc
 import torch.multiprocessing as mp
+from tqdm import tqdm
 
 def train_gears_parallel(proc_data : PertData, current_split : int, splits_iter : int, i : int, lock, filename : str, modelname : str, model_suf : str):
     """
@@ -30,7 +31,7 @@ def train_gears_parallel(proc_data : PertData, current_split : int, splits_iter 
     device = f"cuda:{i}"
     torch.cuda.set_device(i) # For each thread, occupy a GPU
     proc_data.prepare_split(split="custom",split_dict_path=f"../../Data/Experimental/{filename}/Splits/split_{i}.pickle")
-    batch_size = int(64/splits_iter)
+    batch_size = int(256/splits_iter)
     proc_data.get_dataloader(batch_size = batch_size, test_batch_size = 2*batch_size)
     print(f"Getting GEARS model for split {current_split}; batch size is {batch_size}...")
     """
@@ -68,31 +69,34 @@ if __name__ == '__main__':
     filename = sys.argv[1]
     modelname = sys.argv[2]
     grn_file = sys.argv[3]
-    splits_left = int(sys.argv[4])
 
     if len(sys.argv)>5:
         cell_counts = [0.2,0.5,1,2.5,5,7.5,10,25,50] # 1 cell is impossible in GEARS
         modelname += "_series"
     else:
-        cell_counts = [1]
+        cell_counts = [100]
 
     for cc in cell_counts:
-        if cc == 1:
+        print(f"cc={cc}")
+        splits_left = int(sys.argv[4])
+        if cc == 100:
             model_suf = ""
         else:
             model_suf = f"_{int(cc*10)}"
+        if False not in [os.path.exists(f"../../Data/Experimental/{filename}/{modelname}/Models{model_suf}/GEARS/cv_{current_split}") for current_split in range(splits_left)]:
+            continue
         os.makedirs(f"../../Data/Experimental/{filename}/{modelname}/{modelname}",exist_ok=True)
         proc_data = PertData(f"../../Data/Experimental/{filename}/{modelname}")
-        if cc != 1 or not os.path.isfile(f"../../Data/Experimental/{filename}/{modelname}/perturb_processed.h5ad"):
+        if cc != 100 or not os.path.isfile(f"../../Data/Experimental/{filename}/{modelname}/perturb_processed.h5ad"):
             print("Processing dataset...")
             if modelname == "experimental":
                 norm_data = sc.read_h5ad(f"../../Data/Experimental/{filename}/perturb_norm_subset_{grn_file}.h5ad")
             else:
                 norm_data = sc.read_h5ad(f"../../Data/Projects/{grn_file}/{replicate:03}/perturb_norm_subset_{filename}.h5ad")
-            if cc!=1:
+            if cc!=100:
                 print("Subsetting")
                 chosen_cells = np.empty(0)
-                for pert in norm_data.obs["perturbation"].unique():
+                for pert in tqdm(norm_data.obs["perturbation"].unique()):
                     # Downsample to sys.argv[5]% of cells
                     obs_names = norm_data[norm_data.obs["perturbation"]==pert].obs_names
                     if pert == "ctrl":
@@ -100,6 +104,7 @@ if __name__ == '__main__':
                     else:
                         chosen_cells = np.append(chosen_cells,np.random.choice(obs_names,replace=False,size=int(len(obs_names)*cc/100)))
                 norm_data = norm_data[chosen_cells]
+            print("Copying layer...")
             norm_data.X = norm_data.layers["log1p"].copy()
             print(norm_data.obs["perturbation"].value_counts())
             """
