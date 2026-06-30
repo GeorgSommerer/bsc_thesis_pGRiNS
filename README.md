@@ -8,6 +8,9 @@ cd bsc_thesis_pGRiNS
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
+The main branch is relatively lightweight and contains only the tools necessary to run pGRiNS.
+The analysis branch also contains methods to perform downstream analysis and ML evaluation, as well as example results.
+
 `requirements.txt` only works out of the box for Cuda 12.9 GPUs. If you use a different GPU, make sure to have the correct version of jax installed for your GPUs (e.g. `pip install --upgrade "jax[cuda13]"`) and fix other dependency issues accordingly.
 
 ## Usage:

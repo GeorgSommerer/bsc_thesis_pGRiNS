@@ -1,4 +1,8 @@
 Data
-Analysis/.RData
-Analysis/.RHistory
-Analysis/*.csv
+Analysis
+__pycache__
+grins/__pycache__
+Prep_Data/Plots
+Prep_Data/__pycache__
+Prep_Data/omnipathr-log
+Logs
