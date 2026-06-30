@@ -1,630 +1,0 @@
-nohup: Eingabe wird ignoriert
-********** A: Prepare data: **********
-.topo files ['dorothea_abcd', 'kegg'] are turned into KeggoRo_noG
-Experimental perturb seq datasets used: ['Norman19', 'Replogle22']
-Normalizing file:  Norman19
-Total measured cells: 111445
-Total measured genes: 33694
-Percent of control cells: 10.637534209699853 %
-Unique perturbations: 236
-Done defining qc classes
-Mitochondrial genes: 13
-Ribosomal genes: 103
-Hemoglobin genes: 12
-Done calculating qc metrics
-Total number of cells: 111445
-outlier
-False    110762
-True        683
-Name: count, dtype: int64
-mt_outlier
-False    97622
-True     13823
-Name: count, dtype: int64
-Number of dropout genes: 25882
-Total number of cells after filtering of low quality cells: 97120
-Median counts: 14263.0
-Done!
-Saving file
-Normalizing file:  Replogle22
-Total measured cells: 310385
-Total measured genes: 8563
-Unique genes in the df (w/o ctrl): batch                          48
-gene                         2057
-gene_id                      2057
-transcript                     57
-gene_transcript              2176
-guide_id                     2176
-percent_mito               288746
-UMI_count                   28790
-z_gemgroup_UMI             245702
-core_scale_factor              48
-core_adjusted_UMI_count    244091
-disease                         1
-cancer                          1
-cell_line                       1
-sex                             1
-age                             1
-perturbation                 2057
-organism                        1
-perturbation_type               1
-tissue_type                     1
-ncounts                     28562
-ngenes                       5034
-nperts                          1
-percent_ribo               288989
-cell_type                       1
-condition                    2057
-condition_name               2057
-dtype: int64
-Percent of control cells: 3.4444319152020877 %
-Unique perturbations: 2057
-Done defining qc classes
-Mitochondrial genes: 13
-Ribosomal genes: 89
-Hemoglobin genes: 7
-Done calculating qc metrics
-Total number of cells: 310385
-outlier
-False    309250
-True       1135
-Name: count, dtype: int64
-mt_outlier
-True     270798
-False     39587
-Name: count, dtype: int64
-Number of dropout genes: 41
-Total number of cells after filtering of low quality cells: 39438
-Median counts: 13679.0
-Done!
-Saving file
-Created subset adata files...
-Save subset of Norman19...
-Save subset of Replogle22...
-Creating new .pert file...
-Splitting sinks from GRN...
-********** B1: Run unperturbed GRiNS: **********
-RACIPE:
-Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
-Generating parameters...
-Parameter and Intial Condition files generated for KeggoRo_noG
-Replicate 001/001
-Loading ODE system from: Data/SimulResults_Racipe/KeggoRo_noG
-Number of combinations to simulate: 100000
-Running steady state simulations for replicate: 001
-  0%|          | 0/20 [00:00<?, ?it/s]E0611 14:39:26.500673  303965 slow_operation_alarm.cc:73] 
-********************************
-[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
-********************************
-E0611 15:58:51.722940  303867 slow_operation_alarm.cc:140] The operation took 1h21m25.222425356s
-
-********************************
-[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
-********************************
-  5%|▌         | 1/20 [5:53:17<111:52:32, 21197.48s/it] 10%|█         | 2/20 [6:13:24<47:11:34, 9438.60s/it]   15%|█▌        | 3/20 [6:33:34<26:49:37, 5681.05s/it] 20%|██        | 4/20 [6:53:41<17:23:55, 3914.72s/it] 25%|██▌       | 5/20 [7:13:47<12:14:31, 2938.07s/it] 30%|███       | 6/20 [7:34:00<9:08:42, 2351.58s/it]  35%|███▌      | 7/20 [7:54:04<7:08:12, 1976.31s/it] 40%|████      | 8/20 [8:14:08<5:46:04, 1730.38s/it] 45%|████▌     | 9/20 [8:34:12<4:47:02, 1565.72s/it] 50%|█████     | 10/20 [8:54:16<4:02:22, 1454.21s/it] 55%|█████▌    | 11/20 [9:14:21<3:26:41, 1377.94s/it] 60%|██████    | 12/20 [9:34:25<2:56:39, 1324.99s/it] 65%|██████▌   | 13/20 [9:54:31<2:30:22, 1288.94s/it] 70%|███████   | 14/20 [10:14:36<2:06:21, 1263.50s/it] 75%|███████▌  | 15/20 [10:34:40<1:43:47, 1245.54s/it] 80%|████████  | 16/20 [10:54:51<1:22:21, 1235.30s/it] 85%|████████▌ | 17/20 [11:15:03<1:01:24, 1228.27s/it] 90%|█████████ | 18/20 [11:35:07<40:42, 1221.04s/it]   95%|█████████▌| 19/20 [11:55:09<20:15, 1215.26s/it]100%|██████████| 20/20 [12:15:14<00:00, 1212.18s/it]100%|██████████| 20/20 [12:15:14<00:00, 2205.72s/it]
-Time taken for replicate 001: 44139.17524218559
-Normalising the solutions
-Simulation completed for replicate: 001
-
-Simulating sinks for replicate 001...
-  0%|          | 0/20 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-  5%|▌         | 1/20 [01:43<32:39, 103.12s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 10%|█         | 2/20 [03:30<31:43, 105.75s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
- 15%|█▌        | 3/20 [05:12<29:28, 104.03s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 20%|██        | 4/20 [06:54<27:27, 102.98s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 25%|██▌       | 5/20 [08:35<25:34, 102.29s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 30%|███       | 6/20 [10:16<23:46, 101.88s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 35%|███▌      | 7/20 [12:11<23:01, 106.29s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 40%|████      | 8/20 [13:52<20:54, 104.52s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 45%|████▌     | 9/20 [15:32<18:56, 103.30s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
- 50%|█████     | 10/20 [17:13<17:06, 102.61s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 55%|█████▌    | 11/20 [18:54<15:17, 101.97s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 60%|██████    | 12/20 [20:35<13:33, 101.71s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 65%|██████▌   | 13/20 [22:16<11:49, 101.42s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 70%|███████   | 14/20 [23:57<10:07, 101.32s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 75%|███████▌  | 15/20 [25:38<08:26, 101.23s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 80%|████████  | 16/20 [27:19<06:44, 101.19s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 85%|████████▌ | 17/20 [29:00<05:03, 101.05s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
- 90%|█████████ | 18/20 [30:53<03:29, 104.60s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
- 95%|█████████▌| 19/20 [32:34<01:43, 103.47s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-100%|██████████| 20/20 [34:15<00:00, 102.78s/it]100%|██████████| 20/20 [34:15<00:00, 102.76s/it]
-Done!
-Done!
-********** C1: Create unperturbed adata object: **********
-Read Data/SimulResults_Racipe/KeggoRo_noG/001/KeggoRo_noG_steadystate_solutions_001...
-nohup: Eingabe wird ignoriert
-********** A: Prepare data: **********
-Done!
-********** B1: Run unperturbed GRiNS: **********
-RACIPE:
-Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
-Done!
-********** C1: Create unperturbed adata object: **********
-Read Data/SimulResults_Racipe/KeggoRo_noG/001/KeggoRo_noG_steadystate_solutions_001...
-There are 124025 zero entries (0.023% of all entries).
-Out of 5364 genes, there are 3 genes with more than 1.0% of entries being negative, and 1 genes with more than 1.0% of entries being NaN.
-There are also 0 genes that have a mean expression of >10000.
-Create AnnData object...
-Generate missing indices...
-Calculate QC metrics...
-Normalize Data...
-Save the AnnData object to Data/Projects/KeggoRo_noG/001/perturb_norm_ctrl.h5ad...
-nohup: Eingabe wird ignoriert
-********** A: Prepare data: **********
-Done!
-********** B1: Run unperturbed GRiNS: **********
-RACIPE:
-Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
-Done!
-********** C1: Create unperturbed adata object: **********
-Read Data/SimulResults_Racipe/KeggoRo_noG/001/KeggoRo_noG_steadystate_solutions_001...
-There are 124025 zero entries (0.023% of all entries).
-Out of 5364 genes, there are 3 genes with more than 1.0% of entries being negative, and 1 genes with more than 1.0% of entries being NaN.
-There are also 0 genes that have a mean expression of >10000.
-Create AnnData object...
-Generate missing indices...
-Calculate QC metrics...
-Normalize Data...
-Save the AnnData object to Data/Projects/KeggoRo_noG/001/perturb_norm_ctrl.h5ad...
-********** D1: Get best control cells: **********
-Calculating adata mean
-Running PCA, keeping at least 10 PCs
-Running UMAP using 50 PCs
-Clustering
-12 clusters definable with >1.0% of cells (at most, 10 are needed).
-Calculating Silhouette score for 64 clusters
-Calculating MSE for 10 clusters
-Cluster 3 (31629 cells): MSE = 0.5066570801390813
-Cluster 1 (19101 cells): MSE = 0.5080600808391353
-Cluster 11 (8967 cells): MSE = 0.50795313427079
-Cluster 10 (2882 cells): MSE = 0.507833946638317
-Cluster 2 (2491 cells): MSE = 0.503621849648637
-Cluster 5 (7162 cells): MSE = 0.5062398137723046
-Cluster 12 (6762 cells): MSE = 0.5060411782779703
-Cluster 0 (2614 cells): MSE = 0.5050259259381216
-Cluster 22 (2553 cells): MSE = 0.5085612220722548
-Cluster 8 (1700 cells): MSE = 0.5065520529503883
-2491/100000 cells retained
-Saving final file
-********** B2: Run perturbed GRiNS: **********
-RACIPE:
-Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
-Generating parameters...
-Perturbation effect file generated for KeggoRo_noG
-Replicate 001/001
-Loading ODE system from: Data/SimulResults_Racipe/KeggoRo_noG
-Number of combinations to simulate: 75000
-Running steady state simulations for replicate: 001
-  0%|          | 0/15 [00:00<?, ?it/s]E0612 16:15:58.445326  313712 slow_operation_alarm.cc:73] 
-********************************
-[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
-********************************
-E0612 17:33:45.976790  313567 slow_operation_alarm.cc:140] The operation took 1h19m47.532354718s
-
-********************************
-[Compiling module jit_solve_steadystate_ode for GPU] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
-********************************
-  7%|▋         | 1/15 [5:51:16<81:57:56, 21076.92s/it] 13%|█▎        | 2/15 [6:11:22<33:54:02, 9387.87s/it]  20%|██        | 3/15 [6:31:26<18:50:10, 5650.87s/it] 27%|██▋       | 4/15 [6:51:31<11:54:14, 3895.91s/it] 33%|███▎      | 5/15 [7:12:42<8:11:33, 2949.40s/it]  40%|████      | 6/15 [7:32:54<5:53:46, 2358.53s/it] 47%|████▋     | 7/15 [7:52:56<4:24:03, 1980.42s/it] 53%|█████▎    | 8/15 [8:12:58<3:22:08, 1732.71s/it] 60%|██████    | 9/15 [8:33:04<2:36:47, 1567.86s/it] 67%|██████▋   | 10/15 [8:53:05<2:01:13, 1454.78s/it] 73%|███████▎  | 11/15 [9:13:08<1:31:50, 1377.65s/it] 80%|████████  | 12/15 [9:33:17<1:06:19, 1326.38s/it] 87%|████████▋ | 13/15 [9:53:25<43:00, 1290.40s/it]   93%|█████████▎| 14/15 [10:13:29<21:04, 1264.46s/it]100%|██████████| 15/15 [10:33:43<00:00, 1249.23s/it]100%|██████████| 15/15 [10:33:43<00:00, 2534.91s/it]
-Time taken for replicate 001: 38054.20232176781
-Normalising the solutions
-Simulation completed for replicate: 001
-
-Simulating sinks for replicate 001...
-  0%|          | 0/15 [00:00<?, ?it/s]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-  7%|▋         | 1/15 [01:44<24:24, 104.64s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 13%|█▎        | 2/15 [03:29<22:40, 104.64s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 20%|██        | 3/15 [05:13<20:55, 104.65s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 27%|██▋       | 4/15 [06:58<19:12, 104.73s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 33%|███▎      | 5/15 [08:55<18:08, 108.89s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 40%|████      | 6/15 [10:51<16:42, 111.43s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 47%|████▋     | 7/15 [12:47<15:04, 113.09s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 53%|█████▎    | 8/15 [14:44<13:18, 114.07s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 60%|██████    | 9/15 [17:22<12:47, 127.89s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 67%|██████▋   | 10/15 [19:10<10:09, 121.81s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 73%|███████▎  | 11/15 [20:57<07:48, 117.19s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 80%|████████  | 12/15 [22:42<05:40, 113.61s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 87%|████████▋ | 13/15 [24:27<03:41, 111.00s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
- 93%|█████████▎| 14/15 [26:12<01:49, 109.03s/it]/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: overflow encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: overflow encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: invalid value encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: invalid value encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:22: RuntimeWarning: divide by zero encountered in scalar power
-  return (fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))) / fld
-/home/mi/sommereg03/bsc_thesis_pGRiNS/grins/reg_funcs.py:46: RuntimeWarning: divide by zero encountered in scalar power
-  return fld + (1 - fld) * (1 / (1 + (nod / thr) ** hill))
-100%|██████████| 15/15 [27:57<00:00, 107.77s/it]100%|██████████| 15/15 [27:57<00:00, 111.80s/it]
-Done!
-Done!
-********** C2: Create perturbed adata object: **********
-Read Data/SimulResults_Racipe/KeggoRo_noG/001/KeggoRo_noG_steadystate_solutions_001...
-Loading perturbed data...
-There are 250572 zero entries (0.06% of all entries).
-Out of 5364 genes, there are 4 genes with more than 1.0% of entries being negative, and 8 genes with more than 1.0% of entries being NaN.
-There are also 0 genes that have a mean expression of >10000.
-Create AnnData object...
-nohup: Eingabe wird ignoriert
-********** A: Prepare data: **********
-Done!
-********** B1: Run unperturbed GRiNS: **********
-RACIPE:
-Running ctrl with 1 replicates, 1000 parameters, 100 initial conditions, a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
-Done!
-********** C1: Create unperturbed adata object: **********
-Done!
-********** D: Get best control cells: **********
-Done!
-********** B2: Run perturbed GRiNS: **********
-RACIPE:
-Running pert with 1000 cells for 75 perturbation sets each (scaling factor of 100), a batch size of 5000 and 10000 steps in the time inveral [0,200] using Uniform sampling.
-Done!
-********** C2: Create perturbed adata object: **********
-Read Data/SimulResults_Racipe/KeggoRo_noG/001/KeggoRo_noG_steadystate_solutions_001...
-Loading perturbed data...
-There are 250572 zero entries (0.06% of all entries).
-Out of 5364 genes, there are 4 genes with more than 1.0% of entries being negative, and 8 genes with more than 1.0% of entries being NaN.
-There are also 0 genes that have a mean expression of >10000.
-Create AnnData object...
-Generate missing indices...
-  0%|          | 0/76 [00:00<?, ?it/s]  1%|▏         | 1/76 [00:04<05:57,  4.77s/it]  3%|▎         | 2/76 [00:07<04:27,  3.61s/it]  4%|▍         | 3/76 [00:10<03:55,  3.23s/it]  5%|▌         | 4/76 [00:13<03:39,  3.05s/it]  7%|▋         | 5/76 [00:15<03:29,  2.95s/it]  8%|▊         | 6/76 [00:18<03:22,  2.89s/it]  9%|▉         | 7/76 [00:21<03:17,  2.86s/it] 11%|█         | 8/76 [00:24<03:12,  2.84s/it] 12%|█▏        | 9/76 [00:27<03:08,  2.82s/it] 13%|█▎        | 10/76 [00:29<03:05,  2.81s/it] 14%|█▍        | 11/76 [00:32<03:01,  2.79s/it] 16%|█▌        | 12/76 [00:35<02:58,  2.78s/it] 17%|█▋        | 13/76 [00:38<02:55,  2.78s/it] 18%|█▊        | 14/76 [00:40<02:52,  2.79s/it] 20%|█▉        | 15/76 [00:43<02:49,  2.78s/it] 21%|██        | 16/76 [00:46<02:46,  2.78s/it] 22%|██▏       | 17/76 [00:49<02:44,  2.79s/it] 24%|██▎       | 18/76 [00:52<02:41,  2.78s/it] 25%|██▌       | 19/76 [00:54<02:38,  2.78s/it] 26%|██▋       | 20/76 [00:57<02:35,  2.77s/it] 28%|██▊       | 21/76 [01:00<02:32,  2.77s/it] 29%|██▉       | 22/76 [01:03<02:29,  2.77s/it] 30%|███       | 23/76 [01:05<02:26,  2.77s/it] 32%|███▏      | 24/76 [01:08<02:24,  2.77s/it] 33%|███▎      | 25/76 [01:11<02:21,  2.77s/it] 34%|███▍      | 26/76 [01:14<02:18,  2.77s/it] 36%|███▌      | 27/76 [01:16<02:16,  2.78s/it] 37%|███▋      | 28/76 [01:19<02:13,  2.78s/it] 38%|███▊      | 29/76 [01:22<02:10,  2.78s/it] 39%|███▉      | 30/76 [01:25<02:07,  2.78s/it] 41%|████      | 31/76 [01:28<02:05,  2.78s/it] 42%|████▏     | 32/76 [01:30<02:02,  2.79s/it] 43%|████▎     | 33/76 [01:33<01:59,  2.79s/it] 45%|████▍     | 34/76 [01:36<01:57,  2.79s/it] 46%|████▌     | 35/76 [01:39<01:54,  2.78s/it] 47%|████▋     | 36/76 [01:42<01:51,  2.78s/it] 49%|████▊     | 37/76 [01:44<01:48,  2.77s/it] 50%|█████     | 38/76 [01:47<01:45,  2.78s/it] 51%|█████▏    | 39/76 [01:50<01:42,  2.78s/it] 53%|█████▎    | 40/76 [01:53<01:40,  2.78s/it] 54%|█████▍    | 41/76 [01:55<01:37,  2.78s/it] 55%|█████▌    | 42/76 [01:58<01:34,  2.79s/it] 57%|█████▋    | 43/76 [02:01<01:32,  2.79s/it] 58%|█████▊    | 44/76 [02:04<01:29,  2.79s/it] 59%|█████▉    | 45/76 [02:07<01:26,  2.79s/it] 61%|██████    | 46/76 [02:09<01:23,  2.79s/it] 62%|██████▏   | 47/76 [02:12<01:20,  2.78s/it] 63%|██████▎   | 48/76 [02:15<01:17,  2.78s/it] 64%|██████▍   | 49/76 [02:18<01:14,  2.77s/it] 66%|██████▌   | 50/76 [02:20<01:12,  2.78s/it] 67%|██████▋   | 51/76 [02:23<01:09,  2.78s/it] 68%|██████▊   | 52/76 [02:26<01:06,  2.79s/it] 70%|██████▉   | 53/76 [02:29<01:04,  2.79s/it] 71%|███████   | 54/76 [02:32<01:01,  2.79s/it] 72%|███████▏  | 55/76 [02:34<00:58,  2.79s/it] 74%|███████▎  | 56/76 [02:37<00:56,  2.80s/it] 75%|███████▌  | 57/76 [02:40<00:53,  2.80s/it] 76%|███████▋  | 58/76 [02:43<00:50,  2.80s/it] 78%|███████▊  | 59/76 [02:46<00:47,  2.80s/it] 79%|███████▉  | 60/76 [02:48<00:44,  2.79s/it] 80%|████████  | 61/76 [02:51<00:41,  2.79s/it] 82%|████████▏ | 62/76 [02:54<00:39,  2.79s/it] 83%|████████▎ | 63/76 [02:57<00:36,  2.80s/it] 84%|████████▍ | 64/76 [03:00<00:33,  2.80s/it] 86%|████████▌ | 65/76 [03:02<00:30,  2.80s/it] 87%|████████▋ | 66/76 [03:05<00:27,  2.80s/it] 88%|████████▊ | 67/76 [03:08<00:25,  2.79s/it] 89%|████████▉ | 68/76 [03:11<00:22,  2.79s/it] 91%|█████████ | 69/76 [03:14<00:19,  2.79s/it] 92%|█████████▏| 70/76 [03:16<00:16,  2.79s/it] 93%|█████████▎| 71/76 [03:19<00:13,  2.79s/it] 95%|█████████▍| 72/76 [03:22<00:11,  2.79s/it] 96%|█████████▌| 73/76 [03:25<00:08,  2.79s/it] 97%|█████████▋| 74/76 [03:28<00:05,  2.79s/it] 99%|█████████▊| 75/76 [03:30<00:02,  2.79s/it]100%|██████████| 76/76 [03:33<00:00,  2.79s/it]100%|██████████| 76/76 [03:33<00:00,  2.81s/it]
-Calculate QC metrics...
-Normalize Data...
-Save the AnnData object to Data/Projects/KeggoRo_noG/001/perturb_norm_full.h5ad...
-/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py:1230: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
-  df[key] = c
-/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py:1230: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
-  df[key] = c
-/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py:1230: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
-  df[key] = c
-/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py:1230: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
-  df[key] = c
-/storage/mi/sommereg03/vbsc_2/lib/python3.13/site-packages/anndata/_core/anndata.py:1230: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
-  df[key] = c
-All done! Exiting...
