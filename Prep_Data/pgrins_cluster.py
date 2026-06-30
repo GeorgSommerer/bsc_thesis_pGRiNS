@@ -244,11 +244,7 @@ def main(grn_file : str, experimental : bool = False, min_num_pcs : int = 10, mi
             grins_data = grins_data[best_cells]
             best_cell_index = list(grins_data.obs.index)
 
-            print("Saving final file")
-            # Plot results
-            plotting_funs.plot_pca_results(grn_file,grins_data_clustered,replicate)
-            plotting_funs.plot_umap_results(grn_file,grins_data_clustered,replicate)
-            
+            print("Saving final file")            
             # Overwrite perturb_norm_ctrl.h5ad
             grins_data_clustered.write_h5ad(f"Data/Projects/{grn_file}/{replicate:03}/perturb_norm_ctrl.h5ad") 
             with open(f'Data/Projects/{grn_file}/{replicate:03}/ctrl_best_cells.pickle', 'wb') as f:

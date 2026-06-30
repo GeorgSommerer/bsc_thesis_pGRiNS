@@ -878,11 +878,11 @@ def gen_pert_genes(pert_list, pert_factor):
     for i in range(len(pert_list)):
         # Scale sampled values for perturbed genes depending on the type
         for gene, typ in pert_list[i].items():
-            if typ == 1: # CRISPRa
-                pert_df[i,pg_index_dict[gene]] *= pert_factor
-            elif typ == 2: # CRISPRi
-                pert_df[i,pg_index_dict[gene]] /= pert_factor
-            elif typ == 3: # CRISPR KO
+            if typ[0] == 1: # CRISPRa
+                pert_df[i,pg_index_dict[gene]] *= typ[1]*pert_factor
+            elif typ[0] == 2: # CRISPRi
+                pert_df[i,pg_index_dict[gene]] *= typ[1]/pert_factor
+            elif typ[0] == 3: # CRISPR KO
                 pert_df[i,pg_index_dict[gene]] = 0.0
     pert_df = pd.DataFrame(pert_df,columns=[f"Pert_{gene}" for gene in pert_genes])
     return pert_df

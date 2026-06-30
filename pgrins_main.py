@@ -13,7 +13,7 @@ parser.add_argument("-e","--experimental", action="store_true",help="If experime
 parser.add_argument("-p", "--use_perts", action="store_true",help="Whether or not perturbed data should be generated. Defaults to False. If False, the pipeline stops after the clustering step. If True, Data/Perts/{project_name}_perts.pert is loaded. Specify a different filename in Data/Perts/filename.pert with --pert_file in addition to -p.")
 parser.add_argument("--pert_file", help="A list of perturbations to process other than {project_name}_perts.pert.")
 parser.add_argument("-s","--split_sinks", help="Sink nodes in the GRN do not need to be simulated, since their values does not impact the ODEs of any other nodes; therefore, the steady state values can be computed algebraically, reducing memory usage and increasing simulation speed. If this is desired, turn this option on to remove edges pointing towards sink genes from the main GRN. Defaults to False.",action="store_true")
-
+parser.add_argument("--uniform_scalar",action="store_true",help="Whether each perturbation should be scaled by the same amount. Defaults to False.")
 # B:
 parser.add_argument("--num_init_conds",type=int,help="Number of initial conditions sampled for each gene during the unperturbed run. Defaults to 100 for Racipe, 2**14 for Ising.")
 parser.add_argument("--num_params",type=int,help="Number of values sampled for each kinetic parameter during the unperturbed run. Defaults to 1000 for Racipe (not needed for Ising).")
@@ -22,7 +22,7 @@ parser.add_argument("--sampling_method",help="Way of sampling parameters in Raci
 parser.add_argument("--max_steps",type=int,help="Number of steps until the Racipe simulation is finished. Defaults to 2048")
 parser.add_argument("--tmax", type=int, help="Maximum time for the simulation. Defaults to 200.")
 parser.add_argument("--pert_ratio",type=float,help="How many cells should be generated per perturbation compared to the unperturbed run. Defaults to 0.01. Accepts values from [0.01,1]. Should be smaller than the percentage of cells kept during clustering, otherwise technical duplicate cells are created.")
-parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_{pert_gene} parameters should be scaled. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi).")
+parser.add_argument("--pert_factor",type=int,help="By what factor the Prod_{pert_gene} parameters should be scaled. Defaults to 50 (*50 for CRISPRa, /50 for CRISPRi). If uniform_scalar is True, each perturbed gene is scaled by both the self logFC and pert_factor.")
 parser.add_argument("--mode", help="If Ising, whether the updates were done sync or async. Defaults to async.")
 parser.add_argument("--num_replicates", type=int,help="The number of replicates to be simulated. Defaults to 1. Pipeline has not been tested on more than 1 replicate.")
 parser.add_argument("--no_G_scaling",action="store_true",help="Whether or not G_max should be scaled in add_thr_rows. If true, then G_max will scale exponentially with the number of incoming edges, which can lead to numeric problems. Defaults to False.")
@@ -78,6 +78,10 @@ if args.split_sinks:
     kwargs_a["split_sinks"] = args.split_sinks
     kwargs_b["split_sinks"] = args.split_sinks
     kwargs_c["split_sinks"] = args.split_sinks
+if args.uniform_scalar:
+    kwargs_a["uniform_scalar"]=True
+else:
+    kwargs_a["uniform_scalar"]=False
 
 if args.mode:
     kwargs_b["mode"]=args.mode
@@ -104,9 +108,7 @@ else:
     kwargs_b["no_G_scaling"]=False
 if args.pert_ratio:
     kwargs_b["pert_ratio"]=args.pert_ratio
-    kwargs_b["pert_ratio"]=args.pert_ratio
 if args.pert_factor:
-    kwargs_b["pert_factor"]=args.pert_factor
     kwargs_b["pert_factor"]=args.pert_factor
 
 if args.max_missingness:

@@ -14,7 +14,7 @@ pip install -r requirements.txt
 ```bash
 python3 pgrins_main.py project_name --options
 # Example:
-nohup python3 -u pgrins_main.py KeggoRo -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 --pert_ratio 0.01 --max_num_clusters 0 --no_G_scaling >> Logs/out_KeggoRo.log 2>&1 &
+nohup python3 -u pgrins_main.py KeggoRo_noG -eps --num_params 1000 --num_init_conds 100 --batch_size 10000 --max_steps 10000 --pert_factor 100 --tmax 200 --pert_ratio 0.01 --max_num_clusters 0 --no_G_scaling --uniform_scaling >> Logs/out_KeggoRo.log 2>&1 &
 ```
 Before running this, make sure you have set up correct input folder structure (see below).
 
@@ -59,13 +59,16 @@ The subdirectory `Topos` must contain at least one `.topo` file which lists the 
 - The first column must have the name `Source` and contain the gene symbol of the outgoing node (A).
 - The second column must have the name `Target` and contain the gene symbol of the incoming node (B or C).
 - The third column must have the name `Type` and be 1 for an activating edge, or 2 for an inhibiting edge.
+
 `Prep_Data/grn_to_topo.R` contains code that can be used to turn DoRothEA GRNs and KEGG Pathways PINs into `.topo` files.
 
 The subdirectory `Perts` contains `.pert` files, which have a list of perturbed genes with 3 columns delimited with a single space:
 - The first column must have the name `Index` and indicate which perturbation set the perturbed gene belongs to.
 - The second column must have the name `Gene` and contain the gene symbol of the perturbed gene. This gene must be present in at least one of the files in `Topos`.
 - The third column must have the name `Type` and be 1 for overexpression (CRISPRa), 2 for knockdown (CRISPRi), and 3 for knockout (CRISPR KO).
-For example, the perturbation sets `[(Gene_A : CRISPRa, Gene_B : CRISPRi),(Gene_C : CRISPR_KO),(Gene_A : CRISPRi, Gene_C : CRISPRi)]` would be turned into
+- The fourth column `Scalar` is optional. If experimental data is provided, it will contain the fold change of the perturbed gene in the respective perturbation relative to the control cells in the experimental data. Otherwise, it can be ignored and all perturbations are scaled by the same factor.
+
+For example, the perturbation sets `[{Gene_A : CRISPRa, Gene_B : CRISPRi},{Gene_C : CRISPR_KO},{Gene_A : CRISPRi, Gene_C : CRISPRi}]` would be turned into
 ```bash
 Index Gene Type
 0 Gene_A 1
@@ -74,7 +77,7 @@ Index Gene Type
 2 Gene_A 2
 2 Gene_C 2
 ```
-If experimental data is provided, this file is created automatically (unless specified otherwise). Otherwise, it must be specified.
+If experimental data is provided, this file is created automatically (unless specified otherwise). Otherwise, a file must be provided by the user.
 
 ### Output:
 ```bash

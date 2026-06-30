@@ -88,15 +88,17 @@ def extract_pert_info(project_name : str, pert_file : str,rel_path="") -> list[d
     """
 
     perts_df = pd.read_csv(f"{rel_path}Data/Perts/{pert_file}.pert",sep=" ")
+    if "Scalar" not in list(perts_df.columns):
+        perts_ds["Scalar"] = 1
     pert_list = [{} for i in range(1+max(perts_df["Index"]))]
     for index, row in perts_df.iterrows():
-        pert_list[row["Index"]][row["Gene"]]=(row["Type"])
+        pert_list[row["Index"]][row["Gene"]]=(row["Type"],row["Scalar"])
     
     return pert_list
 
 
 
-def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,ad.AnnData]):
+def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,ad.AnnData], uniform_scalar : bool = False):
     """
     If no .pert file was provided, all perturbation sets remaining in the experimental datasets after subsetting are compiled into a .pert file.
 
@@ -108,6 +110,8 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
         The name of the project.
     adata_dict : dict[str,ad.AnnData]
         A dict with the experimental dataset names as keys and the adata objects as values.
+    uniform_scalar : bool
+        Whether each perturbation should be scaled by the same amount. Defaults to False.
 
     Returns:
     --------
@@ -121,6 +125,7 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
         current_index = 0
         gene = []
         types = []
+        p_scalar = []
         cum_pertnum = 0
         for pseq, adata in adata_dict.items():
             pert_sets = sorted([pert.split("_") for pert in set(list(adata.obs["perturbation"]))])
@@ -138,6 +143,10 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
                 index += [current_index]*len(pert_set)
                 current_index += 1
                 gene += pert_set
+                if uniform_scalar is False:
+                    p_scalar += [np.exp(np.asarray(np.mean(adata[adata.obs["perturbation"]=="_".join(pert_set),pgene].layers["log1p"],axis=0)).squeeze()-np.asarray(np.mean(adata[adata.obs["perturbation"]=="ctrl",pgene].layers["log1p"],axis=0)).squeeze()) for pgene in pert_set]
+                else:
+                    p_scalar += [1]*len(pert_set)
                 types += [typ]*len(pert_set)
             # Insert PertNum (later also in GRiNS data) already into adata as a unique identifier (otherwise, the same perturbated gene in different datasets could not be differentiated)
             pert_to_pertnum_dict = {"_".join(pert_set) : i for pert_set, i in zip(pert_sets,range(cum_pertnum,cum_pertnum+len(pert_sets)))}
@@ -145,7 +154,7 @@ def get_perts(grn_df : pd.DataFrame, project_name : str, adata_dict : dict[str,a
             adata_dict[pseq].obs["PertNum"] = [pert_to_pertnum_dict[p] for p in adata_dict[pseq].obs["perturbation"]]
             cum_pertnum += len(pert_sets)
         
-        pert_df = pd.DataFrame({"Index":index,"Gene":gene,"Type":types}).sort_values(by=["Index","Gene"])
+        pert_df = pd.DataFrame({"Index":index,"Gene":gene,"Type":types,"Scalar":p_scalar}).sort_values(by=["Index","Gene"])
         pert_df.to_csv(f"Data/Perts/{project_name}_perts.pert",index=False,sep=" ")# Takes the first part of the dataset name (before the _) as the identifier
     return adata_dict
 
@@ -186,7 +195,7 @@ def split_sinks_from_grn(grn_df : pd.DataFrame, project_name : str) -> pd.DataFr
 
 
 
-def main(project_name : str, experimental : bool, make_pert_file : bool = False, split_sinks : bool = False, max_missingness : int = 90):
+def main(project_name : str, experimental : bool, make_pert_file : bool = False, split_sinks : bool = False, uniform_scalar : bool = False, max_missingness : int = 90):
     """
     Creates a new project folder in Data/{project_name}, in which the input topos from Data/Topos are concatenated.
     If experimental datasets are provided in Data/Experimental, they are normalized and used for various subsetting procedures designed to remove unnecessary edges and nodes from the GRN.
@@ -206,6 +215,8 @@ def main(project_name : str, experimental : bool, make_pert_file : bool = False,
         Name of the newly created .pert file from experimental datasets.
     split_sinks : bool, optional
         Whether or not the sink nodes should be treated separately and not simulated in Racipe.
+    uniform_scalar : bool
+        Whether each perturbation should be scaled by the same amount. Defaults to False.
     max_missingness : int, optional
         The maximal percentage of cells per gene that can have missing entries.
     
@@ -241,7 +252,7 @@ def main(project_name : str, experimental : bool, make_pert_file : bool = False,
 
         # -p: Get a list of perturbations of genes of interest that are in the GRN
         if make_pert_file:
-            adata_dict = get_perts(grn_df, project_name, adata_dict)
+            adata_dict = get_perts(grn_df, project_name, adata_dict, uniform_scalar=uniform_scalar)
     
             for pseq in adata_dict.keys():
                 print(f"Save subset of {pseq}...")
