@@ -47,8 +47,7 @@ Requires the following `Data` structure:
 │   │   ├── {example_network_1}.topo
 │   │   └── {example_network_2}.topo
 │   └── Perts
-│       ├── {example_pert_list_1}.pert
-│       └── {example_pert_list_2}.pert
+│       └── {example_pert_list}.pert
 ├── grins
 │   └── ...
 ├── Prep_Data
@@ -64,7 +63,7 @@ The subdirectory `Topos` must contain at least one `.topo` file which lists the 
 - The third column must have the name `Type` and be 1 for an activating edge, or 2 for an inhibiting edge.
 `Prep_Data/grn_to_topo.R` contains code that can be used to turn DoRothEA GRNs and KEGG Pathways PINs into `.topo` files.
 
-The subdirectory `Perts` contains `.pert` files, which have a list of perturbed genes with 3 columns delimited with a single space:
+The subdirectory `Perts` contains a `.pert` file, which has a list of perturbed genes with 3 columns delimited with a single space:
 - The first column must have the name `Index` and indicate which perturbation set the perturbed gene belongs to.
 - The second column must have the name `Gene` and contain the gene symbol of the perturbed gene. This gene must be present in at least one of the files in `Topos`.
 - The third column must have the name `Type` and be 1 for overexpression (CRISPRa), 2 for knockdown (CRISPRi), and 3 for knockout (CRISPR KO).
