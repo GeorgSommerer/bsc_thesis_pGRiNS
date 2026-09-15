@@ -110,4 +110,4 @@ The simulation results will be saved in `Data/SimulResults_Racipe/{project_name}
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
